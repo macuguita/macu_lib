@@ -1,0 +1,28 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+#issueTrackerURL = ""
+license = "LGPLv3"
+
+[[mods]]
+modId = "macu_lib"
+version = "1.0.0"
+displayName = "macu lib"
+authors = "macuguita"
+description = '''
+Library for my mods and adding supporter perks
+'''
+#logoFile = ""
+
+[[dependencies.macu_lib]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.macu_lib]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,)"
+ordering = "NONE"
+side = "BOTH"

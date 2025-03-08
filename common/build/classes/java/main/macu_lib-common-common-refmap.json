@@ -1,0 +1,14 @@
+{
+  "mappings": {
+    "com/macuguita/lib/mixin/AbstractClientPlayerEntityMixin": {
+      "getCapeTexture": "Lnet/minecraft/class_742;method_3119()Lnet/minecraft/class_2960;"
+    }
+  },
+  "data": {
+    "named:intermediary": {
+      "com/macuguita/lib/mixin/AbstractClientPlayerEntityMixin": {
+        "getCapeTexture": "Lnet/minecraft/class_742;method_3119()Lnet/minecraft/class_2960;"
+      }
+    }
+  }
+}

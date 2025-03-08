@@ -3,6 +3,7 @@ package com.macuguita.lib.mixin;
 import com.macuguita.lib.supporters.Capes;
 import com.macuguita.lib.supporters.RoleChecker;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.util.SkinTextures;
 import net.minecraft.util.Identifier;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -13,18 +14,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class AbstractClientPlayerEntityMixin {
 
     @Inject(
-            method = "getCapeTexture",
-            at = @At("HEAD"),
+            method = "getSkinTextures",
+            at = @At("RETURN"),
             cancellable = true
     )
-    private void onGetCapeTexture(CallbackInfoReturnable<Identifier> cir) {
+    private void onGetSkinTextures(CallbackInfoReturnable<SkinTextures> cir) {
         AbstractClientPlayerEntity player = (AbstractClientPlayerEntity) (Object) this;
-        String role = RoleChecker.getPlayerRole(player.getUuid());
+        SkinTextures originalTextures = cir.getReturnValue();
 
+        if (originalTextures == null) return; // Avoid null reference issues
+
+        String role = RoleChecker.getPlayerRole(player.getUuid());
         if (role != null) {
             Identifier capeTexture = Capes.getCapeTextureForRole(role);
             if (capeTexture != null) {
-                cir.setReturnValue(capeTexture);
+                // Create a new instance of SkinTextures with the custom cape texture
+                cir.setReturnValue(new SkinTextures(
+                        originalTextures.texture(),
+                        originalTextures.textureUrl(),
+                        capeTexture,  // Override cape texture
+                        originalTextures.elytraTexture(),
+                        originalTextures.model(),
+                        originalTextures.secure()
+                ));
             }
         }
     }

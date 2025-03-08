@@ -16,12 +16,12 @@ public class RegUtilsImpl {
     public static List<Supplier<Block>> REGISTERED_BLOCKS = new ArrayList<>();
 
     public static <T extends Block> Supplier<T> registerBlock(String name, Supplier<T> block) {
-        var registry = Registry.register(Registries.BLOCK, new Identifier(MacuguitaLib.getModId(), name), block.get());
+        var registry = Registry.register(Registries.BLOCK, Identifier.of(MacuguitaLib.getModId(), name), block.get());
         REGISTERED_BLOCKS.add(() -> registry);
         return () -> registry;
     }
     public static <T extends Item> Supplier<T> registerItem(String name, Supplier<T> item) {
-        var registry = Registry.register(Registries.ITEM, new Identifier(MacuguitaLib.getModId(), name), item.get());
+        var registry = Registry.register(Registries.ITEM, Identifier.of(MacuguitaLib.getModId(), name), item.get());
         return () -> registry;
     }
 }

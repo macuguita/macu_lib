@@ -1,0 +1,52 @@
+# gradle
+
+common/.gradle/
+fabric/.gradle/
+forge/.gradle/
+neoforge/.gradle/
+.gradle/
+build/
+out/
+classes/
+
+# eclipse
+
+*.launch
+
+# idea
+
+.idea/
+*.iml
+*.ipr
+*.iws
+
+# vscode
+
+.settings/
+.vscode/
+bin/
+.classpath
+.project
+
+# macos
+
+*.DS_Store
+
+# mod
+
+common/run/
+fabric/run/
+forge/run/
+neoforge/run/
+common/build/
+fabric/build/
+forge/build/
+neoforge/build/
+/.architectury-transformer/
+
+# java
+
+hs_err_*.log
+replay_*.log
+*.hprof
+*.jfr

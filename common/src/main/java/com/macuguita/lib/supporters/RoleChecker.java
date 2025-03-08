@@ -7,6 +7,7 @@ import com.macuguita.lib.MacuguitaLib;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
+import java.net.URI;
 import java.net.URL;
 import java.util.*;
 import java.util.concurrent.Executors;
@@ -51,7 +52,9 @@ public class RoleChecker {
      */
     private static void fetchRoles() {
         try {
-            URL url = new URL(ROLES_URL);
+            // Use URI to create the URL
+            URI uri = new URI(ROLES_URL);
+            URL url = uri.toURL();
             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
             connection.setRequestMethod("GET");
 

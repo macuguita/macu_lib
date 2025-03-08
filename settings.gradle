@@ -7,8 +7,8 @@ pluginManagement {
     }
 }
 
-rootProject.name = 'mac_lib'
+rootProject.name = 'macu_lib'
 
 include 'common'
 include 'fabric'
-include 'forge'
+include 'neoforge'

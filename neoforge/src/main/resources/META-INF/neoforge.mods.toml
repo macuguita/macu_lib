@@ -12,7 +12,7 @@ description = '''
 Library for my mods and adding supporter perks
 '''
 displayURL="https://macuguita.com"
-logoFile = "assets/macu_lib/icon.png"
+logoFile = "assets/macu_lib/icon.webp"
 
 [[mixins]]
 config="macu_lib.mixins.json"

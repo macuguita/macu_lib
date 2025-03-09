@@ -1,6 +1,6 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-#issueTrackerURL = ""
+issueTrackerURL = "https://github.com/macuguita/macu_lib"
 license = "LGPLv3"
 
 [[mods]]

@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
   "id": "macu_lib",
-  "version": "${version}",
+  "version": "${version}-fabric",
   "name": "macu lib",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "description": "Library for my mods and adding supporter perks",
   "authors": [
     "macuguita"
   ],

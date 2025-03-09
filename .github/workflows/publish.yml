@@ -131,11 +131,11 @@ jobs:
       - name: Publish for Fabric
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: 3Rn43X40
+          modrinth-id: XnLNz8og
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: |
             compiledmods/${{ env.mod_name }}-fabric-${{ env.mod_version }}.jar
-          name: "guita's Branches ${{ env.mod_version }}-fabric"
+          name: "macu lib ${{ env.mod_version }}-fabric"
           version: "${{ env.mod_version }}-fabric"
           version-type: ${{ inputs.release_as_beta && 'beta' || 'release' }}
           changelog-file: CHANGELOG.md
@@ -145,9 +145,6 @@ jobs:
           game-versions: ${{ env.mc_version }}
           dependencies: |
             fabric-api@(required){modrinth:P7dR8mSH}
-            architectury-api@(required){modrinth:lhGA9TYQ}
-            every-compat@(recommended){modrinth:eiktJyw1}
-            midnightlib@(embedded){modrinth:codAaoxh}
         env:
           mod_name: ${{ steps.read_properties.outputs.archives_name }}
           mc_version: ${{ steps.read_properties.outputs.minecraft_version }}
@@ -155,20 +152,16 @@ jobs:
       - name: Publish for NeoForge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          modrinth-id: 3Rn43X40
+          modrinth-id: XnLNz8og
           modrinth-token: ${{ secrets.MODRINTH_TOKEN }}
           files: |
             compiledmods/${{ env.mod_name }}-neoforge-${{ env.mod_version }}.jar
-          name: "guita's Branches ${{ env.mod_version }}-neoforge"
+          name: "macu lib ${{ env.mod_version }}-neoforge"
           version: "${{ env.mod_version }}-neoforge"
           version-type: ${{ inputs.release_as_beta && 'beta' || 'release' }}
           changelog-file: CHANGELOG.md
           loaders: neoforge
           game-versions: ${{ env.mc_version }}
-          dependencies: |
-            architectury-api@(required){modrinth:lhGA9TYQ}
-            every-compat@(recommended){modrinth:eiktJyw1}
-            midnightlib@(embedded){modrinth:codAaoxh}
         env:
           mod_name: ${{ steps.read_properties.outputs.archives_name }}
           mc_version: ${{ steps.read_properties.outputs.minecraft_version }}
@@ -203,11 +196,11 @@ jobs:
       - name: Publish for Fabric
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          curseforge-id: 1195790
+          curseforge-id: 1216837
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: |
             compiledmods/${{ env.mod_name }}-fabric-${{ env.mod_version }}.jar
-          name: "guita's Branches ${{ env.mod_version }}-fabric"
+          name: "macu lib ${{ env.mod_version }}-fabric"
           version: "${{ env.mod_version }}-fabric"
           version-type: ${{ inputs.release_as_beta && 'beta' || 'release' }}
           changelog-file: CHANGELOG.md
@@ -217,9 +210,6 @@ jobs:
           game-versions: ${{ env.mc_version }}
           dependencies: |
             fabric-api@(required){curseforge:306612}
-            architectury-api@(required){curseforge:419699}
-            every-compat@(recommended){curseforge:628539}
-            midnightlib@(embedded){curseforge:488090}
           java: |
             21
         env:
@@ -229,20 +219,16 @@ jobs:
       - name: Publish for NeoForge
         uses: Kir-Antipov/mc-publish@v3.3
         with:
-          curseforge-id: 1195790
+          curseforge-id: 1216837
           curseforge-token: ${{ secrets.CURSEFORGE_TOKEN }}
           files: |
             compiledmods/${{ env.mod_name }}-neoforge-${{ env.mod_version }}.jar
-          name: "guita's Branches ${{ env.mod_version }}-neoforge"
+          name: "macu lib ${{ env.mod_version }}-neoforge"
           version: "${{ env.mod_version }}-neoforge"
           version-type: ${{ inputs.release_as_beta && 'beta' || 'release' }}
           changelog-file: CHANGELOG.md
           loaders: neoforge
           game-versions: ${{ env.mc_version }}
-          dependencies: |
-            architectury-api@(required){curseforge:419699}
-            every-compat@(recommended){curseforge:628539}
-            midnightlib@(embedded){curseforge:488090}
           java: |
             21
         env:

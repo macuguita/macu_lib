@@ -36,8 +36,6 @@ public final class MacuguitaLib {
         return modId;
     }
 
-    public static Supplier<Block> CUSTOM_BLOCK = RegUtils.registerBlock("custom_block", () -> new Block(AbstractBlock.Settings.create()));
-
     public static void init() {
         setModId(MOD_ID);
         RoleChecker.init();

@@ -170,7 +170,7 @@ jobs:
   publish-cf:
     name: 🔶 Publish to Curseforge
     runs-on: ubuntu-latest
-    if: inputs.publish_modrinth && contains('macuguita', github.triggering_actor)
+    if: inputs.publish_cf && contains('macuguita', github.triggering_actor)
     needs: mod-build
     steps:
       - uses: actions/checkout@v4.1.1

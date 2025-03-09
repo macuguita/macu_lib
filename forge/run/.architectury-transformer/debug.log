@@ -105,20 +105,20 @@
 [Architectury Transformer DEBUG]  - /home/raul/.gradle/caches/modules-2/files-2.1/org.lwjgl/lwjgl-openal/3.3.1/2623a6b8ae1dfcd880738656a9f0243d2e6840bd/lwjgl-openal-3.3.1.jar
 [Architectury Transformer DEBUG]  - /home/raul/.gradle/caches/fabric-loom/minecraftMaven/net/minecraft/forge-1.20.1-47.3.12-minecraft-merged/1.20.1-net.fabricmc.yarn.1_20_1.1.20.1+build.1-v2-forge-1.20.1-47.3.12/forge-1.20.1-47.3.12-minecraft-merged-1.20.1-net.fabricmc.yarn.1_20_1.1.20.1+build.1-v2-forge-1.20.1-47.3.12.jar
 [Architectury Transformer DEBUG]  - /home/raul/Documents/Github/mac_lib/.gradle/loom-cache/remapped_mods/net_fabricmc_yarn_1_20_1_1_20_1_build_1_v2_forge_1_20_1_47_3_12_forge/dev/architectury/architectury-forge/9.2.14/architectury-forge-9.2.14.jar
-[Architectury Transformer] Read classpath in 958.2 ms
+[Architectury Transformer] Read classpath in 981.4 ms
 [Architectury Transformer DEBUG] Closed File Systems for /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar
-[Architectury Transformer DEBUG] Transforming 8 transformer(s) from /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar to /tmp/17972472832685551656.jar: 
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.RuntimeMixinRefmapDetector@5204062d
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformExpectPlatform@4fcd19b3
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.RemapInjectables@376b4233
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformPlatformOnly@2fd66ad3
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeAnnotations@5d11346a
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment@7a36aefa
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.GenerateFakeForgeMod@17211155
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.FixForgeMixin@b3d7190
-[Architectury Transformer DEBUG] Transforming from /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar to /tmp/17972472832685551656.jar with 8 transformer(s) on dev.architectury.transformer.handler.SimpleTransformerHandler
+[Architectury Transformer DEBUG] Transforming 8 transformer(s) from /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar to /tmp/1630702901310106875.jar: 
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.RuntimeMixinRefmapDetector@5d11346a
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformExpectPlatform@7a36aefa
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.RemapInjectables@17211155
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformPlatformOnly@b3d7190
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeAnnotations@5fdba6f9
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment@10d59286
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.GenerateFakeForgeMod@fe18270
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.FixForgeMixin@6fb0d3ed
+[Architectury Transformer DEBUG] Transforming from /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar to /tmp/1630702901310106875.jar with 8 transformer(s) on dev.architectury.transformer.handler.SimpleTransformerHandler
 [Architectury Transformer DEBUG] Remapping with 1 mapping provider(s):
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x00007fa29008db08@5d20e46
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x000077ed4c08db08@7ff2a664
 [Architectury Transformer DEBUG] Remapping Classes:
 [Architectury Transformer DEBUG] net/fabricmc/api/EnvType -> net/minecraftforge/api/distmarker/Dist
 [Architectury Transformer DEBUG] net/fabricmc/api/Environment -> net/minecraftforge/api/distmarker/OnlyIn
@@ -127,6 +127,7 @@
 [Architectury Transformer DEBUG] Writing com/macuguita/lib/mixin/AbstractClientPlayerEntityMixin with maxs=true frames=true
 [Architectury Transformer DEBUG] Writing com/macuguita/lib/platform/RegUtils with maxs=true frames=true
 [Architectury Transformer DEBUG] Writing com/macuguita/lib/supporters/RoleChecker with maxs=true frames=true
+[Architectury Transformer DEBUG] Writing com/macuguita/lib/supporters/Capes with maxs=true frames=true
 [Architectury Transformer DEBUG] Checking whether /macu_lib-common-common-refmap.json is a mixin config.
 [Architectury Transformer DEBUG] Checking whether /macu_lib.mixins.json is a mixin config.
 [Architectury Transformer DEBUG] Checking whether /macu_lib-common-common-refmap.json is a mixin config.
@@ -134,15 +135,15 @@
 [Architectury Transformer DEBUG] Found mixin config(s): macu_lib.mixins.json
 [Architectury Transformer DEBUG] Appended Launch Argument: [--mixin.config, macu_lib.mixins.json]
 [Architectury Transformer DEBUG] Remapping refmap from intermediary to srg: macu_lib-forge-forge-refmap.json
-[Architectury Transformer DEBUG] Closed File Systems for /tmp/17972472832685551656.jar
+[Architectury Transformer DEBUG] Closed File Systems for /tmp/1630702901310106875.jar
 [Architectury Transformer] Listening at /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar
-[Architectury Transformer DEBUG] Temporary jar [/tmp/17972472832685551656.jar] contains packages: com.macuguita.lib.supporters, com.macuguita.lib.mixin, com.macuguita.lib.platform, com.macuguita.lib
+[Architectury Transformer DEBUG] Temporary jar [/tmp/1630702901310106875.jar] contains packages: com.macuguita.lib.supporters, com.macuguita.lib.mixin, com.macuguita.lib.platform, com.macuguita.lib
 [Architectury Transformer DEBUG] Closed File Systems for /home/raul/Documents/Github/mac_lib/common/build/devlibs/macu_lib-common-1.0.0-dev.jar
 [Architectury Transformer DEBUG] Classpath entry [/home/raul/Documents/Github/mac_lib/forge/build/classes/java/main] contains packages: com.macuguita.lib.forge, com.macuguita.lib.platform.forge
 [Architectury Transformer DEBUG] Classpath entry [/home/raul/Documents/Github/mac_lib/forge/build/resources/main] contains packages: 
 [Architectury Transformer DEBUG] Transforming from com/macuguita/lib/MacuguitaLib.class to com/macuguita/lib/MacuguitaLib.class with 8 transformer(s) on dev.architectury.transformer.handler.TinyRemapperPreparedTransformerHandler
 [Architectury Transformer DEBUG] Remapping with 1 mapping provider(s):
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x00007fa29008db08@5d20e46
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x000077ed4c08db08@7ff2a664
 [Architectury Transformer DEBUG] Remapping with Dirty Mappings...
 [Architectury Transformer DEBUG] Remapping Classes:
 [Architectury Transformer DEBUG] net/fabricmc/api/EnvType -> net/minecraftforge/api/distmarker/Dist
@@ -150,14 +151,14 @@
 [Architectury Transformer DEBUG] Found class transformer
 [Architectury Transformer DEBUG] Writing com/macuguita/lib/MacuguitaLib with maxs=true frames=true
 [Architectury Transformer DEBUG] Remapping refmap from intermediary to srg: macu_lib-forge-forge-refmap.json
-[Architectury Transformer DEBUG] Transformed com/macuguita/lib/MacuguitaLib in 71.76 ms
+[Architectury Transformer DEBUG] Transformed com/macuguita/lib/MacuguitaLib in 72.19 ms
 [Architectury Transformer DEBUG] Transforming from com/macuguita/lib/supporters/RoleChecker.class to com/macuguita/lib/supporters/RoleChecker.class with 8 transformer(s) on dev.architectury.transformer.handler.TinyRemapperPreparedTransformerHandler
 [Architectury Transformer DEBUG] Remapping with 1 mapping provider(s):
-[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x00007fa29008db08@5d20e46
+[Architectury Transformer DEBUG]  - dev.architectury.transformer.transformers.TransformForgeEnvironment$$Lambda/0x000077ed4c08db08@7ff2a664
 [Architectury Transformer DEBUG] Remapping Classes:
 [Architectury Transformer DEBUG] net/fabricmc/api/EnvType -> net/minecraftforge/api/distmarker/Dist
 [Architectury Transformer DEBUG] net/fabricmc/api/Environment -> net/minecraftforge/api/distmarker/OnlyIn
 [Architectury Transformer DEBUG] Found class transformer
 [Architectury Transformer DEBUG] Writing com/macuguita/lib/supporters/RoleChecker with maxs=true frames=true
 [Architectury Transformer DEBUG] Remapping refmap from intermediary to srg: macu_lib-forge-forge-refmap.json
-[Architectury Transformer DEBUG] Transformed com/macuguita/lib/supporters/RoleChecker in 18.29 ms
+[Architectury Transformer DEBUG] Transformed com/macuguita/lib/supporters/RoleChecker in 12.42 ms

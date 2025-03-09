@@ -5,12 +5,13 @@ license = "LGPLv3"
 
 [[mods]]
 modId = "macu_lib"
-version = "1.0.0"
+version = "1.0.0-forge"
 displayName = "macu lib"
 authors = "macuguita"
 description = '''
 Library for my mods and adding supporter perks
 '''
+displayURL="https://macuguita.com"
 #logoFile = ""
 
 [[dependencies.macu_lib]]

@@ -1,8 +1,13 @@
 package com.macuguita.lib;
 
+import com.macuguita.lib.platform.RegUtils;
 import com.macuguita.lib.supporters.RoleChecker;
+import net.minecraft.block.AbstractBlock;
+import net.minecraft.block.Block;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.function.Supplier;
 
 public final class MacuguitaLib {
 
@@ -30,6 +35,8 @@ public final class MacuguitaLib {
         }
         return modId;
     }
+
+    public static Supplier<Block> CUSTOM_BLOCK = RegUtils.registerBlock("custom_block", () -> new Block(AbstractBlock.Settings.create()));
 
     public static void init() {
         setModId(MOD_ID);

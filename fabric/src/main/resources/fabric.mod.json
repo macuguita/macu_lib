@@ -9,7 +9,7 @@
   ],
   "contact": {
     "homepage": "https://macuguita.com/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "sources": "https://github.com/macuguita/macu_lib"
   },
   "license": "GPLv3",
   "icon": "assets/macu_lib/icon.png",

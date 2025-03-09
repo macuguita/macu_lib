@@ -1,1 +1,1 @@
-- release
+- added icon and removed the example block that makes the game crash

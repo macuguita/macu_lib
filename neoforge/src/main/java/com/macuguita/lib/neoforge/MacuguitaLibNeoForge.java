@@ -1,7 +1,6 @@
 package com.macuguita.lib.neoforge;
 
 import com.macuguita.lib.MacuguitaLib;
-import com.macuguita.lib.platform.neoforge.RegUtilsImpl;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
@@ -12,6 +11,5 @@ public final class MacuguitaLibNeoForge {
 
         // Run our common setup.
         MacuguitaLib.init();
-        RegUtilsImpl.register(modEventBus);
     }
 }

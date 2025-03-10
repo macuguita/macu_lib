@@ -1,1 +1,1 @@
-- added icon and removed the example block that makes the game crash
+- Fixed the whole registry part of the mod

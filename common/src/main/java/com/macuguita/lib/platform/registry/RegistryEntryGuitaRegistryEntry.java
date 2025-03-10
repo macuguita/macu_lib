@@ -4,11 +4,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 
 public interface RegistryEntryGuitaRegistryEntry<T> extends GuitaRegistryEntry<T> {
 
-    RegistryEntry<T> holder();
+    RegistryEntry<T> registryEntry();
 
     @Override
     default T get() {
-        return holder().value();
+        return registryEntry().value();
     }
 
 }

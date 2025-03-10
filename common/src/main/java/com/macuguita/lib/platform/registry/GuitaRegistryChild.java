@@ -3,12 +3,12 @@ package com.macuguita.lib.platform.registry;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-public class ResourcefulRegistryChild<T> implements ResourcefulRegistry<T> {
+public class GuitaRegistryChild<T> implements GuitaRegistry<T> {
 
-    private final ResourcefulRegistry<T> parent;
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistry<T> parent;
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
 
-    public ResourcefulRegistryChild(ResourcefulRegistry<T> parent) {
+    public GuitaRegistryChild(GuitaRegistry<T> parent) {
         this.parent = parent;
     }
 
@@ -23,8 +23,8 @@ public class ResourcefulRegistryChild<T> implements ResourcefulRegistry<T> {
     }
 
     @Override
-    public RegistryEntryGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        return this.entries.add(parent.registerHolder(id, supplier));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        return this.entries.add(parent.registerRegistryEntry(id, supplier));
     }
 
     @Override

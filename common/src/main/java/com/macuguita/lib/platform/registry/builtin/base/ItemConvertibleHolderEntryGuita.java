@@ -7,11 +7,11 @@ import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public record ItemLikeHolderEntryGuita<T extends ItemConvertible>(RegistryEntryGuitaRegistryEntry<T> entry) implements RegistryEntryGuitaRegistryEntry<T>, ItemConvertible {
+public record ItemConvertibleHolderEntryGuita<T extends ItemConvertible>(RegistryEntryGuitaRegistryEntry<T> entry) implements RegistryEntryGuitaRegistryEntry<T>, ItemConvertible {
 
     @Override
-    public RegistryEntry<T> holder() {
-        return entry.holder();
+    public RegistryEntry<T> registryEntry() {
+        return entry.registryEntry();
     }
 
     @Override

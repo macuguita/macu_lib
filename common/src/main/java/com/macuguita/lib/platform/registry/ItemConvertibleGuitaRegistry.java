@@ -15,17 +15,17 @@ import java.util.List;
 import java.util.function.Supplier;
 
 /**
- * @deprecated Use {@link ResourcefulRegistries#createForItems(String)} or {@link ResourcefulRegistries#createForBlocks(String)}
+ * @deprecated Use {@link GuitaRegistries#createForItems(String)} or {@link GuitaRegistries#createForBlocks(String)}
  */
 @Deprecated
 @ApiStatus.ScheduledForRemoval(inVersion = "1.21.5")
-public class ItemLikeResourcefulRegistry<T extends ItemConvertible> implements ResourcefulRegistry<T>  {
+public class ItemConvertibleGuitaRegistry<T extends ItemConvertible> implements GuitaRegistry<T> {
 
-    private final ResourcefulRegistry<T> parent;
+    private final GuitaRegistry<T> parent;
     private final List<ItemLikeEntryGuita<T>> entries = new ArrayList<>();
 
-    public ItemLikeResourcefulRegistry(Registry<T> registry, String id) {
-        this.parent = ResourcefulRegistries.create(registry, id);
+    public ItemConvertibleGuitaRegistry(Registry<T> registry, String id) {
+        this.parent = GuitaRegistries.create(registry, id);
     }
 
     @Override
@@ -42,8 +42,8 @@ public class ItemLikeResourcefulRegistry<T extends ItemConvertible> implements R
     }
 
     @Override
-    public RegistryEntryGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        RegistryEntryEntryGuita<T> entry = new RegistryEntryEntryGuita<>(parent.registerHolder(id, supplier));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        RegistryEntryEntryGuita<T> entry = new RegistryEntryEntryGuita<>(parent.registerRegistryEntry(id, supplier));
         this.entries.add(entry);
         return entry;
     }
@@ -86,8 +86,8 @@ public class ItemLikeResourcefulRegistry<T extends ItemConvertible> implements R
             RegistryEntryGuitaRegistryEntry<T> entry) implements RegistryEntryGuitaRegistryEntry<T>, ItemLikeEntryGuita<T> {
 
         @Override
-        public RegistryEntry<T> holder() {
-            return entry.holder();
+        public RegistryEntry<T> registryEntry() {
+            return entry.registryEntry();
         }
 
         @Override

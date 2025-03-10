@@ -4,11 +4,11 @@ import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
 import net.minecraft.util.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class NeoForgeRegistryEntry<R, T extends R> implements GuitaRegistryEntry<T> {
+public class NeoForgeGuitaRegistryEntry<R, T extends R> implements GuitaRegistryEntry<T> {
 
     private final DeferredHolder<R, T> object;
 
-    public NeoForgeRegistryEntry(DeferredHolder<R, T> object) {
+    public NeoForgeGuitaRegistryEntry(DeferredHolder<R, T> object) {
         this.object = object;
     }
 

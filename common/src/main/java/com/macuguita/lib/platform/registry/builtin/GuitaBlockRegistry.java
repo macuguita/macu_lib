@@ -1,10 +1,10 @@
 package com.macuguita.lib.platform.registry.builtin;
 
 import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
-import com.macuguita.lib.platform.registry.ResourcefulRegistries;
-import com.macuguita.lib.platform.registry.ResourcefulRegistry;
-import com.macuguita.lib.platform.registry.builtin.base.ItemLikeEntry;
-import com.macuguita.lib.platform.registry.builtin.base.ItemLikeHolderEntryGuita;
+import com.macuguita.lib.platform.registry.GuitaRegistries;
+import com.macuguita.lib.platform.registry.GuitaRegistry;
+import com.macuguita.lib.platform.registry.builtin.base.ItemConvertibleEntry;
+import com.macuguita.lib.platform.registry.builtin.base.ItemConvertibleHolderEntryGuita;
 import net.minecraft.block.AbstractBlock;
 import net.minecraft.block.Block;
 import net.minecraft.registry.Registries;
@@ -16,21 +16,21 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-public class ResourcefulBlockRegistry implements ResourcefulRegistry<Block> {
+public class GuitaBlockRegistry implements GuitaRegistry<Block> {
 
     private final String namespace;
-    private final ResourcefulRegistry<Block> registry;
+    private final GuitaRegistry<Block> registry;
 
-    public ResourcefulBlockRegistry(String id) {
-        this(ResourcefulRegistries.create(Registries.BLOCK, id));
+    public GuitaBlockRegistry(String id) {
+        this(GuitaRegistries.create(Registries.BLOCK, id));
     }
 
-    public ResourcefulBlockRegistry(ResourcefulRegistry<Block> parent) {
+    public GuitaBlockRegistry(GuitaRegistry<Block> parent) {
         this.namespace = Objects.requireNonNull(parent.namespace(), "Parent registry must have a namespace.");
         this.registry = parent;
     }
 
-    public <I extends Block> ItemLikeEntry<I> register(String id, Function<AbstractBlock.Settings, I> factory, Supplier<Block.Settings> getter) {
+    public <I extends Block> ItemConvertibleEntry<I> register(String id, Function<AbstractBlock.Settings, I> factory, Supplier<Block.Settings> getter) {
         RegistryKey<Block> key = RegistryKey.of(Registries.BLOCK.getKey(), Identifier.of(this.namespace, id));
         return this.register(id, () -> factory.apply(getter.get().registryKey(key)));
     }
@@ -41,13 +41,13 @@ public class ResourcefulBlockRegistry implements ResourcefulRegistry<Block> {
     }
 
     @Override
-    public <I extends Block> ItemLikeEntry<I> register(String id, Supplier<I> supplier) {
-        return new ItemLikeEntry<>(this.registry.register(id, supplier));
+    public <I extends Block> ItemConvertibleEntry<I> register(String id, Supplier<I> supplier) {
+        return new ItemConvertibleEntry<>(this.registry.register(id, supplier));
     }
 
     @Override
-    public ItemLikeHolderEntryGuita<Block> registerHolder(String id, Supplier<Block> supplier) {
-        return new ItemLikeHolderEntryGuita<>(this.registry.registerHolder(id, supplier));
+    public ItemConvertibleHolderEntryGuita<Block> registerRegistryEntry(String id, Supplier<Block> supplier) {
+        return new ItemConvertibleHolderEntryGuita<>(this.registry.registerRegistryEntry(id, supplier));
     }
 
     @Override

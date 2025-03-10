@@ -6,7 +6,7 @@ import net.minecraft.item.ItemConvertible;
 import net.minecraft.util.Identifier;
 import org.jetbrains.annotations.NotNull;
 
-public record ItemLikeEntry<T extends ItemConvertible>(GuitaRegistryEntry<T> entry) implements GuitaRegistryEntry<T>, ItemConvertible {
+public record ItemConvertibleEntry<T extends ItemConvertible>(GuitaRegistryEntry<T> entry) implements GuitaRegistryEntry<T>, ItemConvertible {
 
     @Override
     public T get() {

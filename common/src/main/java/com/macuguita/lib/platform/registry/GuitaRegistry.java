@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-public interface ResourcefulRegistry<T> {
+public interface GuitaRegistry<T> {
 
     default String namespace() {
         return null;
@@ -12,7 +12,7 @@ public interface ResourcefulRegistry<T> {
 
     <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier);
 
-    RegistryEntryGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier);
+    RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier);
 
     Collection<GuitaRegistryEntry<T>> getEntries();
 

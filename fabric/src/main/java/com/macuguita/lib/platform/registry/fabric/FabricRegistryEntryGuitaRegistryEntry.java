@@ -7,22 +7,22 @@ import net.minecraft.util.Identifier;
 
 import java.util.function.Supplier;
 
-public class FabricHolderGuitaRegistryEntry<T> implements RegistryEntryGuitaRegistryEntry<T> {
+public class FabricRegistryEntryGuitaRegistryEntry<T> implements RegistryEntryGuitaRegistryEntry<T> {
 
     private final Identifier id;
     private final RegistryEntry<T> value;
 
-    private FabricHolderGuitaRegistryEntry(Identifier id, RegistryEntry<T> value) {
+    private FabricRegistryEntryGuitaRegistryEntry(Identifier id, RegistryEntry<T> value) {
         this.id = id;
         this.value = value;
     }
 
-    public static <T, I extends T> FabricHolderGuitaRegistryEntry<T> of(Registry<T> registry, Identifier id, Supplier<I> supplier) {
-        return new FabricHolderGuitaRegistryEntry<>(id, Registry.registerReference(registry, id, supplier.get()));
+    public static <T, I extends T> FabricRegistryEntryGuitaRegistryEntry<T> of(Registry<T> registry, Identifier id, Supplier<I> supplier) {
+        return new FabricRegistryEntryGuitaRegistryEntry<>(id, Registry.registerReference(registry, id, supplier.get()));
     }
 
     @Override
-    public RegistryEntry<T> holder() {
+    public RegistryEntry<T> registryEntry() {
         return this.value;
     }
 

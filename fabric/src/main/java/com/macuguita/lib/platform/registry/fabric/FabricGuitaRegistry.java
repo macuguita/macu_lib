@@ -1,22 +1,22 @@
 package com.macuguita.lib.platform.registry.fabric;
 
 import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
-import com.macuguita.lib.platform.registry.RegistryEntries;
+import com.macuguita.lib.platform.registry.GuitaRegistryEntries;
 import com.macuguita.lib.platform.registry.RegistryEntryGuitaRegistryEntry;
-import com.macuguita.lib.platform.registry.ResourcefulRegistry;
+import com.macuguita.lib.platform.registry.GuitaRegistry;
 import net.minecraft.registry.Registry;
 import net.minecraft.util.Identifier;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
-public class FabricResourcefulRegistry<T> implements ResourcefulRegistry<T> {
+public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
 
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
     private final Registry<T> registry;
     private final String id;
 
-    public FabricResourcefulRegistry(Registry<T> registry, String id) {
+    public FabricGuitaRegistry(Registry<T> registry, String id) {
         this.registry = registry;
         this.id = id;
     }
@@ -28,12 +28,12 @@ public class FabricResourcefulRegistry<T> implements ResourcefulRegistry<T> {
 
     @Override
     public <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier) {
-        return entries.add(FabricRegistryEntry.of(this.registry, Identifier.of(this.id, id), supplier));
+        return entries.add(FabricGuitaRegistryEntry.of(this.registry, Identifier.of(this.id, id), supplier));
     }
 
     @Override
-    public RegistryEntryGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        return entries.add(FabricHolderGuitaRegistryEntry.of(this.registry, Identifier.of(this.id, id), supplier));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        return entries.add(FabricRegistryEntryGuitaRegistryEntry.of(this.registry, Identifier.of(this.id, id), supplier));
     }
 
     @Override

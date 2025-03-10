@@ -1,6 +1,11 @@
 package com.macuguita.lib;
 
+import com.macuguita.lib.platform.registry.GuitaRegistries;
+import com.macuguita.lib.platform.registry.GuitaRegistry;
+import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
 import com.macuguita.lib.supporters.RoleChecker;
+import net.minecraft.item.Item;
+import net.minecraft.registry.Registries;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,30 +14,12 @@ public final class MacuguitaLib {
     public static final String MOD_ID = "macu_lib";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    private static String modId;
+    public static final GuitaRegistry<Item> ITEMS = GuitaRegistries.create(Registries.ITEM, MOD_ID);
 
-    /**
-     * Called by the depending mod to set its mod ID.
-     */
-    public static void setModId(String modId) {
-        if (MacuguitaLib.modId != null) {
-            throw new IllegalStateException("Mod ID has already been set!");
-        }
-        MacuguitaLib.modId = modId;
-    }
-
-    /**
-     * Gets the mod ID of the depending mod.
-     */
-    public static String getModId() {
-        if (modId == null) {
-            throw new IllegalStateException("Mod ID has not been set! Call setModId() first.");
-        }
-        return modId;
-    }
+    public static final GuitaRegistryEntry<Item> TEST = ITEMS.registerHolder("test", () -> new Item(new Item.Settings()));
 
     public static void init() {
-        setModId(MOD_ID);
+        ITEMS.init();
         RoleChecker.init();
     }
 

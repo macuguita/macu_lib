@@ -1,6 +1,6 @@
 package com.macuguita.lib.platform.registry.forge;
 
-import com.macuguita.lib.platform.registry.RegistryEntries;
+import com.macuguita.lib.platform.registry.GuitaRegistryEntries;
 import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
 import com.macuguita.lib.platform.registry.GuitaRegistry;
 import net.minecraft.registry.Registry;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public class ForgeGuitaRegistry<T> implements GuitaRegistry<T> {
 
     private final DeferredRegister<T> register;
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
 
     public ForgeGuitaRegistry(Registry<T> registry, String id) {
         this.register = DeferredRegister.create(registry.getKey(), id);

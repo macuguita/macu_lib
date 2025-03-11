@@ -5,7 +5,7 @@ import com.google.common.collect.ImmutableList;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RegistryEntries<T> {
+public class GuitaRegistryEntries<T> {
 
     private final List<GuitaRegistryEntry<T>> entries = new ArrayList<>();
 

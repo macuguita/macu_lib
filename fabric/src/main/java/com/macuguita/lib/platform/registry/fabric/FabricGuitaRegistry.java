@@ -1,6 +1,6 @@
 package com.macuguita.lib.platform.registry.fabric;
 
-import com.macuguita.lib.platform.registry.RegistryEntries;
+import com.macuguita.lib.platform.registry.GuitaRegistryEntries;
 import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
 import com.macuguita.lib.platform.registry.GuitaRegistry;
 import net.minecraft.registry.Registry;
@@ -11,7 +11,7 @@ import java.util.function.Supplier;
 
 public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
 
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
     private final Registry<T> registry;
     private final String id;
 

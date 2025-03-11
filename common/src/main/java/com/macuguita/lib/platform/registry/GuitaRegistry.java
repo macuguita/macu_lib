@@ -8,7 +8,7 @@ public interface GuitaRegistry<T> {
 
     <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier);
 
-    HolderGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier);
+    RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier);
 
     Collection<GuitaRegistryEntry<T>> getEntries();
 

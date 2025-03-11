@@ -1,20 +1,20 @@
 package com.macuguita.lib.platform.registry.neoforge;
 
-import com.macuguita.lib.platform.registry.HolderGuitaRegistryEntry;
+import com.macuguita.lib.platform.registry.RegistryEntryGuitaRegistryEntry;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.util.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
-public class NeoForgeHolderGuitaRegistryEntry<R> implements HolderGuitaRegistryEntry<R> {
+public class NeoForgeRegistryEntryGuitaRegistryEntry<R> implements RegistryEntryGuitaRegistryEntry<R> {
 
     private final DeferredHolder<R, R> object;
 
-    public NeoForgeHolderGuitaRegistryEntry(DeferredHolder<R, R> object) {
+    public NeoForgeRegistryEntryGuitaRegistryEntry(DeferredHolder<R, R> object) {
         this.object = object;
     }
 
     @Override
-    public RegistryEntry<R> holder() {
+    public RegistryEntry<R> registryEntry() {
         return object;
     }
 

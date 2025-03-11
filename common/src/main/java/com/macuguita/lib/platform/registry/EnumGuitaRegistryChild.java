@@ -5,7 +5,7 @@ import java.util.function.Supplier;
 
 public class EnumGuitaRegistryChild<E extends Enum<E>, T> extends GuitaRegistryChild<T> {
 
-    private final EnumMap<E, RegistryEntries<T>> entries;
+    private final EnumMap<E, GuitaRegistryEntries<T>> entries;
 
     public EnumGuitaRegistryChild(Class<E> enumClass, GuitaRegistry<T> parent) {
         super(parent);
@@ -13,11 +13,11 @@ public class EnumGuitaRegistryChild<E extends Enum<E>, T> extends GuitaRegistryC
     }
 
     public <I extends T> GuitaRegistryEntry<I> register(E enumValue, String id, Supplier<I> supplier) {
-        return entries.computeIfAbsent(enumValue, a -> new RegistryEntries<>())
+        return entries.computeIfAbsent(enumValue, a -> new GuitaRegistryEntries<>())
             .add(super.register(id, supplier));
     }
 
-    public RegistryEntries<T> getEntries(E enumValue) {
+    public GuitaRegistryEntries<T> getEntries(E enumValue) {
         return entries.get(enumValue);
     }
 

@@ -16,7 +16,7 @@ public final class MacuguitaLib {
 
     public static final GuitaRegistry<Item> ITEMS = GuitaRegistries.create(Registries.ITEM, MOD_ID);
 
-    public static final GuitaRegistryEntry<Item> TEST = ITEMS.registerHolder("test", () -> new Item(new Item.Settings()));
+    public static final GuitaRegistryEntry<Item> TEST = ITEMS.registerRegistryEntry("test", () -> new Item(new Item.Settings()));
 
     public static void init() {
         ITEMS.init();

@@ -31,8 +31,8 @@ public class ItemConvertibleGuitaRegistry<T extends ItemConvertible> implements 
     }
 
     @Override
-    public HolderGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        HolderEntryGuita<T> entry = new HolderEntryGuita<>(parent.registerHolder(id, supplier));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        RegistryEntryEntryGuita<T> entry = new RegistryEntryEntryGuita<>(parent.registerRegistryEntry(id, supplier));
         this.entries.add(entry);
         return entry;
     }
@@ -71,12 +71,12 @@ public class ItemConvertibleGuitaRegistry<T extends ItemConvertible> implements 
         }
     }
 
-    public record HolderEntryGuita<T extends ItemConvertible>(
-            HolderGuitaRegistryEntry<T> entry) implements HolderGuitaRegistryEntry<T>, ItemConvertibleEntryGuita<T> {
+    public record RegistryEntryEntryGuita<T extends ItemConvertible>(
+            RegistryEntryGuitaRegistryEntry<T> entry) implements RegistryEntryGuitaRegistryEntry<T>, ItemConvertibleEntryGuita<T> {
 
         @Override
-        public RegistryEntry<T> holder() {
-            return entry.holder();
+        public RegistryEntry<T> registryEntry() {
+            return entry.registryEntry();
         }
 
         @Override

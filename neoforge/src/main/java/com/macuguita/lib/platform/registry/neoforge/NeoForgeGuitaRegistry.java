@@ -1,8 +1,8 @@
 package com.macuguita.lib.platform.registry.neoforge;
 
 import com.macuguita.lib.platform.registry.GuitaRegistryEntry;
-import com.macuguita.lib.platform.registry.HolderGuitaRegistryEntry;
-import com.macuguita.lib.platform.registry.RegistryEntries;
+import com.macuguita.lib.platform.registry.RegistryEntryGuitaRegistryEntry;
+import com.macuguita.lib.platform.registry.GuitaRegistryEntries;
 import com.macuguita.lib.platform.registry.GuitaRegistry;
 import net.minecraft.registry.Registry;
 import net.neoforged.fml.ModLoadingContext;
@@ -14,7 +14,7 @@ import java.util.function.Supplier;
 public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
 
     private final DeferredRegister<T> register;
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
 
     public NeoForgeGuitaRegistry(Registry<T> registry, String id) {
         this.register = DeferredRegister.create(registry.getKey(), id);
@@ -26,8 +26,8 @@ public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
     }
 
     @Override
-    public HolderGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        return this.entries.add(new NeoForgeHolderGuitaRegistryEntry<>(register.register(id, supplier)));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        return this.entries.add(new NeoForgeRegistryEntryGuitaRegistryEntry<>(register.register(id, supplier)));
     }
 
     @Override

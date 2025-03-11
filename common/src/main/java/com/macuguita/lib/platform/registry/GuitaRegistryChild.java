@@ -6,7 +6,7 @@ import java.util.function.Supplier;
 public class GuitaRegistryChild<T> implements GuitaRegistry<T> {
 
     private final GuitaRegistry<T> parent;
-    private final RegistryEntries<T> entries = new RegistryEntries<>();
+    private final GuitaRegistryEntries<T> entries = new GuitaRegistryEntries<>();
 
     public GuitaRegistryChild(GuitaRegistry<T> parent) {
         this.parent = parent;
@@ -18,8 +18,8 @@ public class GuitaRegistryChild<T> implements GuitaRegistry<T> {
     }
 
     @Override
-    public HolderGuitaRegistryEntry<T> registerHolder(String id, Supplier<T> supplier) {
-        return this.entries.add(parent.registerHolder(id, supplier));
+    public RegistryEntryGuitaRegistryEntry<T> registerRegistryEntry(String id, Supplier<T> supplier) {
+        return this.entries.add(parent.registerRegistryEntry(id, supplier));
     }
 
     @Override

@@ -1,1 +1,1 @@
-- Fixed the whole registry part of the mod
+- Added item groups (creative tabs)

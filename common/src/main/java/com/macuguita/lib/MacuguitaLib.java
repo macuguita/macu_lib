@@ -14,12 +14,7 @@ public final class MacuguitaLib {
     public static final String MOD_ID = "macu_lib";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final GuitaRegistry<Item> ITEMS = GuitaRegistries.create(Registries.ITEM, MOD_ID);
-
-    public static final GuitaRegistryEntry<Item> CUSTOM_ITEM = ITEMS.register("custom", () -> new Item(new Item.Settings()));
-
     public static void init() {
-        ITEMS.init();
         RoleChecker.init();
     }
 

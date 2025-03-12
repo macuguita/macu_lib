@@ -8,6 +8,7 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 public class GuitaItemGroupImpl {
+
     public static ItemGroup create(GuitaItemGroup tab) {
         var group = FabricItemGroup.builder()
                 .icon(() -> tab.icon.get())

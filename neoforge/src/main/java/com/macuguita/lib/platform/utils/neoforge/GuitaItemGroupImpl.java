@@ -7,6 +7,7 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 public class GuitaItemGroupImpl {
+
     public static ItemGroup create(GuitaItemGroup tab) {
         var creativeTab = ItemGroup.builder()
                 .icon(() -> tab.icon.get())

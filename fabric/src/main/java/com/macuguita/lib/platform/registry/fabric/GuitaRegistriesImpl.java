@@ -5,6 +5,7 @@ import com.macuguita.lib.platform.registry.GuitaRegistryType;
 import net.minecraft.registry.Registry;
 
 public class GuitaRegistriesImpl {
+
     public static <T> GuitaRegistry<T> create(Registry<T> registry, String id) {
         return new FabricGuitaRegistry<>(registry, id);
     }

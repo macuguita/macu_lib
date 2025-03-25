@@ -1,1 +1,1 @@
-- Fixed the whole registry part of the mod
+- Updated LICENSE

@@ -12,7 +12,7 @@ description = '''
 Library for my mods and adding supporter perks
 '''
 displayURL="https://macuguita.com"
-logoFile = "assets/macu_lib/icon.webp"
+logoFile = "assets/macu_lib/logo.png"
 
 [[dependencies.macu_lib]]
 modId = "forge"

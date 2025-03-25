@@ -1,1 +1,1 @@
-- Added item groups (creative tabs)
+- Updated LICENSE

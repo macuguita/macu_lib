@@ -11,7 +11,7 @@
     "homepage": "https://macuguita.com/",
     "sources": "https://github.com/macuguita/macu_lib"
   },
-  "license": "GPLv3",
+  "license": "${license}",
   "icon": "assets/macu_lib/icon.webp",
   "environment": "*",
   "entrypoints": {

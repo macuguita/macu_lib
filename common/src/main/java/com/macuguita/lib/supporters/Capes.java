@@ -5,7 +5,7 @@ import net.minecraft.util.Identifier;
 
 public enum Capes {
 
-    DEVELOPER("developer", Identifier.of(MacuguitaLib.MOD_ID, "textures/capes/developer_cape.png"));
+    DEVELOPER("developer", Identifier.of(MacuguitaLib.MOD_ID, "capes/developer_cape"));
 
     private final String role;
     private final Identifier texture;

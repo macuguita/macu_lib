@@ -1,7 +1,8 @@
 plugins {
-    id 'dev.architectury.loom' version '1.11-SNAPSHOT' apply false
+    id 'dev.architectury.loom' version '1.13-SNAPSHOT' apply false
     id 'architectury-plugin' version '3.4-SNAPSHOT'
     id 'com.github.johnrengelman.shadow' version '8.1.1' apply false
+    id "me.modmuss50.mod-publish-plugin" version "1.0.0"
 }
 
 architectury {
@@ -17,6 +18,7 @@ subprojects {
     apply plugin: 'dev.architectury.loom'
     apply plugin: 'architectury-plugin'
     apply plugin: 'maven-publish'
+    apply plugin: 'me.modmuss50.mod-publish-plugin'
 
     base {
         // Set up a suffixed format for the mod jar names, e.g. `example-fabric`.
@@ -53,21 +55,49 @@ subprojects {
         it.options.release = 21
     }
 
-    // Configure Maven publishing.
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                artifactId = base.archivesName.get()
-                from components.java
-            }
-        }
+    def modLoader = name
+    def changelogText = rootProject.file("CHANGELOG.md").text
+    def supportedVersions = rootProject.findProperty("supported_versions")
+            .split(",")
+            .collect { it.trim() }
 
-        // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-        repositories {
-            // Add repositories to publish to here.
-            // Notice: This block does NOT have the same function as the block in the top level.
-            // The repositories here will be used for publishing your artifact, not for
-            // retrieving dependencies.
+    if (project.name != "common") {
+        publishMods {
+            changelog = changelogText
+            file.set(tasks.remapJar.archiveFile)
+            additionalFiles.from(tasks.remapSourcesJar.archiveFile)
+            displayName = project.mod_name + " " + project.mod_version + "-$modLoader"
+            version = project.mod_version + "-$modLoader"
+            type = project.mod_version.contains("beta") ? BETA : STABLE
+            if (modLoader == "fabric") {
+                modLoaders.add("fabric")
+                modLoaders.add("quilt")
+            } else if (modLoader == "neoforge") {
+                modLoaders.add("neoforge")
+            }
+            dryRun = providers.environmentVariable("MODRINTH_TOKEN").getOrNull() == null ||
+                    providers.environmentVariable("CURSEFORGE_TOKEN").getOrNull() == null
+            modrinth {
+                projectId = "XnLNz8og"
+                accessToken = providers.environmentVariable("MODRINTH_TOKEN")
+                minecraftVersions.set(supportedVersions.unique())
+                if (modLoader == "fabric") {
+                    requires("fabric-api")
+                }
+            }
+            curseforge {
+                projectId = "1216837"
+                changelogType = "markdown"
+                accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
+                minecraftVersions.set(supportedVersions.unique())
+                javaVersions.set([JavaVersion.VERSION_21])
+                clientRequired = true
+                serverRequired = true
+                projectSlug = "macu-lib"
+                if (modLoader == "fabric") {
+                    requires("fabric-api")
+                }
+            }
         }
     }
 }

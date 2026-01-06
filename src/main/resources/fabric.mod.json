@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "macu_lib",
+  "name": "macu Lib",
+  "version": "${version}",
+  "authors": ["macuguita"],
+  "contact": {
+    "sources": "",
+    "issues": ""
+  },
+  "description": "Common library for my mods",
+  "icon": "assets/icon.png",
+  "license": "LGPLv3",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.macuguita.lib.fabric.FabricEntrypoint"
+    ],
+    "client": [
+      "com.macuguita.lib.fabric.FabricClientEntrypoint"
+    ]
+  },
+  "mixins": [
+    "macu_lib.mixins.json"
+  ],
+  "depends": {
+    "fabric-api": "*"
+  }
+}

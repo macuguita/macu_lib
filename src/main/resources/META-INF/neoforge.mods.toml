@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "LGPLv3"
+
+[[mods]]
+modId = "macu_lib"
+displayName = "macu Lib"
+version = "${version}"
+displayURL = ""
+logoFile = "assets/icon.png"
+authors = "macuguita"
+description = '''Common library for my mods'''
+
+[[mixins]]
+config = "macu_lib.mixins.json"
+
+[[dependencies.macu_lib]]
+modId = "neoforge"
+type = "required"
+versionRange = "[21.1.181,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.macu_lib]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft}"

@@ -1,5 +1,7 @@
 package com.macuguita.lib.reg;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.function.Supplier;
 
@@ -13,7 +15,7 @@ public class GuitaRegistryChild<T> implements GuitaRegistry<T> {
     }
 
     @Override
-    public String namespace() {
+    public @Nullable String namespace() {
         return this.parent.namespace();
     }
 

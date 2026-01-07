@@ -1,12 +1,14 @@
 package com.macuguita.lib.reg;
 
+import org.jspecify.annotations.Nullable;
+
 import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public interface GuitaRegistry<T> {
 
-    default String namespace() {
+    default @Nullable String namespace() {
         return null;
     }
 

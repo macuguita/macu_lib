@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "id": "macu_lib_tests",
+  "name": "macu Lib tests",
+  "version": "0.0.1",
+  "authors": ["macuguita"],
+  "contact": {
+    "sources": "",
+    "issues": ""
+  },
+  "description": "tests",
+  "icon": "assets/icon.png",
+  "license": "LGPLv3",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.macuguita.libtest.fabric.FabricEntrypoint"
+    ]
+  },
+  "depends": {
+    "fabric-api": "*"
+  }
+}

@@ -19,7 +19,7 @@ public class NeoforgeEntrypoint {
     public static class ClientEvents {
         @SubscribeEvent
         public static void onClientSetup(final FMLClientSetupEvent event) {
-            MacuLib.LOG.info("Initializing {} Client", MacuLib.MOD_ID);
+            MacuLib.LOGGER.info("Initializing {} Client", MacuLib.MOD_ID);
         }
     }
 

@@ -2,6 +2,7 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 /*import com.macuguita.lib.Platform;
+import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistry;
 import net.minecraft.core.Registry;
 import net.neoforged.fml.ModList;
@@ -34,7 +35,7 @@ public class NeoForgePlatformImpl implements Platform {
 
     @Override
     public <T> GuitaRegistry<T> createGuitaRegistry(Registry<T> registry, String id) {
-        return null;
+        return new NeoForgeGuitaRegistry<>(registry, id);
     }
 
 }

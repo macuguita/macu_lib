@@ -8,7 +8,7 @@ public class FabricClientEntrypoint implements ClientModInitializer {
 
     @Override
     public void onInitializeClient() {
-        MacuLib.LOG.info("Initializing {} Client", MacuLib.MOD_ID);
+        MacuLib.LOGGER.info("Initializing {} Client", MacuLib.MOD_ID);
     }
 
 }

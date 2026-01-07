@@ -38,7 +38,6 @@ public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
 
     @Override
     public void init() {
-        // NO-OP
     }
 }
 //?}

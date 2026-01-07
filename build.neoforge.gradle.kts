@@ -103,6 +103,15 @@ repositories {
     }
 }
 
+val testmod by sourceSets.creating {
+    compileClasspath += sourceSets["main"].compileClasspath
+    runtimeClasspath += sourceSets["main"].runtimeClasspath
+}
+
+dependencies {
+    "testmodImplementation"(sourceSets.main.map { it.output })
+}
+
 neoForge {
     version = property("deps.neoforge") as String
     validateAccessTransformers = true
@@ -113,20 +122,50 @@ neoForge {
         minecraftVersion = mc
     }
 
+    mods {
+        register(property("mod.id") as String) {
+            sourceSet(sourceSets["main"])
+        }
+        register("macu_lib_tests") {
+            sourceSet(sourceSets["testmod"])
+        }
+    }
+
     runs {
         register("client") {
             gameDirectory = file("run/")
             client()
+
+            sourceSet = sourceSets["main"]
+            loadedMods.set(listOf(mods[property("mod.id") as String]))
+        }
+        register("clientMacuguita") {
+            gameDirectory = file("run/")
+            client()
+            programArguments.add("--username=macuguita")
+            programArguments.add("--uuid=0e56050b-ee27-478a-a345-d2b384919081")
+
+            sourceSet = sourceSets["main"]
+            loadedMods.set(listOf(mods[property("mod.id") as String]))
         }
         register("server") {
             gameDirectory = file("run/")
             server()
-        }
-    }
 
-    mods {
-        register(property("mod.id") as String) {
-            sourceSet(sourceSets["main"])
+            sourceSet = sourceSets["main"]
+            loadedMods.set(listOf(mods[property("mod.id") as String]))
+        }
+
+        register("testmodClient") {
+            gameDirectory = file("run/testmod")
+            client()
+            sourceSet = sourceSets["testmod"]
+            loadedMods.set(
+                listOf(
+                    mods[property("mod.id") as String],
+                    mods["macu_lib_tests"]
+                )
+            )
         }
     }
     sourceSets["main"].resources.srcDir("src/main/generated")

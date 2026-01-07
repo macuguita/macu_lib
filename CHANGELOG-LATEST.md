@@ -1,3 +1,3 @@
-- # This is a test build
+- Made the supporter cape system better
 - Update to latest minecraft version
 - Simplified the api

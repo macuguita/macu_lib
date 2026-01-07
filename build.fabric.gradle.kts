@@ -162,6 +162,29 @@ loom.runs.named("server") {
     isIdeConfigGenerated = false
 }
 
+loom.runs.register("clientMacuguita") {
+    client()
+    name = "Minecraft Client macuguita"
+    programArgs.add("--username=macuguita")
+    programArgs.add("--uuid=0e56050b-ee27-478a-a345-d2b384919081")
+}
+
+val testmod by sourceSets.creating {
+    compileClasspath += sourceSets["main"].compileClasspath
+    runtimeClasspath += sourceSets["main"].runtimeClasspath
+}
+
+dependencies {
+    "testmodImplementation"(sourceSets.main.map { it.output })
+}
+
+loom.runs.register("testmodClient") {
+    client()
+    ideConfigGenerated(project.rootProject == project)
+    name = "Testmod Client"
+    source(sourceSets["testmod"])
+}
+
 java {
     withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_25

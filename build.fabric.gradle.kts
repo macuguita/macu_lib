@@ -194,8 +194,13 @@ loom.runs.register("testmodServer") {
 
 java {
     withSourcesJar()
-    sourceCompatibility = JavaVersion.VERSION_25
-    targetCompatibility = JavaVersion.VERSION_25
+    val javaCompat = if (stonecutter.eval(stonecutter.current.version, ">=26.1")) {
+        JavaVersion.VERSION_25
+    } else {
+        JavaVersion.VERSION_21
+    }
+    sourceCompatibility = javaCompat
+    targetCompatibility = javaCompat
 }
 
 val additionalVersionsStr = findProperty("publish.additionalVersions") as String?

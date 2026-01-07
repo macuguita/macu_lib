@@ -177,6 +177,7 @@ val additionalVersions: List<String> = additionalVersionsStr
 
 publishMods {
     file = tasks.jar.map { it.archiveFile.get() }
+    additionalFiles.from(tasks.named<org.gradle.jvm.tasks.Jar>("sourcesJar").map { it.archiveFile.get() })
 
     // one of BETA, ALPHA, STABLE
     type = STABLE
@@ -199,5 +200,19 @@ publishMods {
         minecraftVersions.add(stonecutter.current.version)
         minecraftVersions.addAll(additionalVersions)
         requires("fabric-api")
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = property("mod.group") as String
+            artifactId = (property("mod.id") as String) + "-fabric"
+            version = property("mod.version") as String
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
     }
 }

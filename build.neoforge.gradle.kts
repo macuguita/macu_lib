@@ -207,3 +207,17 @@ publishMods {
         minecraftVersions.addAll(additionalVersions)
     }
 }
+
+publishing {
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = property("mod.group") as String
+            artifactId = (property("mod.id") as String) + "-neoforge"
+            version = property("mod.version") as String
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
+    }
+}

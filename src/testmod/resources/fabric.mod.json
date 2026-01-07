@@ -15,6 +15,9 @@
   "entrypoints": {
     "main": [
       "com.macuguita.libtest.fabric.FabricEntrypoint"
+    ],
+    "client": [
+      "com.macuguita.libtest.fabric.FabricClientEntrypoint"
     ]
   },
   "depends": {

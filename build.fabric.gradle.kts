@@ -185,6 +185,13 @@ loom.runs.register("testmodClient") {
     source(sourceSets["testmod"])
 }
 
+loom.runs.register("testmodServer") {
+    server()
+    ideConfigGenerated(project.rootProject == project)
+    name = "Testmod Server"
+    source(sourceSets["testmod"])
+}
+
 java {
     withSourcesJar()
     sourceCompatibility = JavaVersion.VERSION_25

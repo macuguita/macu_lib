@@ -1,8 +1,10 @@
 package com.macuguita.libtest;
 
+import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistries;
 import com.macuguita.lib.reg.GuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistryEntry;
+import com.macuguita.libtest.client.TestModClient;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -23,6 +25,10 @@ public class TestMod {
     public static final String MOD_ID = "macu_lib_tests";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
+    public static Identifier id(String name) {
+        return Identifier.fromNamespaceAndPath(MOD_ID, name);
+    }
+
     public static final GuitaRegistry<Block> BLOCKS = GuitaRegistries.create(BuiltInRegistries.BLOCK, MOD_ID);
     public static final GuitaRegistry<Item> ITEMS = GuitaRegistries.create(BuiltInRegistries.ITEM, MOD_ID);
     public static final GuitaRegistry<CreativeModeTab> CREATIVE_TAB = GuitaRegistries.create(BuiltInRegistries.CREATIVE_MODE_TAB, MOD_ID);
@@ -36,12 +42,20 @@ public class TestMod {
     private static final GuitaRegistryEntry<Block> TEST_BLOCK =
             BLOCKS.register("test_block", () ->
                     new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
-                            .setId(ResourceKey.create(Registries.BLOCK, Identifier.fromNamespaceAndPath(MOD_ID, "test_block")))));
+                            .setId(ResourceKey.create(Registries.BLOCK, id("test_block")))));
 
     public static void init() {
         ITEMS.register("test_block", () -> new BlockItem(TEST_BLOCK.get(), new Item.Properties()
                 .useBlockDescriptionPrefix()
-                .setId(ResourceKey.create(Registries.ITEM, Identifier.fromNamespaceAndPath(MOD_ID, "test_block")))));
+                .setId(ResourceKey.create(Registries.ITEM, id("test_block")))));
+
+        NetworkManager.registerC2S(
+                PingC2SPacket.TYPE,
+                PingC2SPacket.CODEC,
+                (pkt, player) -> {
+                    TestMod.LOGGER.info("PACKET VALUE: " + pkt.value());
+                }
+        );
 
         BLOCKS.init();
         ITEMS.init();

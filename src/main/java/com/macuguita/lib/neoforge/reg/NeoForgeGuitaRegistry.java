@@ -8,10 +8,12 @@ import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.core.Registry;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.util.Collection;
 import java.util.function.Supplier;
 
+@ApiStatus.Internal
 public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
 
     private final DeferredRegister<T> register;

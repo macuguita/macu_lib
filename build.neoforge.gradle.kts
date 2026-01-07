@@ -157,8 +157,20 @@ neoForge {
         }
 
         register("testmodClient") {
-            gameDirectory = file("run/testmod")
+            gameDirectory = file("run")
             client()
+            sourceSet = sourceSets["testmod"]
+            loadedMods.set(
+                listOf(
+                    mods[property("mod.id") as String],
+                    mods["macu_lib_tests"]
+                )
+            )
+        }
+
+        register("testmodServer") {
+            gameDirectory = file("run")
+            server()
             sourceSet = sourceSets["testmod"]
             loadedMods.set(
                 listOf(

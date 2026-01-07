@@ -83,12 +83,6 @@ public class RoleChecker {
 
             cachedRoles = newRoles;
             MacuLib.LOGGER.info("Roles cache updated at " + new Date(System.currentTimeMillis()));
-
-            MacuLib.LOGGER.info("Preloading {} cape textures...", cachedRoles.size());
-            for (String role : cachedRoles.keySet()) {
-                CapeManager.getCapeForRole(role);
-            }
-
         } catch (Exception e) {
             MacuLib.LOGGER.error("Failed to fetch roles from URL: " + ROLES_URL, e);
         }

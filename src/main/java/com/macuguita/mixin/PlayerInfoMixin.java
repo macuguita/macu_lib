@@ -1,48 +1,45 @@
 package com.macuguita.mixin;
 
+import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import com.macuguita.supporters.CapeManager;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.client.multiplayer.PlayerInfo;
 import net.minecraft.core.ClientAsset;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.PlayerSkin;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.UUID;
 
 @Mixin(PlayerInfo.class)
-public class PlayerInfoMixin {
+public abstract class PlayerInfoMixin {
 
-    @Inject(
+    @Shadow
+    public abstract GameProfile getProfile();
+
+    @ModifyReturnValue(
             method = "getSkin",
-            at = @At("RETURN"),
-            order = 1001,
-            cancellable = true
+            at = @At("RETURN")
     )
-    private void macu_lib$onGetSkin(CallbackInfoReturnable<PlayerSkin> cir) {
-        PlayerInfo player = (PlayerInfo) (Object) this;
-        PlayerSkin originalSkin = cir.getReturnValue();
+    private PlayerSkin macu_lib$onGetSkin(PlayerSkin original) {
+        UUID playerUUID = this.getProfile().id();
 
-        if (originalSkin == null) return;
-
-        UUID playerUUID = player.getProfile().id();
-
-        if (!CapeManager.hasCape(playerUUID)) return;
+        if (!CapeManager.hasCape(playerUUID)) return original;
 
         Identifier capeTexture = CapeManager.getPlayerCape(playerUUID);
 
-        if (capeTexture == null) return;
+        if (capeTexture == null) return original;
 
         ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
 
-        cir.setReturnValue(new PlayerSkin(
-                originalSkin.body(),
+        return new PlayerSkin(
+                original.body(),
                 capeAsset,
-                originalSkin.elytra(),
-                originalSkin.model(),
-                originalSkin.secure()
-        ));
+                original.elytra(),
+                original.model(),
+                original.secure()
+        );
     }
 }

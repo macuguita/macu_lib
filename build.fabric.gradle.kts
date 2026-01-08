@@ -182,6 +182,7 @@ publishMods {
     version = "${property("mod.version")}+${property("deps.minecraft")}-fabric"
     changelog = provider { rootProject.file("CHANGELOG-LATEST.md").readText() }
     modLoaders.add("fabric")
+    modLoaders.add("quilt")
 
     modrinth {
         projectId = property("publish.modrinth") as String

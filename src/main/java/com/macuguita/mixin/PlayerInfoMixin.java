@@ -31,7 +31,7 @@ import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.multiplayer.PlayerInfo;
-//? >= 26.1 {
+//? >= 1.21.11 {
 import net.minecraft.core.ClientAsset;
 import net.minecraft.world.entity.player.PlayerSkin;
 //?} else {
@@ -50,7 +50,7 @@ public abstract class PlayerInfoMixin {
 			at = @At("RETURN")
 	)
 	private PlayerSkin macu_lib$onGetSkin(PlayerSkin original) {
-		UUID playerUUID = this.getProfile()./*? >= 26.1 {*/id()/*?} else {*//*getId()*//*?}*/;
+		UUID playerUUID = this.getProfile()./*? >= 1.21.11 {*/id()/*?} else {*//*getId()*//*?}*/;
 
 		if (!CapeManager.hasCape(playerUUID)) return original;
 
@@ -58,12 +58,12 @@ public abstract class PlayerInfoMixin {
 
 		if (capeTexture == null) return original;
 
-		//? >= 26.1 {
+		//? >= 1.21.11 {
 		ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
 		//?}
 
 
-		//? >= 26.1 {
+		//? >= 1.21.11 {
 		return new PlayerSkin(
 				original.body(),
 				capeAsset,

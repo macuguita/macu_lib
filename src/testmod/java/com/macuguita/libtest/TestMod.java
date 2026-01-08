@@ -70,11 +70,11 @@ public class TestMod {
     private static final GuitaRegistryEntry<Block> TEST_BLOCK =
             BLOCKS.register("test_block", () ->
                     new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
-                            /*? >= 26.1 {*/.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))/*?}*/));
+                            /*? >= 1.21.11 {*/.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))/*?}*/));
 
     public static void init() {
         ITEMS.register("test_block", () -> new BlockItem(TEST_BLOCK.get(), new Item.Properties()
-				//? >= 26.1 {
+				//? >= 1.21.11 {
                 .useBlockDescriptionPrefix()
                 .setId(ResourceKey.create(Registries.ITEM, id("test_block")))
 				//?}

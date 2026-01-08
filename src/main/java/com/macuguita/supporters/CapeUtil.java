@@ -60,7 +60,7 @@ public class CapeUtil {
 		String filename = "capes/" + hash;
 		Identifier id = Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, filename);
 
-		//? >= 26.1 {
+		//? >= 1.21.11 {
 		// The actual texture location where it needs to be registered
 		Identifier textureLocation = Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, "textures/" + filename + ".png");
 		//?}
@@ -100,7 +100,7 @@ public class CapeUtil {
 					}
 
 					Minecraft.getInstance().execute(() -> {
-						//? >= 26.1 {
+						//? >= 1.21.11 {
 						DynamicTexture texture = new DynamicTexture(() -> "DynamicCape" + id, image);
 						Minecraft.getInstance().getTextureManager().register(textureLocation, texture);
 						LOADED_CAPES.put(urlString, id);

@@ -19,7 +19,6 @@ public class NeoforgeEntrypoint {
         TestMod.init();
     }
 
-
     @EventBusSubscriber(modid = TestMod.MOD_ID, value = Dist.CLIENT)
     public static class ClientEvents {
         @SubscribeEvent

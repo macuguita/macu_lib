@@ -1,6 +1,7 @@
 package com.macuguita.lib.fabric;
 
 //? fabric {
+
 /*import com.macuguita.lib.MacuLib;
 import net.fabricmc.api.ModInitializer;
 

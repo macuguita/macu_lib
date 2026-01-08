@@ -1,6 +1,7 @@
 package com.macuguita.lib.fabric.reg;
 
 //? fabric {
+
 /*import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;

@@ -1,6 +1,7 @@
 package com.macuguita.lib.neoforge.reg;
 
 //? neoforge {
+
 import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;

@@ -1,8 +1,8 @@
 package com.macuguita.lib.neoforge;
 
 //? neoforge {
+
 import com.macuguita.lib.MacuLib;
-import com.macuguita.lib.neoforge.network.NeoForgeNetworkBootstrap;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;

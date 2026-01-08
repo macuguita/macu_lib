@@ -1,15 +1,13 @@
 package com.macuguita.lib.neoforge;
 
 //? neoforge {
+
 import com.macuguita.lib.Platform;
 import com.macuguita.lib.neoforge.network.NeoForgeNetworkBootstrap;
 import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
-import it.unimi.dsi.fastutil.objects.Object2IntLinkedOpenHashMap;
 import net.minecraft.core.Registry;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;

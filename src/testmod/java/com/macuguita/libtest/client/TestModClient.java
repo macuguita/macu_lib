@@ -1,5 +1,6 @@
 package com.macuguita.libtest.client;
 
+import com.macuguita.lib.network.ClientPacketHandlers;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.libtest.PingC2SPacket;
 import com.macuguita.libtest.PingS2CPacket;
@@ -27,18 +28,10 @@ public class TestModClient {
             }
             NetworkManager.sendC2S(new PingC2SPacket(10));
         });
-        ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
-            for (var player : server.getPlayerList().getPlayers()) {
-                NetworkManager.sendS2C(player, new PingS2CPacket(67));
-            }
-        });
         *///?}
-        NetworkManager.registerS2C(
+        ClientPacketHandlers.register(
                 PingS2CPacket.TYPE,
-                PingS2CPacket.CODEC,
-                (pkt, player) -> {
-                    TestMod.LOGGER.info("PACKET VALUE: " + pkt.value());
-                }
+                pkt -> TestMod.LOGGER.info("SERVER SENT = {}", pkt.value())
         );
     }
 

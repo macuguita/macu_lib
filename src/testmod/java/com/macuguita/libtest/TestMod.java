@@ -4,12 +4,15 @@ import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistries;
 import com.macuguita.lib.reg.GuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistryEntry;
-import com.macuguita.libtest.client.TestModClient;
+//? fabric {
+/*import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+*///?}
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.Item;
@@ -17,8 +20,13 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
+//? neoforge {
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
+//?}
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -55,19 +63,31 @@ public class TestMod {
                 PingC2SPacket.TYPE,
                 PingC2SPacket.CODEC,
                 (pkt, player) -> {
-                    TestMod.LOGGER.info("PACKET VALUE: " + pkt.value());
+                    TestMod.LOGGER.info("CLIENT SENT: " + pkt.value());
                 }
         );
+
+        NetworkManager.registerS2C(PingS2CPacket.TYPE, PingS2CPacket.CODEC);
 
         BLOCKS.init();
         ITEMS.init();
         CREATIVE_TAB.init();
+        //? fabric {
+        /*ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+            NetworkManager.sendS2C(listener.player, new PingS2CPacket(67));
+        });
+        *///?}
     }
 
     //? neoforge {
-    @SubscribeEvent
-    public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
-        NetworkManager.sendC2S(new PingC2SPacket(69));
+    @EventBusSubscriber(modid = TestMod.MOD_ID)
+    public static class CommonEvents {
+        @SubscribeEvent
+        public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
+            if (event.getEntity() instanceof ServerPlayer serverPlayer) {
+                NetworkManager.sendS2C(serverPlayer, new PingS2CPacket(69));
+            }
+        }
     }
     //?}
 }

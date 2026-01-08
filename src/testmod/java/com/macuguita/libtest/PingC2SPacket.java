@@ -8,7 +8,7 @@ public record PingC2SPacket(int value)
         implements CustomPacketPayload {
 
     public static final CustomPacketPayload.Type<PingC2SPacket> TYPE =
-            new Type<>(TestMod.id("ping"));
+            new Type<>(TestMod.id("ping_c2s"));
 
     public static final StreamCodec<RegistryFriendlyByteBuf, PingC2SPacket> CODEC =
             StreamCodec.of(

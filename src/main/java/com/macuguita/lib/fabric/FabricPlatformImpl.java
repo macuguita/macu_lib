@@ -1,18 +1,17 @@
 package com.macuguita.lib.fabric;
 
 //? fabric {
+
 /*import com.macuguita.lib.Platform;
 import com.macuguita.lib.fabric.reg.FabricGuitaRegistry;
+import com.macuguita.lib.network.ClientPacketHandlers;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.fabricmc.loader.api.FabricLoader;
-import net.minecraft.client.Minecraft;
 import net.minecraft.core.Registry;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
@@ -60,10 +59,10 @@ public class FabricPlatformImpl implements Platform {
             NetworkManager.C2SRegistration<T> reg
     ) {
         PayloadTypeRegistry.serverboundPlay().register(reg.type(), reg.codec());
-
         ServerPlayNetworking.registerGlobalReceiver(
                 reg.type(),
-                (payload, context) -> reg.handler().handle(payload, context.player())
+                (payload, context) ->
+                        reg.handler().handle(payload, context.player())
         );
     }
 
@@ -72,12 +71,11 @@ public class FabricPlatformImpl implements Platform {
             NetworkManager.S2CRegistration<T> reg
     ) {
         PayloadTypeRegistry.clientboundPlay().register(reg.type(), reg.codec());
-
         ClientPlayNetworking.registerGlobalReceiver(
                 reg.type(),
-                (payload, context) -> reg.handler().handle(payload, context.player())
+                (payload, context) ->
+                        ClientPacketHandlers.handle(payload)
         );
     }
-
 }
 *///?}

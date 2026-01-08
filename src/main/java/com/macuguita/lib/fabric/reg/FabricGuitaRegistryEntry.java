@@ -25,11 +25,10 @@ package com.macuguita.lib.fabric.reg;
 import java.util.function.Supplier;
 
 import com.macuguita.lib.reg.GuitaRegistryEntry;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
-
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class FabricGuitaRegistryEntry<T> implements GuitaRegistryEntry<T> {

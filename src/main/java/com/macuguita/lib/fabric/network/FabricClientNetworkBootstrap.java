@@ -22,9 +22,9 @@ package com.macuguita.lib.fabric.network;
 
 //? fabric {
 
-import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
-
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 
 public class FabricClientNetworkBootstrap {
 

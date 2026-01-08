@@ -22,6 +22,7 @@ package com.macuguita.lib;
 
 
 import java.nio.file.Path;
+
 //? fabric {
 import com.macuguita.lib.fabric.FabricPlatformImpl;
 //?}
@@ -42,7 +43,7 @@ public interface Platform {
 
 	//? fabric {
 	Platform INSTANCE = new FabricPlatformImpl();
-	//?}
+	 //?}
 	//? neoforge {
 	/*Platform INSTANCE = new NeoForgePlatformImpl();
 	*///?}

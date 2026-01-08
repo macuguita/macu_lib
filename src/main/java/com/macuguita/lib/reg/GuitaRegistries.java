@@ -21,6 +21,7 @@
 package com.macuguita.lib.reg;
 
 import com.macuguita.lib.Platform;
+
 import net.minecraft.core.Registry;
 
 /**
@@ -38,7 +39,7 @@ public class GuitaRegistries {
 	 * which is useful for logically grouping registry entries without duplicating code.
 	 *
 	 * @param parent The parent {@link GuitaRegistry} to which this child will belong.
-	 * @param <T> The type of entries stored in the registry.
+	 * @param <T>    The type of entries stored in the registry.
 	 * @return A new {@link GuitaRegistry} instance representing the child registry.
 	 */
 	public static <T> GuitaRegistry<T> create(GuitaRegistry<T> parent) {
@@ -53,8 +54,8 @@ public class GuitaRegistries {
 	 *
 	 * @param registry The Minecraft {@link Registry} to wrap, e.g., from
 	 *                 {@link net.minecraft.core.registries.BuiltInRegistries}.
-	 * @param id The namespace of the mod creating this registry.
-	 * @param <T> The type of entries stored in the registry.
+	 * @param id       The namespace of the mod creating this registry.
+	 * @param <T>      The type of entries stored in the registry.
 	 * @return A new {@link GuitaRegistry} instance.
 	 */
 	public static <T> GuitaRegistry<T> create(Registry<T> registry, String id) {

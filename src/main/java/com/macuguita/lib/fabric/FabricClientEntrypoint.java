@@ -23,10 +23,9 @@ package com.macuguita.lib.fabric;
 //? fabric {
 
 import com.macuguita.lib.MacuLib;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.api.ClientModInitializer;
-
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class FabricClientEntrypoint implements ClientModInitializer {

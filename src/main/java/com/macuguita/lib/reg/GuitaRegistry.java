@@ -56,9 +56,9 @@ public interface GuitaRegistry<T> {
 	 * The entry is associated with the given {@code id} and lazily supplied via
 	 * the provided {@link Supplier}.
 	 *
-	 * @param id The name for this entry (e.g., {@code "item_name"}).
+	 * @param id       The name for this entry (e.g., {@code "item_name"}).
 	 * @param supplier A {@link Supplier} that provides the object when needed.
-	 * @param <I> The type of the entry, which must extend {@code T}.
+	 * @param <I>      The type of the entry, which must extend {@code T}.
 	 * @return A {@link GuitaRegistryEntry} representing the newly registered entry.
 	 */
 	<I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier);

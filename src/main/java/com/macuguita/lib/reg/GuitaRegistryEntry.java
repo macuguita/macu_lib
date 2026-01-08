@@ -21,8 +21,10 @@
 package com.macuguita.lib.reg;
 
 import java.util.function.Supplier;
-import net.minecraft.resources.Identifier;
+
 import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.resources.Identifier;
 
 /**
  * Represents a single entry in a {@link GuitaRegistry}.

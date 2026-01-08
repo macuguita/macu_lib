@@ -20,19 +20,19 @@
 
 package com.macuguita.lib.network;
 
-import com.macuguita.lib.Platform;
-import net.minecraft.network.RegistryFriendlyByteBuf;
-import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.server.level.ServerPlayer;
-
-import org.jetbrains.annotations.ApiStatus;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
+
+import com.macuguita.lib.Platform;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.server.level.ServerPlayer;
 
 /**
  * Utility class for managing custom network packets between client and server.
@@ -61,11 +61,11 @@ public final class NetworkManager {
 	/**
 	 * Registers a client-to-server packet (C2S) with a lazily-supplied handler.
 	 *
-	 * @param type The {@link CustomPacketPayload.Type} of the packet.
-	 * @param codec The {@link StreamCodec} used to serialize and deserialize the packet.
+	 * @param type            The {@link CustomPacketPayload.Type} of the packet.
+	 * @param codec           The {@link StreamCodec} used to serialize and deserialize the packet.
 	 * @param handlerSupplier A {@link Supplier} of a {@link BiConsumer} handling the packet
 	 *                        on the server. The BiConsumer receives the packet and the sending {@link ServerPlayer}.
-	 * @param <T> The type of the packet.
+	 * @param <T>             The type of the packet.
 	 */
 	public static <T extends CustomPacketPayload> void registerC2S(
 			CustomPacketPayload.Type<T> type,
@@ -102,11 +102,11 @@ public final class NetworkManager {
 	/**
 	 * Registers a server-to-client packet (S2C) with a lazily-supplied handler.
 	 *
-	 * @param type The {@link CustomPacketPayload.Type} of the packet.
-	 * @param codec The {@link StreamCodec} used to serialize and deserialize the packet.
+	 * @param type            The {@link CustomPacketPayload.Type} of the packet.
+	 * @param codec           The {@link StreamCodec} used to serialize and deserialize the packet.
 	 * @param handlerSupplier A {@link Supplier} of a {@link Consumer} handling the packet
 	 *                        on the client.
-	 * @param <T> The type of the packet.
+	 * @param <T>             The type of the packet.
 	 */
 	public static <T extends CustomPacketPayload> void registerS2C(
 			CustomPacketPayload.Type<T> type,
@@ -134,7 +134,7 @@ public final class NetworkManager {
 	/**
 	 * Sends a packet from the server to a specific player.
 	 *
-	 * @param player The {@link ServerPlayer} to receive the packet.
+	 * @param player  The {@link ServerPlayer} to receive the packet.
 	 * @param payload The {@link CustomPacketPayload} to send.
 	 */
 	public static void sendS2C(ServerPlayer player, CustomPacketPayload payload) {

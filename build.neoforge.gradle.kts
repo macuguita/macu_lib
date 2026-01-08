@@ -142,11 +142,12 @@ neoForge {
         register("clientMacuguita") {
             gameDirectory = file("run/")
             client()
-            programArguments.add("--username=macuguita")
-            programArguments.add("--uuid=0e56050b-ee27-478a-a345-d2b384919081")
 
             sourceSet = sourceSets["main"]
             loadedMods.set(listOf(mods[property("mod.id") as String]))
+
+            programArguments.add("--username=macuguita")
+            programArguments.add("--uuid=0e56050b-ee27-478a-a345-d2b384919081")
         }
         register("server") {
             gameDirectory = file("run/")
@@ -154,11 +155,14 @@ neoForge {
 
             sourceSet = sourceSets["main"]
             loadedMods.set(listOf(mods[property("mod.id") as String]))
+
+            programArguments.add("--nogui")
         }
 
         register("testmodClient") {
             gameDirectory = file("run")
             client()
+
             sourceSet = sourceSets["testmod"]
             loadedMods.set(
                 listOf(
@@ -167,10 +171,10 @@ neoForge {
                 )
             )
         }
-
         register("testmodServer") {
             gameDirectory = file("run")
             server()
+
             sourceSet = sourceSets["testmod"]
             loadedMods.set(
                 listOf(
@@ -178,6 +182,8 @@ neoForge {
                     mods["macu_lib_tests"]
                 )
             )
+
+            programArguments.add("--nogui")
         }
     }
     sourceSets["main"].resources.srcDir("src/main/generated")

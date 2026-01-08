@@ -2,7 +2,7 @@
   "package": "com.macuguita.mixin",
   "required": true,
   "minVersion": "0.8",
-  "compatibilityLevel": "JAVA_25",
+  "compatibilityLevel": "${javaVersion}",
   "injectors": {
     "defaultRequire": 1
   },

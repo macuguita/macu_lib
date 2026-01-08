@@ -62,7 +62,7 @@ public class TestMod {
     public static final GuitaRegistry<CreativeModeTab> CREATIVE_TAB = GuitaRegistries.create(BuiltInRegistries.CREATIVE_MODE_TAB, MOD_ID);
 
     private static final GuitaRegistryEntry<CreativeModeTab> TAB = CREATIVE_TAB.register(MOD_ID, () -> CreativeModeTab.builder(/*? fabric {*/ CreativeModeTab.Row.TOP, 0 /*?}*/)
-            .displayItems(((_, output) -> BLOCKS.stream().forEach((regEntry) -> output.accept(regEntry.get().asItem()))))
+            .displayItems(((itemDisplayParameters, output) -> BLOCKS.stream().forEach((regEntry) -> output.accept(regEntry.get().asItem()))))
             .icon(() -> new ItemStack(Blocks.DIAMOND_BLOCK))
             .title(Component.literal("hello"))
             .build());
@@ -70,12 +70,15 @@ public class TestMod {
     private static final GuitaRegistryEntry<Block> TEST_BLOCK =
             BLOCKS.register("test_block", () ->
                     new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
-                            .setId(ResourceKey.create(Registries.BLOCK, id("test_block")))));
+                            /*? >= 26.1 {*/.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))/*?}*/));
 
     public static void init() {
         ITEMS.register("test_block", () -> new BlockItem(TEST_BLOCK.get(), new Item.Properties()
+				//? >= 26.1 {
                 .useBlockDescriptionPrefix()
-                .setId(ResourceKey.create(Registries.ITEM, id("test_block")))));
+                .setId(ResourceKey.create(Registries.ITEM, id("test_block")))
+				//?}
+		));
 
         NetworkManager.registerC2S(
                 PingC2SPacket.TYPE,

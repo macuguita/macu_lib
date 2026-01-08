@@ -20,7 +20,7 @@
 
 package com.macuguita.lib.neoforge.network;
 
-//? neoforge {
+//? neoforge && >= 26.1 {
 
 /*import com.macuguita.lib.MacuLib;
 import com.macuguita.lib.network.NetworkManager;

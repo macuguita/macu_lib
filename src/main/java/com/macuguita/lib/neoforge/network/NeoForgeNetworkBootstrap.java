@@ -79,6 +79,12 @@ public final class NeoForgeNetworkBootstrap {
                 .playToClient(
                         reg.type(),
                         reg.codec()
+						//? < 26.1 {
+						/^, (payload, ctx) -> {
+							var handler = reg.handlerSupplier().get();
+							handler.accept(payload);
+						}
+						^///?}
                 );
     }
 }

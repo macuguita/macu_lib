@@ -33,7 +33,9 @@ import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
 import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
+//? if >= 26.1 {
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
+//?}
 import net.neoforged.neoforge.network.PacketDistributor;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -59,7 +61,11 @@ public class NeoForgePlatformImpl implements Platform {
 
     @Override
     public boolean isDevelopment() {
+		//? if >= 26.1 {
         return !FMLEnvironment.isProduction();
+		//?} else {
+		/^return !FMLEnvironment.production;
+        ^///?}
     }
 
     @Override
@@ -72,7 +78,11 @@ public class NeoForgePlatformImpl implements Platform {
     //-----------------------------//
     @Override
     public void sendToServer(CustomPacketPayload payload) {
+		//? if >= 26.1 {
         ClientPacketDistributor.sendToServer(payload);
+		//?} else {
+		/^PacketDistributor.sendToServer(payload);
+		^///?}
     }
 
     @Override

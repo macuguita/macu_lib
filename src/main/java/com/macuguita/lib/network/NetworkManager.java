@@ -8,7 +8,9 @@ import net.minecraft.server.level.ServerPlayer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Supplier;
 
 public final class NetworkManager {
 
@@ -22,11 +24,19 @@ public final class NetworkManager {
     public static <T extends CustomPacketPayload> void registerC2S(
             CustomPacketPayload.Type<T> type,
             StreamCodec<RegistryFriendlyByteBuf, T> codec,
-            C2SHandler<T> handler
+            Supplier<BiConsumer<T, ServerPlayer>> handlerSupplier
     ) {
-        C2SRegistration<T> reg = new C2SRegistration<>(type, codec, handler);
+        C2SRegistration<T> reg = new C2SRegistration<>(type, codec, handlerSupplier);
         C2S.add(reg);
         Platform.INSTANCE.registerC2S(reg);
+    }
+
+    public static <T extends CustomPacketPayload> void registerC2S(
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec,
+            BiConsumer<T, ServerPlayer> handlerSupplier
+    ) {
+        registerC2S(type, codec, () -> handlerSupplier);
     }
 
     public static void sendC2S(CustomPacketPayload payload) {
@@ -35,27 +45,26 @@ public final class NetworkManager {
 
     /* ---------------- S2C ---------------- */
 
-    /**
-     * Registers ONLY the packet type + codec.
-     * Handler is client-only and registered separately.
-     */
     public static <T extends CustomPacketPayload> void registerS2C(
             CustomPacketPayload.Type<T> type,
-            StreamCodec<RegistryFriendlyByteBuf, T> codec
+            StreamCodec<RegistryFriendlyByteBuf, T> codec,
+            Supplier<Consumer<T>> handlerSupplier
     ) {
-        S2CRegistration<T> reg = new S2CRegistration<>(type, codec);
+        S2CRegistration<T> reg = new S2CRegistration<>(type, codec, handlerSupplier);
         S2C.add(reg);
         Platform.INSTANCE.registerS2C(reg);
     }
 
-    public static void sendS2C(ServerPlayer player, CustomPacketPayload payload) {
-        Platform.INSTANCE.sendToPlayer(player, payload);
+    public static <T extends CustomPacketPayload> void registerS2C(
+            CustomPacketPayload.Type<T> type,
+            StreamCodec<RegistryFriendlyByteBuf, T> codec,
+            Consumer<T> handlerSupplier
+    ) {
+        registerS2C(type, codec, () -> handlerSupplier);
     }
 
-    /* ---------------- INTERNAL ---------------- */
-
-    public static List<S2CRegistration<?>> getS2CRegistrations() {
-        return S2C;
+    public static void sendS2C(ServerPlayer player, CustomPacketPayload payload) {
+        Platform.INSTANCE.sendToPlayer(player, payload);
     }
 
     /* ---------------- TYPES ---------------- */
@@ -63,16 +72,14 @@ public final class NetworkManager {
     public record C2SRegistration<T extends CustomPacketPayload>(
             CustomPacketPayload.Type<T> type,
             StreamCodec<RegistryFriendlyByteBuf, T> codec,
-            C2SHandler<T> handler
-    ) {}
+            Supplier<BiConsumer<T, ServerPlayer>> handlerSupplier
+    ) {
+    }
 
     public record S2CRegistration<T extends CustomPacketPayload>(
             CustomPacketPayload.Type<T> type,
-            StreamCodec<RegistryFriendlyByteBuf, T> codec
-    ) {}
-
-    @FunctionalInterface
-    public interface C2SHandler<T extends CustomPacketPayload> {
-        void handle(T payload, ServerPlayer player);
+            StreamCodec<RegistryFriendlyByteBuf, T> codec,
+            Supplier<Consumer<T>> handlerSupplier
+    ) {
     }
 }

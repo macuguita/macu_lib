@@ -2,9 +2,8 @@ package com.macuguita.lib.fabric;
 
 //? fabric {
 
-/*import com.macuguita.lib.Platform;
+import com.macuguita.lib.Platform;
 import com.macuguita.lib.fabric.reg.FabricGuitaRegistry;
-import com.macuguita.lib.network.ClientPacketHandlers;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
@@ -14,9 +13,11 @@ import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.nio.file.Path;
 
+@ApiStatus.Internal
 public class FabricPlatformImpl implements Platform {
 
     @Override
@@ -61,8 +62,10 @@ public class FabricPlatformImpl implements Platform {
         PayloadTypeRegistry.serverboundPlay().register(reg.type(), reg.codec());
         ServerPlayNetworking.registerGlobalReceiver(
                 reg.type(),
-                (payload, context) ->
-                        reg.handler().handle(payload, context.player())
+                (payload, context) -> {
+                    var handler = reg.handlerSupplier().get();
+                    handler.accept(payload, context.player());
+                }
         );
     }
 
@@ -73,9 +76,11 @@ public class FabricPlatformImpl implements Platform {
         PayloadTypeRegistry.clientboundPlay().register(reg.type(), reg.codec());
         ClientPlayNetworking.registerGlobalReceiver(
                 reg.type(),
-                (payload, context) ->
-                        ClientPacketHandlers.handle(payload)
+                (payload, context) -> {
+                    var handler = reg.handlerSupplier().get();
+                    handler.accept(payload);
+                }
         );
     }
 }
-*///?}
+//?}

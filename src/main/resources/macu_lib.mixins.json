@@ -6,8 +6,8 @@
   "injectors": {
     "defaultRequire": 1
   },
-  "mixins": [
+  "mixins": [],
+  "client": [
     "PlayerInfoMixin"
-  ],
-  "client": []
+  ]
 }

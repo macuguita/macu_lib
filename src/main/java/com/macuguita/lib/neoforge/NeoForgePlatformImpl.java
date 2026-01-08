@@ -2,7 +2,7 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-import com.macuguita.lib.Platform;
+/*import com.macuguita.lib.Platform;
 import com.macuguita.lib.neoforge.network.NeoForgeNetworkBootstrap;
 import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
@@ -15,9 +15,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import net.neoforged.neoforge.network.PacketDistributor;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.nio.file.Path;
 
+@ApiStatus.Internal
 public class NeoForgePlatformImpl implements Platform {
 
     @Override
@@ -73,4 +75,4 @@ public class NeoForgePlatformImpl implements Platform {
     }
 
 }
-//?}
+*///?}

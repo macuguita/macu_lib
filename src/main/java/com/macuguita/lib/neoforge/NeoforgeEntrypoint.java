@@ -2,14 +2,16 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-import com.macuguita.lib.MacuLib;
+/*import com.macuguita.lib.MacuLib;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.fml.common.Mod;
 import net.neoforged.fml.event.lifecycle.FMLClientSetupEvent;
+import org.jetbrains.annotations.ApiStatus;
 
+@ApiStatus.Internal
 @Mod(MacuLib.MOD_ID)
 public class NeoforgeEntrypoint {
 
@@ -26,4 +28,4 @@ public class NeoforgeEntrypoint {
     }
 
 }
-//?}
+*///?}

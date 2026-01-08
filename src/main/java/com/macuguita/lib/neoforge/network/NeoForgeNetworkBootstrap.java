@@ -2,8 +2,7 @@ package com.macuguita.lib.neoforge.network;
 
 //? neoforge {
 
-import com.macuguita.lib.MacuLib;
-import com.macuguita.lib.network.ClientPacketHandlers;
+/*import com.macuguita.lib.MacuLib;
 import com.macuguita.lib.network.NetworkManager;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
@@ -41,8 +40,13 @@ public final class NeoForgeNetworkBootstrap {
                 .playToServer(
                         reg.type(),
                         reg.codec(),
-                        (payload, ctx) ->
-                                reg.handler().handle(payload, (ServerPlayer) ctx.player())
+                        (payload, ctx) -> {
+                            var player = ctx.player();
+                            if (player instanceof ServerPlayer serverPlayer) {
+                                var handler = reg.handlerSupplier().get();
+                                handler.accept(payload, serverPlayer);
+                            }
+                        }
                 );
     }
 
@@ -58,4 +62,4 @@ public final class NeoForgeNetworkBootstrap {
                 );
     }
 }
-//?}
+*///?}

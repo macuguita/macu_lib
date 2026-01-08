@@ -2,7 +2,7 @@ package com.macuguita.libtest.neoforge;
 
 //? neoforge {
 
-/*import com.macuguita.lib.network.NetworkManager;
+import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.libtest.PingC2SPacket;
 import com.macuguita.libtest.TestMod;
 import com.macuguita.libtest.client.TestModClient;import net.neoforged.api.distmarker.Dist;
@@ -28,4 +28,4 @@ public class NeoforgeEntrypoint {
         }
     }
 }
-*///?}
+//?}

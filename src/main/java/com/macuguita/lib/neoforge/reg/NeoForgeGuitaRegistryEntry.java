@@ -1,7 +1,7 @@
 package com.macuguita.lib.neoforge.reg;
 
 //? neoforge {
-/*import com.macuguita.lib.reg.GuitaRegistryEntry;
+import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import org.jetbrains.annotations.ApiStatus;
@@ -25,4 +25,4 @@ public class NeoForgeGuitaRegistryEntry<R, T extends R> implements GuitaRegistry
         return object.getId();
     }
 }
-*///?}
+//?}

@@ -1,7 +1,7 @@
 package com.macuguita.lib.neoforge;
 
 //? neoforge {
-/*import com.macuguita.lib.Platform;
+import com.macuguita.lib.Platform;
 import com.macuguita.lib.neoforge.network.NeoForgeNetworkBootstrap;
 import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
@@ -75,4 +75,4 @@ public class NeoForgePlatformImpl implements Platform {
     }
 
 }
-*///?}
+//?}

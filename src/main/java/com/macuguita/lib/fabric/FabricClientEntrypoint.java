@@ -1,7 +1,7 @@
 package com.macuguita.lib.fabric;
 
 //? fabric {
-import com.macuguita.lib.MacuLib;
+/*import com.macuguita.lib.MacuLib;
 import net.fabricmc.api.ClientModInitializer;
 
 public class FabricClientEntrypoint implements ClientModInitializer {
@@ -12,4 +12,4 @@ public class FabricClientEntrypoint implements ClientModInitializer {
     }
 
 }
-//?}
+*///?}

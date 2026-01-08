@@ -1,10 +1,13 @@
 package com.macuguita.lib.network;
 
 import com.macuguita.lib.Platform;
+import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
+import org.jspecify.annotations.Nullable;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -59,22 +62,24 @@ public final class NetworkManager {
             CustomPacketPayload.Type<T> type,
             StreamCodec<RegistryFriendlyByteBuf, T> codec,
             C2SHandler<T> handler
-    ) {}
+    ) {
+    }
 
     public record S2CRegistration<T extends CustomPacketPayload>(
             CustomPacketPayload.Type<T> type,
             StreamCodec<RegistryFriendlyByteBuf, T> codec,
             S2CHandler<T> handler
-    ) {}
+    ) {
+    }
 
     @FunctionalInterface
     public interface C2SHandler<T extends CustomPacketPayload> {
-        void handle(T payload, net.minecraft.server.level.ServerPlayer player);
+        void handle(T payload, ServerPlayer player);
     }
 
     @FunctionalInterface
     public interface S2CHandler<T extends CustomPacketPayload> {
-        void handle(T payload, net.minecraft.client.player.LocalPlayer player);
+        void handle(T payload, LocalPlayer player);
     }
 
 }

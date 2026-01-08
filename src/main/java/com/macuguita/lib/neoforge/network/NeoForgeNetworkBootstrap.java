@@ -1,7 +1,7 @@
 package com.macuguita.lib.neoforge.network;
 
 //? neoforge {
-/*import com.macuguita.lib.MacuLib;
+import com.macuguita.lib.MacuLib;
 import com.macuguita.lib.network.NetworkManager;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -59,12 +59,8 @@ public final class NeoForgeNetworkBootstrap {
                 .optional()
                 .playToClient(
                         reg.type(),
-                        reg.codec(),
-                        (payload, ctx) -> reg.handler().handle(
-                                payload,
-                                Minecraft.getInstance().player
-                        )
+                        reg.codec()
                 );
     }
 }
-*///?}
+//?}

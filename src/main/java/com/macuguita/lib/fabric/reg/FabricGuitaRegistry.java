@@ -1,7 +1,7 @@
 package com.macuguita.lib.fabric.reg;
 
 //? fabric {
-import com.macuguita.lib.reg.GuitaRegistry;
+/*import com.macuguita.lib.reg.GuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistryEntries;
 import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.core.Registry;
@@ -40,4 +40,4 @@ public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
     public void init() {
     }
 }
-//?}
+*///?}

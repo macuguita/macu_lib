@@ -1,7 +1,7 @@
 package com.macuguita.lib.fabric;
 
 //? fabric {
-import com.macuguita.lib.Platform;
+/*import com.macuguita.lib.Platform;
 import com.macuguita.lib.fabric.reg.FabricGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
@@ -80,4 +80,4 @@ public class FabricPlatformImpl implements Platform {
     }
 
 }
-//?}
+*///?}

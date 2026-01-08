@@ -2,7 +2,7 @@ package com.macuguita.lib.neoforge.reg;
 
 //? neoforge {
 
-/*import com.macuguita.lib.reg.GuitaRegistry;
+import com.macuguita.lib.reg.GuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistryEntries;
 import com.macuguita.lib.reg.GuitaRegistryEntry;
 import net.minecraft.core.Registry;
@@ -43,4 +43,4 @@ public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
         register.register(ModLoadingContext.get().getActiveContainer().getEventBus());
     }
 }
-*///?}
+//?}

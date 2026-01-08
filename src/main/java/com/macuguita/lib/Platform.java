@@ -1,11 +1,11 @@
 package com.macuguita.lib;
 
 //? fabric {
-import com.macuguita.lib.fabric.FabricPlatformImpl;
-//?}
-//? neoforge {
-/*import com.macuguita.lib.neoforge.NeoForgePlatformImpl;
+/*import com.macuguita.lib.fabric.FabricPlatformImpl;
 *///?}
+//? neoforge {
+import com.macuguita.lib.neoforge.NeoForgePlatformImpl;
+//?}
 import java.nio.file.Path;
 
 import com.macuguita.lib.network.NetworkManager;
@@ -19,11 +19,11 @@ import net.minecraft.server.level.ServerPlayer;
 public interface Platform {
 
     //? fabric {
-    Platform INSTANCE = new FabricPlatformImpl();
-    //?}
-    //? neoforge {
-    /*Platform INSTANCE = new NeoForgePlatformImpl();
+    /*Platform INSTANCE = new FabricPlatformImpl();
     *///?}
+    //? neoforge {
+    Platform INSTANCE = new NeoForgePlatformImpl();
+    //?}
 
 
     boolean isModLoaded(String modid);

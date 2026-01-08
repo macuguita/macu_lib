@@ -22,7 +22,7 @@ import org.jspecify.annotations.Nullable;
 public class RoleChecker {
 
 	// URL to the JSON file containing roles and UUIDs
-	private static final String ROLES_URL = "https://macuguita.com/supporters.json";
+	private static final String ROLES_URL = "https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/supporters.json";
 
 	// Cache for roles and UUIDs
 	private static Map<String, Set<UUID>> cachedRoles = new HashMap<>();

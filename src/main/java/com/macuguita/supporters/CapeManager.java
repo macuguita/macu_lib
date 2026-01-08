@@ -8,7 +8,7 @@ import net.minecraft.resources.Identifier;
 
 public class CapeManager {
 
-	private static final String CAPE_BASE_URL = "https://macuguita.com/capes/";
+	private static final String CAPE_BASE_URL = "https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/capes/";
 
 	/**
 	 * Gets the cape identifier for a player based on their role.

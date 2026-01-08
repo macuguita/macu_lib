@@ -206,11 +206,20 @@ publishing {
         create<MavenPublication>("mavenJava") {
             groupId = property("mod.group") as String
             artifactId = (property("mod.id") as String) + "-fabric"
-            version = property("mod.version") as String
+            version = (property("mod.version") as String) + "+${property("deps.minecraft")}"
             from(components["java"])
         }
     }
     repositories {
         mavenLocal()
+        maven {
+            name = "macuguita"
+            url = uri("https://maven.macuguita.com/releases")
+
+            credentials {
+                username = env.REPOSILITE_USERNAME.orNull()
+                password = env.REPOSILITE_KEY.orNull()
+            }
+        }
     }
 }

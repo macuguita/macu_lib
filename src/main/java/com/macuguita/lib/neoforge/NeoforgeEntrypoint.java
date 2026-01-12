@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-/*import com.macuguita.lib.MacuLib;
+import com.macuguita.lib.MacuLib;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.neoforged.api.distmarker.Dist;
@@ -49,4 +49,4 @@ public class NeoforgeEntrypoint {
 	}
 
 }
-*///?}
+//?}

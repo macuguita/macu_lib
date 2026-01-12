@@ -22,13 +22,15 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-/*import java.nio.file.Path;
+import java.nio.file.Path;
+import java.util.function.Consumer;
 
 import com.macuguita.lib.Platform;
 import com.macuguita.lib.neoforge.network.NeoForgeNetworkBootstrap;
 import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Registry;
@@ -40,7 +42,11 @@ import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.fml.loading.FMLPaths;
 //? >= 1.21.11 {
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
-//?}
+import com.macuguita.lib.neoforge.network.NeoForgeClientNetworkBootstrap;
+//?} else {
+/*import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+*///?}
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @ApiStatus.Internal
@@ -66,8 +72,8 @@ public class NeoForgePlatformImpl implements Platform {
 		//? if >= 1.21.11 {
 		return !FMLEnvironment.isProduction();
 		//?} else {
-		/^return !FMLEnvironment.production;
-		 ^///?}
+		/*return !FMLEnvironment.production;
+		 *///?}
 	}
 
 	@Override
@@ -75,16 +81,13 @@ public class NeoForgePlatformImpl implements Platform {
 		return new NeoForgeGuitaRegistry<>(registry, id);
 	}
 
-	//-----------------------------//
-	// Networking                  //
-	//-----------------------------//
 	@Override
 	public void sendToServer(CustomPacketPayload payload) {
 		//? >= 1.21.11 {
 		ClientPacketDistributor.sendToServer(payload);
 		//?} else {
-		/^PacketDistributor.sendToServer(payload);
-		 ^///?}
+		/*PacketDistributor.sendToServer(payload);
+		 *///?}
 	}
 
 	@Override
@@ -106,5 +109,39 @@ public class NeoForgePlatformImpl implements Platform {
 		NeoForgeNetworkBootstrap.S2C.add(reg);
 	}
 
+	@SuppressWarnings("unchecked")
+	@Override
+	public <T extends CustomPacketPayload> void registerClientS2CHandler(
+			CustomPacketPayload.Type<T> type,
+			Consumer<T> handler
+	) {
+		//? >= 1.21.11 {
+		NeoForgeClientNetworkBootstrap.CLIENT_HANDLERS.add(
+				new NeoForgeClientNetworkBootstrap.ClientHandlerRegistration<>(type, handler)
+		);
+		//?} else {
+		/*synchronized (NeoForgeNetworkBootstrap.S2C) {
+			NetworkManager.S2CRegistration<?> reg = NeoForgeNetworkBootstrap.S2C.stream()
+					.filter(r -> r.type().equals(type))
+					.findFirst()
+					.orElseThrow(() -> new IllegalArgumentException(
+							"Cannot add handler: payload type " + type + " is not registered!"
+					));
+
+			if (reg.handlerSupplier() != null) {
+				throw new IllegalStateException(
+						"Cannot add handler: payload type " + type + " already has a handler!"
+				);
+			}
+
+			NeoForgeNetworkBootstrap.S2C.remove(reg);
+			NeoForgeNetworkBootstrap.S2C.add(new NetworkManager.S2CRegistration<>(
+					(CustomPacketPayload.Type<CustomPacketPayload>) reg.type(),
+					(StreamCodec<RegistryFriendlyByteBuf, CustomPacketPayload>) reg.codec(),
+					() -> (Consumer<CustomPacketPayload>) handler
+			));
+		}
+		*///?}
+	}
 }
-*///?}
+//?}

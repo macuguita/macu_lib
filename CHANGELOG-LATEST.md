@@ -1,4 +1,2 @@
-- Made the supporter cape system better
-- Update to latest minecraft version
-- Simplified the api
-- Add support for multiloader packet registration
+- Expose kaleido config with api gradle config
+- Allow to register packets without handlers

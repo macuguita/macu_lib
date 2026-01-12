@@ -18,16 +18,27 @@
  *
  */
 
-package com.macuguita.libtest.fabric;
+package com.macuguita.libtest;
 
-//? fabric {
-/*import com.macuguita.libtest.TestMod;
-import net.fabricmc.api.ModInitializer;
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
-public class FabricEntrypoint implements ModInitializer {
-    @Override
-    public void onInitialize() {
-        TestMod.init();
-    }
+public record PingS2CPacketNoHandler(int value)
+		implements CustomPacketPayload {
+
+	public static final Type<PingS2CPacketNoHandler> TYPE =
+			new Type<>(TestMod.id("ping_s2c_handlerless"));
+
+	public static final StreamCodec<RegistryFriendlyByteBuf, PingS2CPacketNoHandler> CODEC =
+			StreamCodec.of(
+					(buf, pkt) -> buf.writeInt(pkt.value()),
+					buf -> new PingS2CPacketNoHandler(buf.readInt())
+			);
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
+	}
 }
-*///?}
+

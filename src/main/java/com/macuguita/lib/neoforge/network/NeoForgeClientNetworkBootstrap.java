@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge.network;
 
 //? neoforge && >= 1.21.11 {
 
-/*import com.macuguita.lib.MacuLib;
+import com.macuguita.lib.MacuLib;
 import com.macuguita.lib.network.NetworkManager;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -33,13 +33,22 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.network.event.RegisterClientPayloadHandlersEvent;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
+
 @ApiStatus.Internal
 @EventBusSubscriber(modid = MacuLib.MOD_ID, value = Dist.CLIENT)
 public final class NeoForgeClientNetworkBootstrap {
 
+	public static final List<ClientHandlerRegistration<?>> CLIENT_HANDLERS = new ArrayList<>();
+
 	@SubscribeEvent
 	public static void registerClientHandlers(RegisterClientPayloadHandlersEvent event) {
 		for (NetworkManager.S2CRegistration<?> reg : NeoForgeNetworkBootstrap.S2C) {
+			registerS2CHandler(event, reg);
+		}
+		for (ClientHandlerRegistration<?> reg : CLIENT_HANDLERS) {
 			registerS2CHandler(event, reg);
 		}
 	}
@@ -48,11 +57,27 @@ public final class NeoForgeClientNetworkBootstrap {
 			RegisterClientPayloadHandlersEvent event,
 			NetworkManager.S2CRegistration<T> reg
 	) {
+		if (reg.handlerSupplier() == null) return;
 		event.register(reg.type(), (payload, context) -> {
 			// Handler supplier is called on client side only
 			var handler = reg.handlerSupplier().get();
 			handler.accept(payload);
 		});
 	}
+
+	private static <T extends CustomPacketPayload> void registerS2CHandler(
+			RegisterClientPayloadHandlersEvent event,
+			ClientHandlerRegistration<T> reg
+	) {
+		event.register(
+				reg.type(),
+				(payload, context) -> reg.handler().accept(payload)
+		);
+	}
+
+	public record ClientHandlerRegistration<T extends CustomPacketPayload>(
+			CustomPacketPayload.Type<T> type,
+			Consumer<T> handler
+	) {}
 }
-*///?}
+//?}

@@ -18,16 +18,9 @@
  *
  */
 
-package com.macuguita.libtest.fabric;
+@NullMarked
+@ApiStatus.Internal
+package com.macuguita.lib.fabric.network;
 
-//? fabric {
-/*import com.macuguita.libtest.TestMod;
-import net.fabricmc.api.ModInitializer;
-
-public class FabricEntrypoint implements ModInitializer {
-    @Override
-    public void onInitialize() {
-        TestMod.init();
-    }
-}
-*///?}
+import org.jetbrains.annotations.ApiStatus;
+import org.jspecify.annotations.NullMarked;

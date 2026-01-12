@@ -60,10 +60,7 @@ public abstract class PlayerInfoMixin {
 
 		//? >= 1.21.11 {
 		ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
-		//?}
 
-
-		//? >= 1.21.11 {
 		return new PlayerSkin(
 				original.body(),
 				capeAsset,

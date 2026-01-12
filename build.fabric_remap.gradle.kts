@@ -45,13 +45,13 @@ repositories {
     mavenLocal()
     mavenCentral()
     val exclusiveRepos: List<Triple<String, String, List<String>>> = listOf(
+        Triple("macuguita Maven", "https://maven.macuguita.com/releases/", listOf("com.macuguita", "folk.sisby", "org.quiltmc.parsers")),
         Triple("Minecraft Forge", "https://maven.minecraftforge.net", emptyList()),
         Triple("shedaniel (Cloth Config)", "https://maven.shedaniel.me/", listOf("me.shedaniel")),
-        Triple("Xander Maven", "https://maven.isxander.dev/releases/", listOf("dev.isxander", "org.quiltmc.parsers")),
+        Triple("Xander Maven", "https://maven.isxander.dev/releases/", listOf("dev.isxander")),
         Triple("Terraformers (Mod Menu)", "https://maven.terraformersmc.com/releases/", listOf("com.terraformersmc", "dev.emi")),
         Triple("Wisp Forest Maven", "https://maven.wispforest.io/releases/", listOf("io.wispforest")),
         Triple("Modrinth", "https://api.modrinth.com/maven", listOf("maven.modrinth")),
-        Triple("Sisby Maven", "https://repo.sleeping.town/", listOf("folk.sisby")),
         Triple("Parchment Mappings", "https://maven.parchmentmc.org", listOf("org.parchmentmc")),
     )
 
@@ -89,7 +89,7 @@ dependencies {
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
     compileOnly("org.jspecify:jspecify:1.0.0")
 
-    implementation("folk.sisby:kaleido-config:${property("deps.kaleido")}")
+    api("folk.sisby:kaleido-config:${property("deps.kaleido")}")
     include("folk.sisby:kaleido-config:${property("deps.kaleido")}")
     if (hasProperty("deps.modmenu")) {
         modLocalRuntime("maven.modrinth:mcqoy:${property("deps.mcqoy")}")

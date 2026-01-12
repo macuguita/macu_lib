@@ -22,13 +22,14 @@ package com.macuguita.lib;
 
 
 import java.nio.file.Path;
+import java.util.function.Consumer;
 
 //? fabric {
-import com.macuguita.lib.fabric.FabricPlatformImpl;
-//?}
-//? neoforge {
-/*import com.macuguita.lib.neoforge.NeoForgePlatformImpl;
+/*import com.macuguita.lib.fabric.FabricPlatformImpl;
 *///?}
+//? neoforge {
+import com.macuguita.lib.neoforge.NeoForgePlatformImpl;
+//?}
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
 import org.jetbrains.annotations.ApiStatus;
@@ -42,11 +43,11 @@ import net.minecraft.server.level.ServerPlayer;
 public interface Platform {
 
 	//? fabric {
-	Platform INSTANCE = new FabricPlatformImpl();
-	 //?}
+	/*Platform INSTANCE = new FabricPlatformImpl();
+	 *///?}
 	//? neoforge {
-	/*Platform INSTANCE = new NeoForgePlatformImpl();
-	*///?}
+	Platform INSTANCE = new NeoForgePlatformImpl();
+	//?}
 
 
 	boolean isModLoaded(String modid);
@@ -66,5 +67,7 @@ public interface Platform {
 	<T extends CustomPacketPayload> void registerC2S(NetworkManager.C2SRegistration<T> reg);
 
 	<T extends CustomPacketPayload> void registerS2C(NetworkManager.S2CRegistration<T> reg);
+
+	<T extends CustomPacketPayload> void registerClientS2CHandler(CustomPacketPayload.Type<T> type, Consumer<T> handler);
 
 }

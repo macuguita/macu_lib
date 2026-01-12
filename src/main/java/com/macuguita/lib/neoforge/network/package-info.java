@@ -19,6 +19,8 @@
  */
 
 @NullMarked
+@ApiStatus.Internal
 package com.macuguita.lib.neoforge.network;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.NullMarked;

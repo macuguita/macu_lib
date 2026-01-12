@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge.network;
 
 //? neoforge {
 
-/*import java.util.ArrayList;
+import java.util.ArrayList;
 import java.util.List;
 
 import com.macuguita.lib.MacuLib;
@@ -82,12 +82,13 @@ public final class NeoForgeNetworkBootstrap {
 						reg.type(),
 						reg.codec()
 						//? < 1.21.11 {
-						/^, (payload, ctx) -> {
+						/*, (payload, ctx) -> {
+							if (reg.handlerSupplier() == null) return;
 							var handler = reg.handlerSupplier().get();
 							handler.accept(payload);
 						}
-						^///?}
+						*///?}
 				);
 	}
 }
-*///?}
+//?}

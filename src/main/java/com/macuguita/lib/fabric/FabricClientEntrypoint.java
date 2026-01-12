@@ -22,7 +22,7 @@ package com.macuguita.lib.fabric;
 
 //? fabric {
 
-import com.macuguita.lib.MacuLib;
+/*import com.macuguita.lib.MacuLib;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.api.ClientModInitializer;
@@ -36,4 +36,4 @@ public class FabricClientEntrypoint implements ClientModInitializer {
 	}
 
 }
-//?}
+*///?}

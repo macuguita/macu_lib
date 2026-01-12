@@ -34,6 +34,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.server.level.ServerPlayer;
 
+import org.jspecify.annotations.Nullable;
+
 /**
  * Utility class for managing custom network packets between client and server.
  * <p>
@@ -80,14 +82,24 @@ public final class NetworkManager {
 	/**
 	 * Registers a client-to-server packet (C2S) with a direct handler.
 	 * <p>
-	 * This is a convenience overload of {@link #registerC2S(CustomPacketPayload.Type, StreamCodec, Supplier)}.
+	 * This is a convenience overload for cases where the handler does not need
+	 * to be created lazily. The provided {@link BiConsumer} will be wrapped in a
+	 * {@link Supplier} internally.
+	 * <p>
+	 * The handler is invoked on the server when the packet is received, and is
+	 * passed both the decoded packet instance and the sending {@link ServerPlayer}.
+	 *
+	 * @param type    The {@link CustomPacketPayload.Type} of the packet.
+	 * @param codec  The {@link StreamCodec} used to serialize and deserialize the packet.
+	 * @param handler The handler invoked on the server when the packet is received.
+	 * @param <T>     The type of the packet.
 	 */
 	public static <T extends CustomPacketPayload> void registerC2S(
 			CustomPacketPayload.Type<T> type,
 			StreamCodec<RegistryFriendlyByteBuf, T> codec,
-			BiConsumer<T, ServerPlayer> handlerSupplier
+			BiConsumer<T, ServerPlayer> handler
 	) {
-		registerC2S(type, codec, () -> handlerSupplier);
+		registerC2S(type, codec, () -> handler);
 	}
 
 	/**
@@ -101,17 +113,25 @@ public final class NetworkManager {
 
 	/**
 	 * Registers a server-to-client packet (S2C) with a lazily-supplied handler.
+	 * <p>
+	 * The handler supplier itself may be {@code null}, indicating that the packet
+	 * has no client-side handler. If a supplier is provided, it is expected to
+	 * always return a non-{@code null} {@link Consumer}.
+	 * <p>
+	 * Lazy handler creation is useful when client-only classes or state should
+	 * not be loaded during common or server initialization.
 	 *
 	 * @param type            The {@link CustomPacketPayload.Type} of the packet.
 	 * @param codec           The {@link StreamCodec} used to serialize and deserialize the packet.
-	 * @param handlerSupplier A {@link Supplier} of a {@link Consumer} handling the packet
-	 *                        on the client.
+	 * @param handlerSupplier A {@link Supplier} providing a non-{@code null}
+	 *                        client-side {@link Consumer}, or {@code null} if
+	 *                        no client-side handler exists.
 	 * @param <T>             The type of the packet.
 	 */
 	public static <T extends CustomPacketPayload> void registerS2C(
 			CustomPacketPayload.Type<T> type,
 			StreamCodec<RegistryFriendlyByteBuf, T> codec,
-			Supplier<Consumer<T>> handlerSupplier
+			@Nullable Supplier<Consumer<T>> handlerSupplier
 	) {
 		S2CRegistration<T> reg = new S2CRegistration<>(type, codec, handlerSupplier);
 		S2C.add(reg);
@@ -119,16 +139,75 @@ public final class NetworkManager {
 	}
 
 	/**
-	 * Registers a server-to-client packet (S2C) with a direct handler.
+	 * Registers a server-to-client packet (S2C) with a direct client-side handler.
 	 * <p>
-	 * Convenience overload of {@link #registerS2C(CustomPacketPayload.Type, StreamCodec, Supplier)}.
+	 * This is a convenience overload for
+	 * {@link #registerS2C(CustomPacketPayload.Type, StreamCodec, Supplier)}.
+	 * The provided {@link Consumer} will be wrapped in a {@link Supplier} internally.
+	 * <p>
+	 * If {@code handler} is {@code null}, the packet will be registered without
+	 * a client-side handler.
+	 *
+	 * @param type    The {@link CustomPacketPayload.Type} of the packet.
+	 * @param codec  The {@link StreamCodec} used to serialize and deserialize the packet.
+	 * @param handler The client-side handler, or {@code null} if none exists.
+	 * @param <T>     The type of the packet.
 	 */
 	public static <T extends CustomPacketPayload> void registerS2C(
 			CustomPacketPayload.Type<T> type,
 			StreamCodec<RegistryFriendlyByteBuf, T> codec,
-			Consumer<T> handlerSupplier
+			@Nullable Consumer<T> handler
 	) {
-		registerS2C(type, codec, () -> handlerSupplier);
+		if (handler != null) {
+			registerS2C(type, codec, () -> handler);
+		} else {
+			registerS2C(type, codec, (Supplier<Consumer<T>>) null);
+		}
+	}
+
+	/**
+	 * Registers a server-to-client packet (S2C) without a client-side handler.
+	 * <p>
+	 * This overload is intended for packets that are only sent or forwarded
+	 * by the platform layer, or whose handling is performed elsewhere.
+	 * No client-side consumer will be invoked when this packet is received.
+	 * <p>
+	 * Internally, this is equivalent to calling
+	 * {@link #registerS2C(CustomPacketPayload.Type, StreamCodec, Supplier)}
+	 * with a {@code null} handler supplier.
+	 *
+	 * @param type  The {@link CustomPacketPayload.Type} of the packet.
+	 * @param codec The {@link StreamCodec} used to serialize and deserialize the packet.
+	 * @param <T>   The type of the packet.
+	 */
+	public static <T extends CustomPacketPayload> void registerS2C(
+			CustomPacketPayload.Type<T> type,
+			StreamCodec<RegistryFriendlyByteBuf, T> codec
+	) {
+		registerS2C(type, codec, (Supplier<Consumer<T>>) null);
+	}
+
+	/**
+	 * Registers a client-side handler for an already registered
+	 * server-to-client (S2C) payload.
+	 * <p>
+	 * This method must only be called from client initialization code.
+	 * The payload type must have been registered previously via
+	 * {@link #registerS2C(CustomPacketPayload.Type, StreamCodec)} or one
+	 * of its overloads.
+	 * <p>
+	 * This method does not register the payload type or codec; it only
+	 * associates a client-side handler with an existing registration.
+	 *
+	 * @param type    The {@link CustomPacketPayload.Type} of the packet.
+	 * @param handler The client-side handler invoked when the packet is received.
+	 * @param <T>     The type of the packet.
+	 */
+	public static <T extends CustomPacketPayload> void registerClientS2CHandler(
+			CustomPacketPayload.Type<T> type,
+			Consumer<T> handler
+	) {
+		Platform.INSTANCE.registerClientS2CHandler(type, handler);
 	}
 
 	/**
@@ -154,6 +233,6 @@ public final class NetworkManager {
 	public record S2CRegistration<T extends CustomPacketPayload>(
 			CustomPacketPayload.Type<T> type,
 			StreamCodec<RegistryFriendlyByteBuf, T> codec,
-			Supplier<Consumer<T>> handlerSupplier
+			@Nullable Supplier<Consumer<T>> handlerSupplier
 	) {}
 }

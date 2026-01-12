@@ -41,6 +41,27 @@ import org.jspecify.annotations.Nullable;
  * <p>
  * Provides methods to register handlers for client-to-server (C2S) and
  * server-to-client (S2C) packets, as well as sending packets in both directions.
+ *
+ * <h2>S2C safety and sidedness</h2>
+ * <p>
+ * Server-to-client (S2C) packets are safe to declare in common code because
+ * <strong>their handlers are never instantiated or registered on the server</strong>.
+ * Client-side handlers are only registered when running in a client environment:
+ * <ul>
+ *   <li>On dedicated servers, no S2C handlers are created or loaded.</li>
+ *   <li>On the client, handlers are registered either from the client-only jar
+ *       or via NeoForge client lifecycle events.</li>
+ * </ul>
+ *
+ * <p>
+ * This design ensures that client-only classes (such as rendering, GUI, or
+ * Minecraft client state) are never loaded or referenced on the server,
+ * preventing classloading errors and maintaining strict sided separation.
+ *
+ * <p>
+ * Lazy handler suppliers further guarantee that client code is only resolved
+ * when the platform confirms it is running on the client.
+ *
  * <p>
  * Example usage (from a mod initialization class):
  * <pre>{@code
@@ -53,6 +74,7 @@ import org.jspecify.annotations.Nullable;
  * NetworkManager.sendS2C(player, new MyPacket(...));
  * }</pre>
  */
+
 public final class NetworkManager {
 
 	private static final List<C2SRegistration<?>> C2S = new ArrayList<>();
@@ -112,14 +134,24 @@ public final class NetworkManager {
 	}
 
 	/**
-	 * Registers a server-to-client packet (S2C) with a lazily-supplied handler.
+	 * Registers a server-to-client packet (S2C) with an optional lazily-supplied
+	 * client-side handler.
+	 * <p>
+	 * <strong>Sided safety:</strong> The supplied handler is only ever accessed
+	 * and registered on the client. On dedicated servers, the handler supplier
+	 * is ignored and never invoked.
+	 * <p>
+	 * In NeoForge, client-side handlers are registered exclusively from
+	 * client lifecycle events. In split-jar environments, this method may be
+	 * called from common code, but the actual handler creation occurs only
+	 * when running from the client jar.
 	 * <p>
 	 * The handler supplier itself may be {@code null}, indicating that the packet
-	 * has no client-side handler. If a supplier is provided, it is expected to
-	 * always return a non-{@code null} {@link Consumer}.
+	 * has no client-side handler.
 	 * <p>
-	 * Lazy handler creation is useful when client-only classes or state should
-	 * not be loaded during common or server initialization.
+	 * Lazy handler creation is recommended when the handler references
+	 * client-only classes (rendering, screens, client state, etc.), as it avoids
+	 * classloading those types on the server.
 	 *
 	 * @param type            The {@link CustomPacketPayload.Type} of the packet.
 	 * @param codec           The {@link StreamCodec} used to serialize and deserialize the packet.
@@ -191,7 +223,14 @@ public final class NetworkManager {
 	 * Registers a client-side handler for an already registered
 	 * server-to-client (S2C) payload.
 	 * <p>
-	 * This method must only be called from client initialization code.
+	 * <strong>Sided safety:</strong> This method is safe to exist in common code and
+	 * to reference from shared initialization paths. However, it
+	 * <strong>should only be invoked in a client environment</strong>.
+	 * <p>
+	 * On dedicated servers, this method should not be called. Client-side handlers
+	 * are expected to be registered exclusively from client-only code paths,
+	 * such as a NeoForge client lifecycle event or a client-only jar.
+	 * <p>
 	 * The payload type must have been registered previously via
 	 * {@link #registerS2C(CustomPacketPayload.Type, StreamCodec)} or one
 	 * of its overloads.
@@ -203,6 +242,7 @@ public final class NetworkManager {
 	 * @param handler The client-side handler invoked when the packet is received.
 	 * @param <T>     The type of the packet.
 	 */
+
 	public static <T extends CustomPacketPayload> void registerClientS2CHandler(
 			CustomPacketPayload.Type<T> type,
 			Consumer<T> handler

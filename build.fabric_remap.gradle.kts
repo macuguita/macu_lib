@@ -226,8 +226,8 @@ publishing {
             url = uri("https://maven.macuguita.com/releases")
 
             credentials {
-                username = env.REPOSILITE_USERNAME.orNull()
-                password = env.REPOSILITE_KEY.orNull()
+                username = env.MAVEN_USERNAME.orNull()
+                password = env.MAVEN_KEY.orNull()
             }
         }
     }

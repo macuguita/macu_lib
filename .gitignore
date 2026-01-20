@@ -1,3 +1,5 @@
+.env
+
 # gradle
 
 common/.gradle/

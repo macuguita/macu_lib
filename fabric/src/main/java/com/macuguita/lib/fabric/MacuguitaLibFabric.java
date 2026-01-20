@@ -1,7 +1,9 @@
 package com.macuguita.lib.fabric;
 
 import com.macuguita.lib.MacuguitaLib;
+import com.macuguita.lib.supporters.RoleChecker;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 
 public final class MacuguitaLibFabric implements ModInitializer {
 
@@ -13,6 +15,9 @@ public final class MacuguitaLibFabric implements ModInitializer {
 
         // Run our common setup.
         MacuguitaLib.init();
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            RoleChecker.shutdown();
+        });
     }
 
 }

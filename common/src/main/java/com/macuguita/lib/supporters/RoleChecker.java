@@ -3,6 +3,7 @@ package com.macuguita.lib.supporters;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.macuguita.lib.MacuguitaLib;
+import org.jetbrains.annotations.ApiStatus;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -112,4 +113,11 @@ public class RoleChecker {
     public static boolean hasRole(UUID playerUUID, String role) {
         return cachedRoles.containsKey(role) && cachedRoles.get(role).contains(playerUUID);
     }
+
+    @ApiStatus.Internal
+    public static void shutdown() {
+        MacuguitaLib.LOGGER.error("=== SERVER STOPPING EVENT FIRED ===");
+        scheduler.shutdownNow();
+    }
+
 }

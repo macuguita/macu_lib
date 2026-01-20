@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-import java.nio.file.Path;
+/*import java.nio.file.Path;
 import java.util.function.Consumer;
 
 import com.macuguita.lib.Platform;
@@ -44,9 +44,9 @@ import net.neoforged.fml.loading.FMLPaths;
 import net.neoforged.neoforge.client.network.ClientPacketDistributor;
 import com.macuguita.lib.neoforge.network.NeoForgeClientNetworkBootstrap;
 //?} else {
-/*import net.minecraft.network.RegistryFriendlyByteBuf;
+/^import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-*///?}
+^///?}
 import net.neoforged.neoforge.network.PacketDistributor;
 
 @ApiStatus.Internal
@@ -72,8 +72,8 @@ public class NeoForgePlatformImpl implements Platform {
 		//? if >= 1.21.11 {
 		return !FMLEnvironment.isProduction();
 		//?} else {
-		/*return !FMLEnvironment.production;
-		 *///?}
+		/^return !FMLEnvironment.production;
+		 ^///?}
 	}
 
 	@Override
@@ -86,8 +86,8 @@ public class NeoForgePlatformImpl implements Platform {
 		//? >= 1.21.11 {
 		ClientPacketDistributor.sendToServer(payload);
 		//?} else {
-		/*PacketDistributor.sendToServer(payload);
-		 *///?}
+		/^PacketDistributor.sendToServer(payload);
+		 ^///?}
 	}
 
 	@Override
@@ -120,7 +120,7 @@ public class NeoForgePlatformImpl implements Platform {
 				new NeoForgeClientNetworkBootstrap.ClientHandlerRegistration<>(type, handler)
 		);
 		//?} else {
-		/*synchronized (NeoForgeNetworkBootstrap.S2C) {
+		/^synchronized (NeoForgeNetworkBootstrap.S2C) {
 			NetworkManager.S2CRegistration<?> reg = NeoForgeNetworkBootstrap.S2C.stream()
 					.filter(r -> r.type().equals(type))
 					.findFirst()
@@ -141,7 +141,7 @@ public class NeoForgePlatformImpl implements Platform {
 					() -> (Consumer<CustomPacketPayload>) handler
 			));
 		}
-		*///?}
+		^///?}
 	}
 }
-//?}
+*///?}

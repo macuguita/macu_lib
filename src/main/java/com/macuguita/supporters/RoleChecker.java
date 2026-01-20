@@ -32,6 +32,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonObject;
@@ -41,33 +42,55 @@ import org.jspecify.annotations.Nullable;
 
 public class RoleChecker {
 
-	// URL to the JSON file containing roles and UUIDs
 	private static final String ROLES_URL = "https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/supporters.json";
 
-	// Cache for roles and UUIDs
 	private static Map<String, Set<UUID>> cachedRoles = new HashMap<>();
 
 	private static final int CACHE_REFRESH_INTERVAL_MINUTES = MacuLib.CONFIG.supporters.roleCheckerMinutesInterval;
+
+	private static @Nullable ScheduledExecutorService executorService;
 
 	/**
 	 * Initializes the RoleChecker and starts the periodic cache refresh task.
 	 */
 	public static void init() {
-		// Fetch roles immediately on initialization
 		fetchRoles();
 
-		// Only schedule periodic refresh if interval is positive
 		if (CACHE_REFRESH_INTERVAL_MINUTES > 0) {
-			// Scheduled executor service for periodic cache refresh
-			Executors.newScheduledThreadPool(1).scheduleAtFixedRate(
-					RoleChecker::fetchRoles, // Task to run
-					CACHE_REFRESH_INTERVAL_MINUTES, // Initial delay
-					CACHE_REFRESH_INTERVAL_MINUTES, // Periodic delay
-					TimeUnit.MINUTES // Time unit
+			executorService = Executors.newScheduledThreadPool(1, r -> {
+				Thread thread = new Thread(r);
+				thread.setDaemon(true);
+				return thread;
+			});
+
+			executorService.scheduleAtFixedRate(
+					RoleChecker::fetchRoles,
+					CACHE_REFRESH_INTERVAL_MINUTES,
+					CACHE_REFRESH_INTERVAL_MINUTES,
+					TimeUnit.MINUTES
 			);
 			MacuLib.LOGGER.info("RoleChecker initialized with cache refresh every " + CACHE_REFRESH_INTERVAL_MINUTES + " minutes.");
 		} else {
 			MacuLib.LOGGER.info("RoleChecker initialized with single fetch (no periodic refresh).");
+		}
+	}
+
+	/**
+	 * Shuts down the RoleChecker and stops the periodic cache refresh task.
+	 * Should be called when the server is stopping.
+	 */
+	public static void shutdown() {
+		if (executorService != null && !executorService.isShutdown()) {
+			executorService.shutdown();
+			try {
+				if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
+					executorService.shutdownNow();
+				}
+				MacuLib.LOGGER.info("RoleChecker shut down successfully.");
+			} catch (InterruptedException e) {
+				executorService.shutdownNow();
+				Thread.currentThread().interrupt();
+			}
 		}
 	}
 
@@ -90,7 +113,6 @@ public class RoleChecker {
 			JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
 			reader.close();
 
-			// Parse the "roles" object
 			JsonObject rolesObject = json.getAsJsonObject("roles");
 			Map<String, Set<UUID>> newRoles = new HashMap<>();
 			for (String role : rolesObject.keySet()) {
@@ -124,7 +146,7 @@ public class RoleChecker {
 				return entry.getKey();
 			}
 		}
-		return null; // Player has no role
+		return null;
 	}
 
 	/**

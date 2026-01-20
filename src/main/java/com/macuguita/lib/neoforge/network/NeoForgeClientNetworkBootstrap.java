@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge.network;
 
 //? neoforge && >= 1.21.11 {
 
-import com.macuguita.lib.MacuLib;
+/*import com.macuguita.lib.MacuLib;
 import com.macuguita.lib.network.NetworkManager;
 import org.jetbrains.annotations.ApiStatus;
 
@@ -80,4 +80,4 @@ public final class NeoForgeClientNetworkBootstrap {
 			Consumer<T> handler
 	) {}
 }
-//?}
+*///?}

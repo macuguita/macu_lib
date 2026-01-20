@@ -121,6 +121,6 @@ public class CapeUtil {
 			}
 		});
 
-		return null; // Return null initially, will be available on next call after loading
+		return null;
 	}
 }

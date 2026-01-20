@@ -22,7 +22,7 @@ package com.macuguita.lib.fabric.reg;
 
 //? fabric {
 
-/*import java.util.function.Supplier;
+import java.util.function.Supplier;
 
 import com.macuguita.lib.reg.GuitaRegistryEntry;
 import org.jetbrains.annotations.ApiStatus;
@@ -55,4 +55,4 @@ public class FabricGuitaRegistryEntry<T> implements GuitaRegistryEntry<T> {
 		return this.id;
 	}
 }
-*///?}
+//?}

@@ -25,8 +25,8 @@ import com.macuguita.lib.reg.GuitaRegistries;
 import com.macuguita.lib.reg.GuitaRegistry;
 import com.macuguita.lib.reg.GuitaRegistryEntry;
 //? fabric {
-/*import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-*///?}
+import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+//?}
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -41,10 +41,10 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 //? neoforge {
-import net.neoforged.bus.api.SubscribeEvent;
+/*import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
-//?}
+*///?}
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -61,7 +61,7 @@ public class TestMod {
     public static final GuitaRegistry<Item> ITEMS = GuitaRegistries.create(BuiltInRegistries.ITEM, MOD_ID);
     public static final GuitaRegistry<CreativeModeTab> CREATIVE_TAB = GuitaRegistries.create(BuiltInRegistries.CREATIVE_MODE_TAB, MOD_ID);
 
-    private static final GuitaRegistryEntry<CreativeModeTab> TAB = CREATIVE_TAB.register(MOD_ID, () -> CreativeModeTab.builder(/*? fabric {*/ /*CreativeModeTab.Row.TOP, 0 *//*?}*/)
+    private static final GuitaRegistryEntry<CreativeModeTab> TAB = CREATIVE_TAB.register(MOD_ID, () -> CreativeModeTab.builder(/*? fabric {*/ CreativeModeTab.Row.TOP, 0 /*?}*/)
             .displayItems(((itemDisplayParameters, output) -> BLOCKS.stream().forEach((regEntry) -> output.accept(regEntry.get().asItem()))))
             .icon(() -> new ItemStack(Blocks.DIAMOND_BLOCK))
             .title(Component.literal("hello"))
@@ -103,14 +103,14 @@ public class TestMod {
         ITEMS.init();
         CREATIVE_TAB.init();
         //? fabric {
-        /*ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
+        ServerPlayConnectionEvents.JOIN.register((listener, sender, server) -> {
             NetworkManager.sendS2C(listener.player, new PingS2CPacket(67));
         });
-        *///?}
+        //?}
     }
 
     //? neoforge {
-    @EventBusSubscriber(modid = TestMod.MOD_ID)
+    /*@EventBusSubscriber(modid = TestMod.MOD_ID)
     public static class CommonEvents {
         @SubscribeEvent
         public static void onPlayerJoin(PlayerEvent.PlayerLoggedInEvent event) {
@@ -119,5 +119,5 @@ public class TestMod {
             }
         }
     }
-    //?}
+    *///?}
 }

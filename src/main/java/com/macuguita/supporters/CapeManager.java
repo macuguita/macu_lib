@@ -40,7 +40,7 @@ public class CapeManager {
 		String role = RoleChecker.getPlayerRole(playerUUID);
 
 		if (role == null) {
-			return null; // Player has no role
+			return null;
 		}
 
 		return getCapeForRole(role);

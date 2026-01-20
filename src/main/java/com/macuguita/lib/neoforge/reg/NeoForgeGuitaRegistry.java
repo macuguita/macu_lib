@@ -22,7 +22,7 @@ package com.macuguita.lib.neoforge.reg;
 
 //? neoforge {
 
-import java.util.Collection;
+/*import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.macuguita.lib.reg.GuitaRegistry;
@@ -65,4 +65,4 @@ public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
 		register.register(ModLoadingContext.get().getActiveContainer().getEventBus());
 	}
 }
-//?}
+*///?}

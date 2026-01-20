@@ -22,7 +22,11 @@ package com.macuguita.lib.neoforge;
 
 //? neoforge {
 
-import com.macuguita.lib.MacuLib;
+/*import com.macuguita.lib.MacuLib;
+import com.macuguita.supporters.RoleChecker;
+
+import net.neoforged.neoforge.event.server.ServerStoppingEvent;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.neoforged.api.distmarker.Dist;
@@ -44,9 +48,16 @@ public class NeoforgeEntrypoint {
 	public static class ClientEvents {
 		@SubscribeEvent
 		public static void onClientSetup(final FMLClientSetupEvent event) {
-			MacuLib.LOGGER.info("Initializing {} Client", MacuLib.MOD_ID);
+		}
+	}
+
+	@EventBusSubscriber(modid = MacuLib.MOD_ID)
+	public static class ModEvents {
+		@SubscribeEvent
+		public static void onServerStopping(ServerStoppingEvent event) {
+			RoleChecker.shutdown();
 		}
 	}
 
 }
-//?}
+*///?}

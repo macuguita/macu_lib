@@ -22,7 +22,7 @@ package com.macuguita.lib.fabric.reg;
 
 //? fabric {
 
-/*import java.util.Collection;
+import java.util.Collection;
 import java.util.function.Supplier;
 
 import com.macuguita.lib.reg.GuitaRegistry;
@@ -64,4 +64,4 @@ public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
 	public void init() {
 	}
 }
-*///?}
+//?}

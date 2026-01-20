@@ -36,7 +36,6 @@ public class MacuLib {
 	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(Platform.INSTANCE.getConfigDir(), "", MOD_ID, MacuLibConfig.class);
 
 	public static void init() {
-		LOGGER.info("Initializing {} on {}", MOD_ID, Platform.INSTANCE.loader());
 		RoleChecker.init();
 	}
 

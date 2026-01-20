@@ -1,2 +1,2 @@
-- Expose kaleido config with api gradle config
-- Allow to register packets without handlers
+- Clean up loggers
+- Fixed: [#1](https://github.com/macuguita/macu_lib/issues/1)

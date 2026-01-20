@@ -22,7 +22,12 @@ package com.macuguita.lib.fabric;
 
 //? fabric {
 
-/*import com.macuguita.lib.MacuLib;
+import com.macuguita.lib.MacuLib;
+
+import com.macuguita.supporters.RoleChecker;
+
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.fabricmc.api.ModInitializer;
@@ -33,7 +38,9 @@ public class FabricEntrypoint implements ModInitializer {
 	@Override
 	public void onInitialize() {
 		MacuLib.init();
+
+		ServerLifecycleEvents.SERVER_STOPPING.register(server -> RoleChecker.shutdown()); // Sif i do my own even system I should probably change this to common
 	}
 
 }
-*///?}
+//?}

@@ -71,6 +71,14 @@ dependencies {
     "testmodImplementation"(sourceSets.main.map { it.output })
 }
 
+val localRuntime by configurations.creating
+
+configurations {
+    runtimeClasspath {
+        extendsFrom(localRuntime)
+    }
+}
+
 neoForge {
     version = property("deps.neoforge") as String
     validateAccessTransformers = true
@@ -155,12 +163,12 @@ dependencies {
     compileOnly("org.jspecify:jspecify:1.0.0")
 
     if (hasProperty("deps.mcqoy")) {
-        implementation("maven.modrinth:mcqoy:${property("deps.mcqoy")}")
+        localRuntime("maven.modrinth:mcqoy:${property("deps.mcqoy")}")
     }
 
     // YACL  - required by McQoy
     if (hasProperty("deps.yacl")) {
-        runtimeOnly("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-neoforge")
+        localRuntime("dev.isxander:yet-another-config-lib:${property("deps.yacl")}-neoforge")
     }
 }
 

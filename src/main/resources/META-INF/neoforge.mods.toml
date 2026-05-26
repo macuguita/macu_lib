@@ -1,0 +1,42 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "EUPL-1.2"
+
+[[mods]]
+modId = "macu_lib"
+displayName = "macu Lib"
+version = "${version}"
+displayURL = ""
+logoFile = "assets/icon.png"
+logoBlur = false
+authors = "macuguita"
+description = '''Common library for my mods'''
+
+[[accessTransformers]]
+file = "META-INF/accesstransformer.cfg"
+
+[[mixins]]
+config = "macu_lib.mixins.json"
+
+[[dependencies.macu_lib]]
+modId = "minecraft"
+type = "required"
+versionRange = "${minecraft_neoforge_version_range}"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.macu_lib]]
+modId = "yumi_mc_core"
+type = "required"
+versionRange = "[${yumi_version},)"
+ordering = "NONE"
+side = "CLIENT"
+
+[modproperties.macu_lib]
+catalogueImageIcon = "assets/icon.png"
+
+[[modproperties.macu_lib."yumi:entrypoints"."yumi:init"]]
+value = "com.macuguita.lib.impl.MacuLib"
+
+[[modproperties.macu_lib."yumi:entrypoints"."yumi:client_init"]]
+value = "com.macuguita.lib.impl.client.MacuLibClient"

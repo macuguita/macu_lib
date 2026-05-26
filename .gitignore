@@ -1,9 +1,7 @@
+.env
+
 # gradle
 
-common/.gradle/
-fabric/.gradle/
-forge/.gradle/
-neoforge/.gradle/
 .gradle/
 build/
 out/
@@ -32,17 +30,9 @@ bin/
 
 *.DS_Store
 
-# mod
+# fabric
 
-common/run/
-fabric/run/
-forge/run/
-neoforge/run/
-common/build/
-fabric/build/
-forge/build/
-neoforge/build/
-/.architectury-transformer/
+run/
 
 # java
 

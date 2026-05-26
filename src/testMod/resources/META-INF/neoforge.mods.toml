@@ -1,0 +1,40 @@
+modLoader = "javafml"
+loaderVersion = "[2,)"
+license = "EUPL-1.2"
+
+[[mods]]
+modId = "macu_lib_testmod"
+displayName = "macu Lib Testmod"
+version = "0.0.1"
+displayURL = ""
+logoFile = "assets/icon.png"
+logoBlur = false
+authors = "macuguita"
+description = '''A test mod for macu Lib development'''
+
+[[mixins]]
+config = "macu_lib_testmod.mixins.json"
+
+[[dependencies.macu_lib_testmod]]
+modId = "minecraft"
+type = "required"
+versionRange = "[1.17,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.macu_lib_testmod]]
+modId = "macu_lib"
+type = "required"
+versionRange = "[,)"
+ordering = "NONE"
+side = "BOTH"
+
+[modproperties.macu_lib_testmod]
+catalogueImageIcon = "assets/icon.png"
+
+# TODO: not really using the yumi entrypoints probably should...
+# [[modproperties.macu_lib_testmod."yumi:entrypoints"."yumi:init"]]
+# value = "com.macuguita.lib.test.MacuLibTestFabric"
+
+[[modproperties.macu_lib_testmod."yumi:entrypoints"."yumi:client_init"]]
+value = "com.macuguita.lib.test.client.MacuLibTestClient"

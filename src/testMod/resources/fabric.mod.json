@@ -1,0 +1,36 @@
+{
+  "schemaVersion": 1,
+  "id": "macu_lib_testmod",
+  "version": "0.0.1",
+  "name": "macu Lib Testmod",
+  "description": "A test mod for macu Lib development",
+  "authors": [
+    "macuguita"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/FabricMC/fabric-example-mod"
+  },
+  "license": "EUPL-1.2",
+  "icon": "assets/macu_lib-testmod/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "com.macuguita.lib.test.MacuLibTestFabric"
+    ],
+    "yumi:client_init": [
+      "com.macuguita.lib.test.client.MacuLibTestClient"
+    ]
+  },
+  "mixins": [
+    "macu_lib_testmod.mixins.json"
+  ],
+  "custom": {
+    "modmenu:parent": "macu_lib"
+  },
+  "depends": {
+    "minecraft": ">=1.17-0",
+    "fabricloader": ">=0.7.0",
+    "macu_lib": "*"
+  }
+}

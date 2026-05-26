@@ -1,0 +1,28 @@
+{
+  "jars": [
+    {
+      "identifier": {
+        "group": "dev.yumi.mc.core",
+        "artifact": "yumi-mc-foundation"
+      },
+      "version": {
+        "range": "[${yumi_version},)",
+        "artifactVersion": "${yumi_version}"
+      },
+      "path": "META-INF/jars/yumi-mc-foundation-${yumi_version}.jar",
+      "isObfuscated": false
+    },
+    {
+      "identifier": {
+        "group": "folk.sisby",
+        "artifact": "kaleido-config"
+      },
+      "version": {
+        "range": "[${kaleido_version},)",
+        "artifactVersion": "${kaleido_version}"
+      },
+      "path": "META-INF/jars/kaleido-config-${kaleido_version}.jar",
+      "isObfuscated": false
+    }
+  ]
+}

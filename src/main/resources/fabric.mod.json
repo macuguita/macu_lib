@@ -1,0 +1,35 @@
+{
+  "schemaVersion": 1,
+  "id": "macu_lib",
+  "version": "${version}",
+  "name": "macu Lib",
+  "description": "Common library for my mods",
+  "authors": [
+    "macuguita"
+  ],
+  "contact": {
+    "homepage": "https://macuguita.com/",
+    "sources": "https://github.com/macuguita/macu_lib/"
+  },
+  "license": "EUPL-1.2",
+  "icon": "assets/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "yumi:init": [
+      "com.macuguita.lib.impl.MacuLib"
+    ],
+    "yumi:client_init": [
+      "com.macuguita.lib.impl.client.MacuLibClient"
+    ]
+  },
+  "mixins": [
+    "macu_lib.mixins.json"
+  ],
+  "accessWidener": "macu_lib.classtweaker",
+  "depends": {
+    "fabricloader": ">=0.19.2",
+    "minecraft": "${minecraft_fabric_version_range}",
+    "fabric-api": "*",
+    "yumi_mc_core": ">=${yumi_version}"
+  }
+}

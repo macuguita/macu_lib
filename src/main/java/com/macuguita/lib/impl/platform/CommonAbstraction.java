@@ -53,6 +53,8 @@ public interface CommonAbstraction {
     }
 
     // Events
+    // TODO: This is definitely not a good way of registering them.
+    //  I can't think of anything better
     void registerServerStartingEvent(Event<Identifier, ServerStartingEvent> event);
 
     void registerServerStartedEvent(Event<Identifier, ServerStartedEvent> event);

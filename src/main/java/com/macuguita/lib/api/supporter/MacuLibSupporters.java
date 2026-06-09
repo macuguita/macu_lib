@@ -4,7 +4,7 @@
  * Licensed under the EUPL-1.2
  * SPDX-License-Identifier: EUPL-1.2
  */
-package com.macuguita.lib.api;
+package com.macuguita.lib.api.supporter;
 
 import java.util.UUID;
 
@@ -20,6 +20,7 @@ import com.macuguita.lib.impl.supporters.RoleChecker;
  * <p>The period of time that it takes between fetches can be changed through {@link com.macuguita.lib.impl.MacuLibConfig }
  */
 public final class MacuLibSupporters {
+
     private MacuLibSupporters() {}
 
     /**

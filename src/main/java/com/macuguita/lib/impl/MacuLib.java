@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2026 macuguita
+ * Copyright 2026 macuguita
  *
- * Licensed under the EUPL-1.2
- * SPDX-License-Identifier: EUPL-1.2
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ * the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package com.macuguita.lib.impl;
 
@@ -25,29 +35,27 @@ import com.macuguita.lib.impl.supporters.RoleChecker;
 
 @ApiStatus.Internal
 public class MacuLib implements ModInitializer {
-    public static final String MOD_ID = "macu_lib";
-    public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
+	public static final String MOD_ID = "macu_lib";
+	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static final MacuLibConfig CONFIG =
-        WrappedConfig.createToml(
-            YumiMods.get().getConfigDirectory(), "", MOD_ID, MacuLibConfig.class);
+	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(YumiMods.get().getConfigDirectory(), "", MOD_ID, MacuLibConfig.class);
 
-    @Override
-    public void onInitialize(ModContainer mod) {
-        RoleChecker.init();
+	@Override
+	public void onInitialize(ModContainer mod) {
+		RoleChecker.init();
 
-        registerEvents();
+		registerEvents();
 
-        ServerStoppingEvent.EVENT.register(_ -> RoleChecker.shutdown());
-    }
+		ServerStoppingEvent.EVENT.register(_ -> RoleChecker.shutdown());
+	}
 
-    private void registerEvents() {
-        CommonAbstraction.get().registerServerStartingEvent(ServerStartingEvent.EVENT);
-        CommonAbstraction.get().registerServerStartedEvent(ServerStartedEvent.EVENT);
-        CommonAbstraction.get().registerServerStoppingEvent(ServerStoppingEvent.EVENT);
-        CommonAbstraction.get().registerServerStoppedEvent(ServerStoppedEvent.EVENT);
+	private void registerEvents() {
+		CommonAbstraction.get().registerServerStartingEvent(ServerStartingEvent.EVENT);
+		CommonAbstraction.get().registerServerStartedEvent(ServerStartedEvent.EVENT);
+		CommonAbstraction.get().registerServerStoppingEvent(ServerStoppingEvent.EVENT);
+		CommonAbstraction.get().registerServerStoppedEvent(ServerStoppedEvent.EVENT);
 
-        CommonAbstraction.get().registerPlayerJoinEvent(ServerPlayerJoinEvent.EVENT);
-        CommonAbstraction.get().registerPlayerLeaveEvent(ServerPlayerLeaveEvent.EVENT);
-    }
+		CommonAbstraction.get().registerPlayerJoinEvent(ServerPlayerJoinEvent.EVENT);
+		CommonAbstraction.get().registerPlayerLeaveEvent(ServerPlayerLeaveEvent.EVENT);
+	}
 }

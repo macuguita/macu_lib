@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2026 macuguita
+ * Copyright 2026 macuguita
  *
- * Licensed under the EUPL-1.2
- * SPDX-License-Identifier: EUPL-1.2
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ * the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package com.macuguita.lib.impl.platform;
 
@@ -21,38 +31,35 @@ import com.macuguita.lib.api.event.player.client.ClientPlayerLeaveEvent;
 @ApiStatus.Internal
 public interface ClientAbstraction {
 
-    ClientAbstraction INSTANCE =
-        Util.make(
-            () -> {
-                try {
-                    return (ClientAbstraction)
-                        Class.forName(
-                                "com.macuguita.lib.impl.platform."
-                                    + (CommonAbstraction.IS_FABRIC
-                                    ? "fabric.FabricClientAbstraction"
-                                    : "neoforge.NeoClientAbstraction"))
-                            .getField("INSTANCE")
-                            .get(null);
-                } catch (Throwable e) {
-                    throw new RuntimeException(e);
-                }
-            });
+	ClientAbstraction INSTANCE =
+		Util.make(
+			() -> {
+				try {
+					return (ClientAbstraction)
+						Class.forName(
+								"com.macuguita.lib.impl.platform."
+									+ (CommonAbstraction.IS_FABRIC
+									? "fabric.FabricClientAbstraction"
+									: "neoforge.NeoClientAbstraction"))
+							.getField("INSTANCE")
+							.get(null);
+				} catch (Throwable e) {
+					throw new RuntimeException(e);
+				}
+			});
 
-    static ClientAbstraction get() {
-        return INSTANCE;
-    }
+	static ClientAbstraction get() {
+		return INSTANCE;
+	}
 
-    // @formatter:off
-  void registerPlayerJoinEvent(Event<Identifier, ClientPlayerJoinEvent> event);
+	void registerPlayerJoinEvent(Event<Identifier, ClientPlayerJoinEvent> event);
 
-  void registerPlayerLeaveEvent(Event<Identifier, ClientPlayerLeaveEvent> event);
+	void registerPlayerLeaveEvent(Event<Identifier, ClientPlayerLeaveEvent> event);
 
-  // @formatter:on
+	<T extends CustomPacketPayload> void registerGlobalReceiverPlay(
+		CustomPacketPayload.Type<T> type, PlayPacketReceiver<T> receiver);
 
-    <T extends CustomPacketPayload> void registerGlobalReceiverPlay(
-        CustomPacketPayload.Type<T> type, PlayPacketReceiver<T> receiver);
-
-    interface PlayPacketReceiver<T> {
-        void receive(Minecraft minecraft, LocalPlayer player, T payload);
-    }
+	interface PlayPacketReceiver<T> {
+		void receive(Minecraft minecraft, LocalPlayer player, T payload);
+	}
 }

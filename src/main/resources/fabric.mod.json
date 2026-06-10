@@ -5,11 +5,17 @@
   "name": "macu Lib",
   "description": "Common library for my mods",
   "authors": [
-    "macuguita"
+    {
+      "name": "macuguita",
+      "contact": {
+        "github": "https://github.com/macuguita"
+      }
+    }
   ],
   "contact": {
     "homepage": "https://macuguita.com/",
-    "sources": "https://github.com/macuguita/macu_lib/"
+    "sources": "https://github.com/macuguita/macu_lib/",
+    "issues": "https://github.com/macuguita/macu_lib/issues"
   },
   "license": "EUPL-1.2",
   "icon": "assets/icon.png",
@@ -31,5 +37,11 @@
     "minecraft": "${minecraft_fabric_version_range}",
     "fabric-api": "*",
     "yumi_mc_core": ">=${yumi_version}"
+  },
+  "custom": {
+    "modmenu": {
+      "badges": [ "library" ],
+      "update_checker": true
+    }
   }
 }

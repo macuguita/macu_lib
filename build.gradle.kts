@@ -1,34 +1,38 @@
 plugins {
-	`maven-publish`
-	id("macu-lib.root")
-	alias(libs.plugins.dotenv)
-	alias(libs.plugins.mod.publish)
+    `maven-publish`
+    id("macu-lib.root")
+    alias(libs.plugins.dotenv)
+    alias(libs.plugins.mod.publish)
 }
 
 repositories {
     exclusiveContent {
         forRepository {
-            maven {
-                name = "Macuguita maven"
-                url = uri("https://maven.macuguita.com/releases")
-            }
+            maven("https://maven.macuguita.com/releases")
         }
         filter {
             includeGroupAndSubgroups("com.macuguita")
-            includeGroupAndSubgroups("folk.sisby")
-            includeGroupAndSubgroups("org.quiltmc")
+//            includeGroupAndSubgroups("folk.sisby")
+//            includeGroupAndSubgroups("org.quiltmc")
         }
     }
     exclusiveContent {
         forRepository {
-            maven {
-                name = "Terraformers (Mod menu)"
-                url = uri("https://maven.terraformersmc.com/releases/")
-            }
+            maven("https://repo.sleeping.town/")
         }
-        filter {
-            includeGroupAndSubgroups("com.terraformersmc")
+        filter { includeGroupAndSubgroups("folk.sisby") }
+    }
+    exclusiveContent {
+        forRepository {
+            maven("https://maven.quiltmc.org/repository/release")
         }
+        filter { includeGroupAndSubgroups("org.quiltmc") }
+    }
+    exclusiveContent {
+        forRepository {
+            maven("https://maven.terraformersmc.com/releases/")
+        }
+        filter { includeGroupAndSubgroups("com.terraformersmc") }
     }
 }
 
@@ -44,7 +48,7 @@ val testMod: SourceSet = sourceSets.create("testMod") {
 }
 
 loom {
-	accessWidenerPath.set(project.file("src/main/resources/macu_lib.classtweaker"))
+    accessWidenerPath.set(project.file("src/main/resources/macu_lib.classtweaker"))
 
     runs {
         register("testModClient") {
@@ -74,8 +78,8 @@ val testModJar = tasks.register<Jar>("testModJar") {
 }
 
 dependencies {
-	implementation(libs.kaleido.config)
-	include(libs.kaleido.config)
+    implementation(libs.kaleido.config)
+    include(libs.kaleido.config)
 
     fabricRuntimeOnly(libs.modmenu)
 
@@ -87,44 +91,44 @@ dependencies {
 }
 
 tasks.processResources {
-	inputs.properties(
-		"version" to version,
-		"yumi_version" to libs.versions.yumi.get(),
-		"kaleido_version" to libs.versions.kaleido.get(),
-		"minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
-		"minecraft_neoforge_version_range" to prop("deps.minecraft_neoforge_version_range")
-	)
+    inputs.properties(
+        "version" to version,
+        "yumi_version" to libs.versions.yumi.get(),
+        "kaleido_version" to libs.versions.kaleido.get(),
+        "minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
+        "minecraft_neoforge_version_range" to prop("deps.minecraft_neoforge_version_range")
+    )
 
-	filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/jarjar/metadata.json")) {
-		expand(
-			"version" to version,
-			"yumi_version" to libs.versions.yumi.get(),
-			"kaleido_version" to libs.versions.kaleido.get(),
-			"minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
-			"minecraft_neoforge_version_range" to prop("deps.minecraft_neoforge_version_range")
-		)
-	}
+    filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/jarjar/metadata.json")) {
+        expand(
+            "version" to version,
+            "yumi_version" to libs.versions.yumi.get(),
+            "kaleido_version" to libs.versions.kaleido.get(),
+            "minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
+            "minecraft_neoforge_version_range" to prop("deps.minecraft_neoforge_version_range")
+        )
+    }
 }
 
 publishing {
-	publications {
-		create<MavenPublication>("mavenJava") {
-			groupId = prop("props.maven_group")
-			artifactId = prop("props.mod_id")
-			version = libs.versions.mod.get() + "+${libs.versions.minecraft.get()}"
-			from(components["java"])
-		}
-	}
-	repositories {
-		mavenLocal()
-		maven {
-			name = "macuguita"
-			url = uri("https://maven.macuguita.com/releases")
+    publications {
+        create<MavenPublication>("mavenJava") {
+            groupId = prop("props.maven_group")
+            artifactId = prop("props.mod_id")
+            version = libs.versions.mod.get() + "+${libs.versions.minecraft.get()}"
+            from(components["java"])
+        }
+    }
+    repositories {
+        mavenLocal()
+        maven {
+            name = "macuguita"
+            url = uri("https://maven.macuguita.com/releases")
 
-			credentials {
-				username = env.MAVEN_USERNAME.orNull()
-				password = env.MAVEN_KEY.orNull()
-			}
-		}
-	}
+            credentials {
+                username = env.MAVEN_USERNAME.orNull()
+                password = env.MAVEN_KEY.orNull()
+            }
+        }
+    }
 }

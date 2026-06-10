@@ -1,16 +1,19 @@
 modLoader = "javafml"
 loaderVersion = "[2,)"
 license = "EUPL-1.2"
+issueTrackerURL = "https://github.com/macuguita/macu_lib/issues"
 
 [[mods]]
 modId = "macu_lib"
-displayName = "macu Lib"
 version = "${version}"
-displayURL = ""
+displayName = "macu Lib"
+description = '''Common library for my mods'''
+authors = "macuguita"
 logoFile = "assets/icon.png"
 logoBlur = false
-authors = "macuguita"
-description = '''Common library for my mods'''
+displayURL = "https://macuguita.com"
+issueTrackerURL = "https://github.com/macuguita/macu_lib/issues"
+updateJSONURL = "https://api.modrinth.com/updates/XnLNz8og/forge_updates.json?neoforge=only"
 
 [[accessTransformers]]
 file = "META-INF/accesstransformer.cfg"

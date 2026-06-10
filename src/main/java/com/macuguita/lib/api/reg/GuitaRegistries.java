@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2026 macuguita
+ * Copyright 2026 macuguita
  *
- * Licensed under the EUPL-1.2
- * SPDX-License-Identifier: EUPL-1.2
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ * the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package com.macuguita.lib.api.reg;
 
@@ -29,35 +39,35 @@ import com.macuguita.lib.impl.reg.GuitaRegistryChild;
  */
 public final class GuitaRegistries {
 
-    private GuitaRegistries() {}
+	private GuitaRegistries() {}
 
-    /**
-     * Creates a <strong>child registry</strong> of the given parent {@link GuitaRegistry}.
-     *
-     * <p>Entries added to this child registry are automatically added to the parent, which is useful
-     * for logically grouping registry entries without duplicating code.
-     *
-     * @param parent The parent {@link GuitaRegistry} to which this child will belong.
-     * @param <T>    The type of entries stored in the registry.
-     * @return A new {@link GuitaRegistry} instance representing the child registry.
-     */
-    public static <T> GuitaRegistry<T> create(GuitaRegistry<T> parent) {
-        return new GuitaRegistryChild<>(parent);
-    }
+	/**
+	 * Creates a <strong>child registry</strong> of the given parent {@link GuitaRegistry}.
+	 *
+	 * <p>Entries added to this child registry are automatically added to the parent, which is useful
+	 * for logically grouping registry entries without duplicating code.
+	 *
+	 * @param parent The parent {@link GuitaRegistry} to which this child will belong.
+	 * @param <T>    The type of entries stored in the registry.
+	 * @return A new {@link GuitaRegistry} instance representing the child registry.
+	 */
+	public static <T> GuitaRegistry<T> create(GuitaRegistry<T> parent) {
+		return new GuitaRegistryChild<>(parent);
+	}
 
-    /**
-     * Creates a new {@link GuitaRegistry} for a given Minecraft {@link Registry}.
-     *
-     * <p>This allows mod-specific registries to be created that integrate with Minecraft's built-in
-     * registries while keeping entries namespaced to the mod.
-     *
-     * @param registry The Minecraft {@link Registry} to wrap, e.g., from {@link
-     *                 net.minecraft.core.registries.BuiltInRegistries}.
-     * @param id       The namespace of the mod creating this registry.
-     * @param <T>      The type of entries stored in the registry.
-     * @return A new {@link GuitaRegistry} instance.
-     */
-    public static <T> GuitaRegistry<T> create(Registry<T> registry, String id) {
-        return CommonAbstraction.get().createGuitaRegistry(registry, id);
-    }
+	/**
+	 * Creates a new {@link GuitaRegistry} for a given Minecraft {@link Registry}.
+	 *
+	 * <p>This allows mod-specific registries to be created that integrate with Minecraft's built-in
+	 * registries while keeping entries namespaced to the mod.
+	 *
+	 * @param registry The Minecraft {@link Registry} to wrap, e.g., from {@link
+	 *                 net.minecraft.core.registries.BuiltInRegistries}.
+	 * @param id       The namespace of the mod creating this registry.
+	 * @param <T>      The type of entries stored in the registry.
+	 * @return A new {@link GuitaRegistry} instance.
+	 */
+	public static <T> GuitaRegistry<T> create(Registry<T> registry, String id) {
+		return CommonAbstraction.get().createGuitaRegistry(registry, id);
+	}
 }

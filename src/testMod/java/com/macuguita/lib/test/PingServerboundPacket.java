@@ -1,8 +1,18 @@
 /*
- * Copyright (c) 2026 macuguita
+ * Copyright 2026 macuguita
  *
- * Licensed under the EUPL-1.2
- * SPDX-License-Identifier: EUPL-1.2
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ * the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
  */
 package com.macuguita.lib.test;
 
@@ -12,15 +22,15 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 
 public record PingServerboundPacket(int value) implements CustomPacketPayload {
 
-    public static final CustomPacketPayload.Type<PingServerboundPacket> TYPE =
-        new Type<>(MacuLibTest.id("ping_c2s"));
+	public static final CustomPacketPayload.Type<PingServerboundPacket> TYPE =
+		new Type<>(MacuLibTest.id("ping_c2s"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PingServerboundPacket> CODEC =
-        StreamCodec.of(
-            (buf, pkt) -> buf.writeInt(pkt.value()), buf -> new PingServerboundPacket(buf.readInt()));
+	public static final StreamCodec<RegistryFriendlyByteBuf, PingServerboundPacket> CODEC =
+		StreamCodec.of(
+			(buf, pkt) -> buf.writeInt(pkt.value()), buf -> new PingServerboundPacket(buf.readInt()));
 
-    @Override
-    public Type<? extends CustomPacketPayload> type() {
-        return TYPE;
-    }
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
+	}
 }

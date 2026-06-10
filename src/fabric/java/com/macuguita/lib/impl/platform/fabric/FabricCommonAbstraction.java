@@ -24,11 +24,13 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
+import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -76,6 +78,12 @@ public record FabricCommonAbstraction() implements CommonAbstraction {
 	public void registerPlayerLeaveEvent(Event<Identifier, ServerPlayerLeaveEvent> event) {
 		ServerPlayerEvents.LEAVE.register(
 			player -> event.invoker().playerLeave(player));
+	}
+
+	@Override
+	public void registerModifyCreativeTabOutputEvent(Event<Identifier, ModifyCreativeTabOutputEvent> event) {
+		CreativeModeTabEvents.MODIFY_OUTPUT_ALL.register(
+			(tab, output) -> event.invoker().modifyOutput(tab, output));
 	}
 
 	@Override

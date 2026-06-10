@@ -28,6 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
 
+import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -76,6 +77,8 @@ public interface CommonAbstraction {
 	void registerPlayerJoinEvent(Event<Identifier, ServerPlayerJoinEvent> event);
 
 	void registerPlayerLeaveEvent(Event<Identifier, ServerPlayerLeaveEvent> event);
+
+	void registerModifyCreativeTabOutputEvent(Event<Identifier, ModifyCreativeTabOutputEvent> event);
 
 	<T> GuitaRegistry<T> createGuitaRegistry(Registry<T> registry, String id);
 

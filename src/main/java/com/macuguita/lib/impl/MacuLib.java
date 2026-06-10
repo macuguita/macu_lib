@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -57,5 +58,7 @@ public class MacuLib implements ModInitializer {
 
 		CommonAbstraction.get().registerPlayerJoinEvent(ServerPlayerJoinEvent.EVENT);
 		CommonAbstraction.get().registerPlayerLeaveEvent(ServerPlayerLeaveEvent.EVENT);
+
+		CommonAbstraction.get().registerModifyCreativeTabOutputEvent(ModifyCreativeTabOutputEvent.EVENT);
 	}
 }

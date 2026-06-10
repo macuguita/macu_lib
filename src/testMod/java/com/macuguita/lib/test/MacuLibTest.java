@@ -24,14 +24,12 @@ import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.world.item.BlockItem;
-import net.minecraft.world.item.CreativeModeTab;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 
+import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.network.PacketDistributor;
 import com.macuguita.lib.api.network.PacketRegistry;
@@ -61,6 +59,9 @@ public class MacuLibTest {
 			() ->
 				CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
 					.icon(() -> new ItemStack(Blocks.DIAMOND_BLOCK))
+					.displayItems(((parameters, output) -> {
+						output.accept(Items.DIRT);
+					}))
 					.title(Component.literal("hello"))
 					.build());
 
@@ -72,7 +73,7 @@ public class MacuLibTest {
 					BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
 						.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))));
 
-	// Have to do this because i cannot use a yumi entrypoint on the test mod
+	// Have to do this because I cannot use a yumi entrypoint on the test mod
 	// since I need to test how normal mods would behave.
 	public static void init() {
 		ITEMS.register(
@@ -97,6 +98,13 @@ public class MacuLibTest {
 		BLOCKS.init();
 		ITEMS.init();
 		CREATIVE_TAB.init();
+
+		ModifyCreativeTabOutputEvent.EVENT.register((tab, output) -> {
+			if (tab.equals(TAB.get())) {
+				BLOCKS.stream().forEach((regEntry) ->
+					output.accept(regEntry.get().asItem()));
+			}
+		});
 
 		ServerPlayerJoinEvent.EVENT.register(
 			(listener) -> {

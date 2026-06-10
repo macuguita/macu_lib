@@ -32,9 +32,11 @@ import net.minecraft.server.level.ServerPlayer;
 
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
+import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -90,6 +92,14 @@ public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
 		NeoForge.EVENT_BUS.addListener(PlayerEvent.PlayerLoggedOutEvent.class, e -> {
 			event.invoker().playerLeave((ServerPlayer) e.getEntity());
 		});
+	}
+
+	@Override
+	public void registerModifyCreativeTabOutputEvent(Event<Identifier, ModifyCreativeTabOutputEvent> event) {
+		addLateAction(bus ->
+			bus.addListener(BuildCreativeModeTabContentsEvent.class, e -> {
+				event.invoker().modifyOutput(e.getTab(), e);
+			}));
 	}
 
 	@Override

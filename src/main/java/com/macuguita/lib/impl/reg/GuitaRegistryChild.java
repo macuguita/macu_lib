@@ -22,6 +22,7 @@ import java.util.function.Supplier;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
+import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
 import com.macuguita.lib.api.reg.GuitaRegistry;
 import com.macuguita.lib.api.reg.GuitaRegistryEntry;
 
@@ -44,6 +45,11 @@ public class GuitaRegistryChild<T> implements GuitaRegistry<T> {
 	@Override
 	public <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier) {
 		return this.entries.add(parent.register(id, supplier));
+	}
+
+	@Override
+	public GuitaHolderRegistryEntry<T> registerForHolder(String id, Supplier<T> supplier) {
+		return this.entries.add(parent.registerForHolder(id, supplier));
 	}
 
 	@Override

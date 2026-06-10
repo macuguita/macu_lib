@@ -24,6 +24,7 @@ import org.jetbrains.annotations.ApiStatus;
 import net.minecraft.core.Registry;
 import net.minecraft.resources.Identifier;
 
+import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
 import com.macuguita.lib.api.reg.GuitaRegistry;
 import com.macuguita.lib.api.reg.GuitaRegistryEntry;
 import com.macuguita.lib.impl.reg.GuitaRegistryEntries;
@@ -49,6 +50,13 @@ public class FabricGuitaRegistry<T> implements GuitaRegistry<T> {
 	public <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier) {
 		return entries.add(
 			FabricGuitaRegistryEntry.of(
+				this.registry, Identifier.fromNamespaceAndPath(this.id, id), supplier));
+	}
+
+	@Override
+	public GuitaHolderRegistryEntry<T> registerForHolder(String id, Supplier<T> supplier) {
+		return entries.add(
+			FabricGuitaHolderRegistryEntry.of(
 				this.registry, Identifier.fromNamespaceAndPath(this.id, id), supplier));
 	}
 

@@ -26,6 +26,7 @@ import net.minecraft.core.Registry;
 import net.neoforged.fml.ModLoadingContext;
 import net.neoforged.neoforge.registries.DeferredRegister;
 
+import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
 import com.macuguita.lib.api.reg.GuitaRegistry;
 import com.macuguita.lib.api.reg.GuitaRegistryEntry;
 import com.macuguita.lib.impl.reg.GuitaRegistryEntries;
@@ -48,6 +49,11 @@ public class NeoForgeGuitaRegistry<T> implements GuitaRegistry<T> {
 	@Override
 	public <I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier) {
 		return this.entries.add(new NeoForgeGuitaRegistryEntry<>(register.register(id, supplier)));
+	}
+
+	@Override
+	public GuitaHolderRegistryEntry<T> registerForHolder(String id, Supplier<T> supplier) {
+		return this.entries.add(new NeoForgeGuitaHolderRegistryEntry<>(register.register(id, supplier)));
 	}
 
 	@Override

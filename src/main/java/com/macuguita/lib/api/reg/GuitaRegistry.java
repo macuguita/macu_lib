@@ -58,6 +58,18 @@ public interface GuitaRegistry<T> {
 	<I extends T> GuitaRegistryEntry<I> register(String id, Supplier<I> supplier);
 
 	/**
+	 * Registers a new entry in this registry, returning a {@link GuitaHolderRegistryEntry}.
+	 *
+	 * <p>The entry is associated with the given {@code id} and lazily supplied via the provided
+	 * {@link Supplier}.
+	 *
+	 * @param id       The name for this entry (e.g., {@code "item_name"}).
+	 * @param supplier A {@link Supplier} that provides the object when needed.
+	 * @return A {@link GuitaHolderRegistryEntry} representing the newly registered entry.
+	 */
+	GuitaHolderRegistryEntry<T> registerForHolder(String id, Supplier<T> supplier);
+
+	/**
 	 * Returns a {@link Collection} of all entries in this registry.
 	 *
 	 * @return A collection of {@link GuitaRegistryEntry} objects.

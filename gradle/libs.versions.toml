@@ -12,6 +12,8 @@ kaleido = "0.3.3+1.3.2"
 
 mod = "3.0.0"
 
+spotless = "8.5.1"
+
 [libraries]
 minecraft = { module = "com.mojang:minecraft", version.ref = "minecraft" }
 
@@ -25,9 +27,12 @@ yumi-foundation = { module = "dev.yumi.mc.core:yumi-mc-foundation", version.ref 
 
 kaleido-config = { module = "folk.sisby:kaleido-config", version.ref = "kaleido" }
 
+modmenu = { module = "com.terraformersmc:modmenu", version = "18.0.0-beta.1" }
+
 gradle-loom = { module = "fabric-loom:fabric-loom.gradle.plugin", version = "1.16.+" }
+gradle-spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }
 
 [plugins]
 dotenv = { id = "co.uzzu.dotenv.gradle", version = "4.0.0" }
 mod-publish = { id = "me.modmuss50.mod-publish-plugin", version = "2.0.0-beta.1" }
-spotless = { id = "com.diffplug.spotless", version = "8.5.1" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }

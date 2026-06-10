@@ -1,14 +1,40 @@
 plugins {
 	`maven-publish`
-	id("mod")
+	id("macu-lib.root")
 	alias(libs.plugins.dotenv)
 	alias(libs.plugins.mod.publish)
-	alias(libs.plugins.spotless)
+}
+
+repositories {
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Macuguita maven"
+                url = uri("https://maven.macuguita.com/releases")
+            }
+        }
+        filter {
+            includeGroupAndSubgroups("com.macuguita")
+            includeGroupAndSubgroups("folk.sisby")
+            includeGroupAndSubgroups("org.quiltmc")
+        }
+    }
+    exclusiveContent {
+        forRepository {
+            maven {
+                name = "Terraformers (Mod menu)"
+                url = uri("https://maven.terraformersmc.com/releases/")
+            }
+        }
+        filter {
+            includeGroupAndSubgroups("com.terraformersmc")
+        }
+    }
 }
 
 fun prop(name: String): String = providers.gradleProperty(name).get()
 
-val testMod: SourceSet by sourceSets.creating {
+val testMod: SourceSet = sourceSets.create("testMod") {
     this.compileClasspath += sourceSets.main.get().compileClasspath
     this.runtimeClasspath += sourceSets.main.get().runtimeClasspath
 
@@ -47,15 +73,11 @@ val testModJar = tasks.register<Jar>("testModJar") {
     archiveClassifier.set("testmod")
 }
 
-fabricApi {
-	configureDataGeneration {
-		client = true
-	}
-}
-
 dependencies {
 	implementation(libs.kaleido.config)
 	include(libs.kaleido.config)
+
+    fabricRuntimeOnly(libs.modmenu)
 
     "testModCompileOnly"(libs.fabric.loader)
     "testModCompileOnly"(libs.fabric.api)
@@ -82,27 +104,6 @@ tasks.processResources {
 			"minecraft_neoforge_version_range" to prop("deps.minecraft_neoforge_version_range")
 		)
 	}
-}
-
-spotless {
-    lineEndings = com.diffplug.spotless.LineEnding.UNIX
-    java {
-        licenseHeaderFile(rootProject.file("HEADER"))
-        removeUnusedImports()
-        importOrder(
-            "java",
-            "javax",
-            "",
-            "net.minecraft",
-            "net.fabricmc",
-            "net.neoforged",
-            "",
-            "com.mojang",
-            "",
-            "com.macuguita"
-        )
-        trimTrailingWhitespace()
-    }
 }
 
 publishing {

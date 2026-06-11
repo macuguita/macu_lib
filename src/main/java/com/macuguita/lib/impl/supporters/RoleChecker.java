@@ -27,12 +27,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.util.Util;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
@@ -46,50 +48,26 @@ public final class RoleChecker {
 	private static final int CACHE_REFRESH_INTERVAL_MINUTES = MacuLib.CONFIG.supporters.roleCheckerMinutesInterval;
 
 	private static Map<String, Set<UUID>> cachedRoles = new HashMap<>();
-	private static @Nullable ScheduledExecutorService executorService;
+	private static boolean running = false;
 
 	private RoleChecker() {}
 
 	public static void init() {
-		fetchRoles();
-
-		if (CACHE_REFRESH_INTERVAL_MINUTES > 0) {
-			executorService =
-				Executors.newScheduledThreadPool(
-					1,
-					r -> {
-						Thread thread = new Thread(r);
-						thread.setDaemon(true);
-						return thread;
-					});
-
-			executorService.scheduleAtFixedRate(
-				RoleChecker::fetchRoles,
-				CACHE_REFRESH_INTERVAL_MINUTES,
-				CACHE_REFRESH_INTERVAL_MINUTES,
-				TimeUnit.MINUTES);
-			MacuLib.LOGGER.info(
-				"RoleChecker initialized with cache refresh every "
-					+ CACHE_REFRESH_INTERVAL_MINUTES
-					+ " minutes.");
-		} else {
-			MacuLib.LOGGER.info("RoleChecker initialized with single fetch (no periodic refresh).");
-		}
+		running = true;
+		CompletableFuture.runAsync(RoleChecker::fetchRoles, Util.ioPool())
+			.thenRunAsync(RoleChecker::scheduleRefresh, Util.ioPool());
 	}
 
-	public static void shutdown() {
-		if (executorService != null && !executorService.isShutdown()) {
-			executorService.shutdown();
-			try {
-				if (!executorService.awaitTermination(5, TimeUnit.SECONDS)) {
-					executorService.shutdownNow();
-				}
-				MacuLib.LOGGER.info("RoleChecker shut down successfully.");
-			} catch (InterruptedException e) {
-				executorService.shutdownNow();
-				Thread.currentThread().interrupt();
-			}
+	private static void scheduleRefresh() {
+		if (!running || CACHE_REFRESH_INTERVAL_MINUTES <= 0) return;
+		try {
+			TimeUnit.MINUTES.sleep(CACHE_REFRESH_INTERVAL_MINUTES);
+		} catch (InterruptedException e) {
+			Thread.currentThread().interrupt();
+			return;
 		}
+		CompletableFuture.runAsync(RoleChecker::fetchRoles, Util.ioPool())
+			.thenRunAsync(RoleChecker::scheduleRefresh, Util.ioPool());
 	}
 
 	// Package-private — only MacuLibSupporters (via same package trick) or impl classes call these

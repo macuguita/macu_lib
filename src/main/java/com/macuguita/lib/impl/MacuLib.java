@@ -46,8 +46,6 @@ public class MacuLib implements ModInitializer {
 		RoleChecker.init();
 
 		registerEvents();
-
-		ServerStoppingEvent.EVENT.register(_ -> RoleChecker.shutdown());
 	}
 
 	private void registerEvents() {

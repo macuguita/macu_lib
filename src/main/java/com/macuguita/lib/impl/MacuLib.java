@@ -20,10 +20,11 @@ import dev.yumi.mc.core.api.ModContainer;
 import dev.yumi.mc.core.api.YumiMods;
 import dev.yumi.mc.core.api.entrypoint.ModInitializer;
 import folk.sisby.kaleido.api.WrappedConfig;
-import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.minecraft.resources.Identifier;
 
 import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
@@ -32,6 +33,9 @@ import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppingEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerLeaveEvent;
+import com.macuguita.lib.api.network.PacketRegistry;
+import com.macuguita.lib.impl.persista.C2SDataUpdatedPacket;
+import com.macuguita.lib.impl.persista.S2CDataUpdatedPacket;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
 import com.macuguita.lib.impl.supporters.RoleChecker;
 
@@ -48,9 +52,12 @@ public class MacuLib implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
-		RoleChecker.init();
+		RoleChecker.init(mod);
 
 		registerEvents();
+
+		PacketRegistry.registerServerboundPlayPacket(C2SDataUpdatedPacket.TYPE, C2SDataUpdatedPacket.CODEC, C2SDataUpdatedPacket::handle);
+		PacketRegistry.registerClientboundPlayPacket(S2CDataUpdatedPacket.TYPE, S2CDataUpdatedPacket.CODEC);
 	}
 
 	private void registerEvents() {

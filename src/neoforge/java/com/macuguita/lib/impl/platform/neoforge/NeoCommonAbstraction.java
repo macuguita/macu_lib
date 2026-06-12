@@ -31,7 +31,9 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 
+import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
+import net.neoforged.fml.loading.FMLEnvironment;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -51,8 +53,7 @@ import com.macuguita.lib.impl.platform.neoforge.creativetab.NeoForgeGuitaCreativ
 import com.macuguita.lib.impl.platform.neoforge.reg.NeoForgeGuitaRegistry;
 
 @ApiStatus.Internal
-public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
-	implements CommonAbstraction {
+public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions) implements CommonAbstraction {
 	public static @Nullable IEventBus EVENT_BUS = null;
 	public static final NeoCommonAbstraction INSTANCE = new NeoCommonAbstraction(new ArrayList<>());
 
@@ -142,6 +143,11 @@ public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
 						});
 			})
 		);
+	}
+
+	@Override
+	public boolean isClient() {
+		return FMLEnvironment.getDist() == Dist.CLIENT;
 	}
 
 	public void addLateAction(Consumer<IEventBus> consumer) {

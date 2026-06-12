@@ -26,11 +26,13 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
 
+import net.fabricmc.api.EnvType;
 import net.fabricmc.fabric.api.creativetab.v1.CreativeModeTabEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.fabricmc.loader.api.FabricLoader;
 
 import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
@@ -121,5 +123,10 @@ public record FabricCommonAbstraction() implements CommonAbstraction {
 		CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> codec
 	) {
 		PayloadTypeRegistry.clientboundPlay().register(type, codec);
+	}
+
+	@Override
+	public boolean isClient() {
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
 	}
 }

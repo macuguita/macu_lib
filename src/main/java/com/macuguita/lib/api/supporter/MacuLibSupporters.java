@@ -29,6 +29,7 @@ import com.macuguita.lib.impl.supporters.RoleChecker;
  * <p>Role data is periodically fetched from a remote source and cached in memory.
  * <p>The period of time that it takes between fetches can be changed through {@link com.macuguita.lib.impl.MacuLibConfig }
  */
+@Deprecated(forRemoval = true)
 public final class MacuLibSupporters {
 
 	private MacuLibSupporters() {}

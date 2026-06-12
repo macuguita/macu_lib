@@ -16,16 +16,13 @@
  */
 package com.macuguita.lib.impl.supporters;
 
-import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ConcurrentHashMap;
 
+import com.google.gson.JsonParser;
 import it.unimi.dsi.fastutil.objects.Object2ObjectLinkedOpenHashMap;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -35,7 +32,10 @@ import net.minecraft.client.renderer.texture.DynamicTexture;
 import net.minecraft.resources.Identifier;
 
 import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.serialization.Codec;
 
+import com.macuguita.lib.api.persista.DataToken;
+import com.macuguita.lib.api.persista.PersistaAPI;
 import com.macuguita.lib.impl.MacuLib;
 
 @ApiStatus.Internal
@@ -43,109 +43,128 @@ public final class CapeManager {
 
 	private static final String CAPE_BASE_URL =
 		"https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/capes/";
+	private static final String CAPE_LIST_URL =
+		"https://api.github.com/repos/macuguita/macuguita-website/contents/capes";
+	private static final int TIMEOUT_MS = 5000;
+
+	public static final DataToken<List<String>> ENTITLEMENTS = PersistaAPI.register(
+		Identifier.fromNamespaceAndPath("persista", "entitlements"),
+		Codec.STRING.listOf().fieldOf("values").codec()
+	);
+
+	public static final DataToken<SupporterData> SUPPORTER_DATA = PersistaAPI.register(
+		Identifier.fromNamespaceAndPath("macu_lib", "supporter"),
+		SupporterData.CODEC
+	);
 
 	private static final Map<String, Identifier> LOADED_CAPES = new Object2ObjectLinkedOpenHashMap<>();
 	private static final Set<String> LOADING_CAPES = ConcurrentHashMap.newKeySet();
-	private static final int TIMEOUT_MS = 5000;
+
+	private static volatile List<String> availableCapes = List.of();
 
 	private CapeManager() {}
 
-	public static @Nullable Identifier getPlayerCape(UUID playerUUID) {
-		String role = RoleChecker.getPlayerRole(playerUUID);
-
-		if (role == null) {
-			return null;
-		}
-
-		return getCapeForRole(role);
+	public static boolean isSupporter(UUID playerId) {
+		return ENTITLEMENTS.getOrDefault(playerId, List.of())
+			.contains("macu_lib:supporter");
 	}
 
-	public static @Nullable Identifier getCapeForRole(String role) {
-		var capeUrl = CAPE_BASE_URL + role + ".png";
-		return getCape(capeUrl);
+	public static List<String> getAvailableCapes() {
+		return availableCapes;
 	}
 
-	public static boolean hasCape(UUID playerUUID) {
-		return RoleChecker.getPlayerRole(playerUUID) != null;
-	}
+	public static void fetchAvailableCapes() {
+		CompletableFuture.runAsync(() -> {
+			try {
+				var uri = new URI(CAPE_LIST_URL);
+				var connection = (HttpURLConnection) uri.toURL().openConnection();
+				connection.setRequestMethod("GET");
+				connection.setRequestProperty("Accept", "application/vnd.github+json");
+				connection.setConnectTimeout(TIMEOUT_MS);
+				connection.setReadTimeout(TIMEOUT_MS);
+				connection.connect();
 
-	private static @Nullable Identifier getCape(String urlString) {
-		if (LOADED_CAPES.containsKey(urlString)) {
-			return LOADED_CAPES.get(urlString);
-		}
-
-		if (LOADING_CAPES.contains(urlString)) {
-			return null;
-		}
-
-		// Create identifier that matches what ResourceTexture expects
-		// ResourceTexture will look for: namespace:textures/<path>.png
-		// So we register as: namespace:textures/capes/<hash>.png
-		var hash = Integer.toHexString(urlString.hashCode());
-		var filename = "capes/" + hash;
-		var id = MacuLib.id(filename);
-
-		var textureLocation = MacuLib.id("textures/" + filename + ".png");
-
-		LOADING_CAPES.add(urlString);
-
-		CompletableFuture.runAsync(
-			() -> {
-				try {
-					URI uri = new URI(urlString);
-					if (!uri.getScheme().equals("https")) {
-						MacuLib.LOGGER.error("Cape URL must use HTTPS: {}", urlString);
-						LOADING_CAPES.remove(urlString);
-						return;
-					}
-
-					URL url = uri.toURL();
-					var connection = (HttpURLConnection) url.openConnection();
-					connection.setRequestMethod("GET");
-					connection.setConnectTimeout(TIMEOUT_MS);
-					connection.setReadTimeout(TIMEOUT_MS);
-					connection.setDoInput(true);
-					connection.connect();
-
-					int responseCode = connection.getResponseCode();
-					if (responseCode != HttpURLConnection.HTTP_OK) {
-						MacuLib.LOGGER.error(
-							"Failed to fetch cape from {}: HTTP {}", urlString, responseCode);
-						LOADING_CAPES.remove(urlString);
-						return;
-					}
-
-					try (var inputStream = connection.getInputStream()) {
-						var image = NativeImage.read(inputStream);
-
-						if (image.getWidth() != 64 || image.getHeight() != 32) {
-							MacuLib.LOGGER.warn(
-								"Cape texture has unexpected dimensions: {}x{} (expected 64x32)",
-								image.getWidth(),
-								image.getHeight());
-						}
-
-						Minecraft.getInstance()
-							.execute(
-								() -> {
-									var texture =
-										new DynamicTexture(() -> "DynamicCape" + id, image);
-									Minecraft.getInstance()
-										.getTextureManager()
-										.register(textureLocation, texture);
-									LOADED_CAPES.put(urlString, id);
-									LOADING_CAPES.remove(urlString);
-									MacuLib.LOGGER.info(
-										"Successfully loaded cape: {} (registered at: {})",
-										id,
-										textureLocation);
-								});
-					}
-				} catch (Exception e) {
-					MacuLib.LOGGER.error("Failed to load cape from URL: {}", urlString, e);
-					LOADING_CAPES.remove(urlString);
+				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+					MacuLib.LOGGER.error("Failed to fetch cape list: HTTP {}", connection.getResponseCode());
+					return;
 				}
-			});
+
+				var json = new String(connection.getInputStream().readAllBytes());
+				// parse the array of file objects, extract names ending in .png
+				var names = new ArrayList<String>();
+				var arr = JsonParser.parseString(json).getAsJsonArray();
+				for (var el : arr) {
+					var name = el.getAsJsonObject().get("name").getAsString();
+					if (name.endsWith(".png")) {
+						names.add(name.replace(".png", ""));
+					}
+				}
+				availableCapes = List.copyOf(names);
+				MacuLib.LOGGER.info("Loaded {} available capes: {}", availableCapes.size(), availableCapes);
+			} catch (Exception e) {
+				MacuLib.LOGGER.error("Failed to fetch available capes", e);
+			}
+		});
+	}
+
+	public static @Nullable Identifier getPlayerCape(UUID playerId) {
+		if (!isSupporter(playerId)) return null;
+
+		var supporterData = SUPPORTER_DATA.getOrDefault(playerId, SupporterData.EMPTY);
+		if (supporterData.selectedCape() == null) return null;
+
+		return loadCapeTexture(supporterData.selectedCape());
+	}
+
+	public static boolean hasCape(UUID playerId) {
+		return getPlayerCape(playerId) != null;
+	}
+
+	public static void setSelectedCape(String capeName) {
+		SUPPORTER_DATA.setData(new SupporterData(capeName));
+	}
+
+	@Nullable
+	private static Identifier loadCapeTexture(String capeName) {
+		var url = CAPE_BASE_URL + capeName + ".png";
+
+		if (LOADED_CAPES.containsKey(url)) return LOADED_CAPES.get(url);
+		if (LOADING_CAPES.contains(url)) return null;
+
+		var hash = Integer.toHexString(url.hashCode());
+		var id = MacuLib.id("capes/" + hash);
+		var textureLocation = MacuLib.id("textures/capes/" + hash + ".png");
+
+		LOADING_CAPES.add(url);
+
+		CompletableFuture.runAsync(() -> {
+			try {
+				var uri = new URI(url);
+				var connection = (HttpURLConnection) uri.toURL().openConnection();
+				connection.setRequestMethod("GET");
+				connection.setConnectTimeout(TIMEOUT_MS);
+				connection.setReadTimeout(TIMEOUT_MS);
+				connection.connect();
+
+				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+					MacuLib.LOGGER.error("Failed to fetch cape {}: HTTP {}", capeName, connection.getResponseCode());
+					LOADING_CAPES.remove(url);
+					return;
+				}
+
+				var image = NativeImage.read(connection.getInputStream());
+				Minecraft.getInstance().execute(() -> {
+					var texture = new DynamicTexture(() -> "DynamicCape" + id, image);
+					Minecraft.getInstance().getTextureManager().register(textureLocation, texture);
+					LOADED_CAPES.put(url, id);
+					LOADING_CAPES.remove(url);
+					MacuLib.LOGGER.info("Loaded cape: {}", capeName);
+				});
+			} catch (Exception e) {
+				MacuLib.LOGGER.error("Failed to load cape: {}", capeName, e);
+				LOADING_CAPES.remove(url);
+			}
+		});
 
 		return null;
 	}

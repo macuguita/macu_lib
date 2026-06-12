@@ -16,11 +16,10 @@
  */
 package com.macuguita.lib.impl.supporters;
 
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
 import java.net.URI;
-import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -32,49 +31,48 @@ import java.util.concurrent.TimeUnit;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.yumi.mc.core.api.ModContainer;
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.util.Util;
-
 import com.macuguita.lib.impl.MacuLib;
 
+@Deprecated(forRemoval = true)
 @ApiStatus.Internal
 public final class RoleChecker {
 
 	private static final String ROLES_URL =
 		"https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/supporters.json";
-	private static final int CACHE_REFRESH_INTERVAL_MINUTES = MacuLib.CONFIG.supporters.roleCheckerMinutesInterval;
+	private static final int CACHE_REFRESH_INTERVAL_MINUTES =
+		MacuLib.CONFIG.supporters.roleCheckerMinutesInterval;
 
-	private static Map<String, Set<UUID>> cachedRoles = new HashMap<>();
-	private static boolean running = false;
+	private static volatile Map<String, Set<UUID>> cachedRoles = new HashMap<>();
+	private static @Nullable String userAgent;
 
 	private RoleChecker() {}
 
-	public static void init() {
-		running = true;
-		CompletableFuture.runAsync(RoleChecker::fetchRoles, Util.ioPool())
-			.thenRunAsync(RoleChecker::scheduleRefresh, Util.ioPool());
-	}
-
-	private static void scheduleRefresh() {
-		if (!running || CACHE_REFRESH_INTERVAL_MINUTES <= 0) return;
-		try {
-			TimeUnit.MINUTES.sleep(CACHE_REFRESH_INTERVAL_MINUTES);
-		} catch (InterruptedException e) {
-			Thread.currentThread().interrupt();
-			return;
+	public static void init(ModContainer mod) {
+		userAgent = mod.id() + "/" + mod.getVersionString();
+		if (CACHE_REFRESH_INTERVAL_MINUTES > 0) {
+			fetchRoles().thenRunAsync(
+				RoleChecker::fetchAndReschedule,
+				CompletableFuture.delayedExecutor(CACHE_REFRESH_INTERVAL_MINUTES, TimeUnit.MINUTES)
+			);
+		} else {
+			fetchRoles();
 		}
-		CompletableFuture.runAsync(RoleChecker::fetchRoles, Util.ioPool())
-			.thenRunAsync(RoleChecker::scheduleRefresh, Util.ioPool());
 	}
 
-	// Package-private — only MacuLibSupporters (via same package trick) or impl classes call these
+	private static void fetchAndReschedule() {
+		fetchRoles().thenRunAsync(
+			RoleChecker::fetchAndReschedule,
+			CompletableFuture.delayedExecutor(CACHE_REFRESH_INTERVAL_MINUTES, TimeUnit.MINUTES)
+		);
+	}
+
 	public static @Nullable String getPlayerRole(UUID playerUUID) {
 		for (Map.Entry<String, Set<UUID>> entry : cachedRoles.entrySet()) {
-			if (entry.getValue().contains(playerUUID)) {
-				return entry.getKey();
-			}
+			if (entry.getValue().contains(playerUUID)) return entry.getKey();
 		}
 		return null;
 	}
@@ -83,45 +81,46 @@ public final class RoleChecker {
 		return cachedRoles.containsKey(role) && cachedRoles.get(role).contains(playerUUID);
 	}
 
-	private static void fetchRoles() {
-		try {
-			URI uri = new URI(ROLES_URL);
-			URL url = uri.toURL();
+	private static CompletableFuture<Void> fetchRoles() {
+		try (var client = HttpClient.newBuilder()
+			.followRedirects(HttpClient.Redirect.ALWAYS)
+			.build()) {
 
-			if (!url.getProtocol().equals("https")) {
-				MacuLib.LOGGER.error("Roles URL must use HTTPS for security.");
-				throw new RuntimeException("Roles URL must use HTTPS for security.");
-			}
+			var request = HttpRequest.newBuilder(URI.create(ROLES_URL))
+				.setHeader("User-Agent", userAgent)
+				.GET()
+				.build();
 
-			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-			connection.setRequestMethod("GET");
-
-			BufferedReader reader =
-				new BufferedReader(new InputStreamReader(connection.getInputStream()));
-			JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
-			reader.close();
-
-			JsonObject rolesObject = json.getAsJsonObject("roles");
-			Map<String, Set<UUID>> newRoles = new HashMap<>();
-			for (String role : rolesObject.keySet()) {
-				Set<UUID> uuids = new HashSet<>();
-				rolesObject
-					.getAsJsonArray(role)
-					.forEach(
-						element -> {
-							try {
-								uuids.add(UUID.fromString(element.getAsString()));
-							} catch (IllegalArgumentException e) {
-								MacuLib.LOGGER.error("Invalid UUID in roles JSON: {}", element.getAsString());
-							}
-						});
-				newRoles.put(role, uuids);
-			}
-
-			cachedRoles = newRoles;
-			MacuLib.LOGGER.info("Roles cache updated at {}", new Date(System.currentTimeMillis()));
+			return client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+				.thenAccept(response -> {
+					if (response.statusCode() != 200) {
+						MacuLib.LOGGER.error("Failed to fetch roles, status: {}", response.statusCode());
+						return;
+					}
+					try {
+						JsonObject json = JsonParser.parseString(response.body()).getAsJsonObject();
+						JsonObject rolesObject = json.getAsJsonObject("roles");
+						Map<String, Set<UUID>> newRoles = new HashMap<>();
+						for (String role : rolesObject.keySet()) {
+							Set<UUID> uuids = new HashSet<>();
+							rolesObject.getAsJsonArray(role).forEach(element -> {
+								try {
+									uuids.add(UUID.fromString(element.getAsString()));
+								} catch (IllegalArgumentException e) {
+									MacuLib.LOGGER.error("Invalid UUID in roles JSON: {}", element.getAsString());
+								}
+							});
+							newRoles.put(role, uuids);
+						}
+						cachedRoles = newRoles;
+						MacuLib.LOGGER.info("Roles cache updated at {}", new Date(System.currentTimeMillis()));
+					} catch (Exception e) {
+						MacuLib.LOGGER.error("Failed to parse roles JSON", e);
+					}
+				});
 		} catch (Exception e) {
-			MacuLib.LOGGER.error("Failed to fetch roles from URL: " + ROLES_URL, e);
+			MacuLib.LOGGER.error("Exception while fetching roles", e);
+			return CompletableFuture.completedFuture(null);
 		}
 	}
 }

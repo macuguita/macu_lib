@@ -90,6 +90,8 @@ public interface CommonAbstraction {
 	<T extends CustomPacketPayload> void registerClientboundPlayPayload(
 		CustomPacketPayload.Type<T> type, StreamCodec<RegistryFriendlyByteBuf, T> codec);
 
+	boolean isClient();
+
 	interface PlayPacketReceiver<T> {
 		void receive(ServerPlayer player, T payload);
 	}

@@ -16,7 +16,6 @@
  */
 package com.macuguita.lib.mixin;
 
-import java.util.UUID;
 
 import com.llamalad7.mixinextras.injector.ModifyReturnValue;
 import org.spongepowered.asm.mixin.Mixin;

@@ -20,7 +20,6 @@ import java.util.Collection;
 import java.util.function.Supplier;
 import java.util.stream.Stream;
 
-import org.jspecify.annotations.Nullable;
 
 /**
  * Represents a generic registry for storing and managing objects of type {@code T}.

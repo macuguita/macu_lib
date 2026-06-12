@@ -11,7 +11,8 @@
   "mixins": [
   ],
   "client": [
-    "PlayerInfoMixin"
+    "PlayerInfoMixin",
+    "SkinCustomizationScreenMixin"
   ]
 }
 

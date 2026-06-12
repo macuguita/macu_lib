@@ -18,11 +18,13 @@ package com.macuguita.lib.impl.client;
 
 import dev.yumi.mc.core.api.ModContainer;
 import dev.yumi.mc.core.api.entrypoint.client.ClientModInitializer;
+import org.jetbrains.annotations.ApiStatus;
 
 import com.macuguita.lib.api.event.player.client.ClientPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.client.ClientPlayerLeaveEvent;
 import com.macuguita.lib.impl.platform.ClientAbstraction;
 
+@ApiStatus.Internal
 public class MacuLibClient implements ClientModInitializer {
 
 	@Override

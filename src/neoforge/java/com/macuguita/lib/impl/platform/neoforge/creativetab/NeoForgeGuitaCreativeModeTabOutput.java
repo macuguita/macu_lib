@@ -19,6 +19,8 @@ package com.macuguita.lib.impl.platform.neoforge.creativetab;
 import java.util.Collection;
 import java.util.List;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -26,7 +28,6 @@ import net.minecraft.world.level.ItemLike;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 
 import com.macuguita.lib.api.creativetab.GuitaCreativeModeTabOutput;
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class NeoForgeGuitaCreativeModeTabOutput implements GuitaCreativeModeTabOutput {

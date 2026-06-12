@@ -16,11 +16,14 @@
  */
 package com.macuguita.lib.impl.platform.neoforge;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.fml.common.Mod;
 
 import com.macuguita.lib.impl.MacuLib;
 
+@ApiStatus.Internal
 @Mod(MacuLib.MOD_ID)
 public class MacuLibNeoMod {
 

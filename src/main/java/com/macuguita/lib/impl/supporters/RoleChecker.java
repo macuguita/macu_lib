@@ -112,14 +112,14 @@ public final class RoleChecker {
 							try {
 								uuids.add(UUID.fromString(element.getAsString()));
 							} catch (IllegalArgumentException e) {
-								MacuLib.LOGGER.error("Invalid UUID in roles JSON: " + element.getAsString());
+								MacuLib.LOGGER.error("Invalid UUID in roles JSON: {}", element.getAsString());
 							}
 						});
 				newRoles.put(role, uuids);
 			}
 
 			cachedRoles = newRoles;
-			MacuLib.LOGGER.info("Roles cache updated at " + new Date(System.currentTimeMillis()));
+			MacuLib.LOGGER.info("Roles cache updated at {}", new Date(System.currentTimeMillis()));
 		} catch (Exception e) {
 			MacuLib.LOGGER.error("Failed to fetch roles from URL: " + ROLES_URL, e);
 		}

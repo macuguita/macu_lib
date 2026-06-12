@@ -17,6 +17,7 @@
 package com.macuguita.lib.impl.platform.neoforge;
 
 import dev.yumi.commons.event.Event;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
@@ -31,6 +32,7 @@ import com.macuguita.lib.api.event.player.client.ClientPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.client.ClientPlayerLeaveEvent;
 import com.macuguita.lib.impl.platform.ClientAbstraction;
 
+@ApiStatus.Internal
 public record NeoClientAbstraction() implements ClientAbstraction {
 	public static final NeoClientAbstraction INSTANCE = new NeoClientAbstraction();
 

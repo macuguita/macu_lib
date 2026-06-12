@@ -16,7 +16,6 @@
  */
 package com.macuguita.lib.api.event.creativetab;
 
-import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import dev.yumi.commons.event.Event;
 import dev.yumi.mc.core.api.YumiEvents;
 
@@ -25,6 +24,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
 
 import com.macuguita.lib.api.creativetab.GuitaCreativeModeTabOutput;
+import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 
 public interface ModifyCreativeTabOutputEvent {
 

@@ -18,6 +18,8 @@ package com.macuguita.lib.impl.platform.fabric.creativetab;
 
 import java.util.Collection;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.world.item.CreativeModeTab;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.ItemLike;
@@ -25,7 +27,6 @@ import net.minecraft.world.level.ItemLike;
 import net.fabricmc.fabric.api.creativetab.v1.FabricCreativeModeTabOutput;
 
 import com.macuguita.lib.api.creativetab.GuitaCreativeModeTabOutput;
-import org.jetbrains.annotations.ApiStatus;
 
 @ApiStatus.Internal
 public class FabricGuitaCreativeModeTabOutput implements GuitaCreativeModeTabOutput {

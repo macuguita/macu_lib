@@ -16,14 +16,9 @@
  */
 package com.macuguita.lib.test;
 
-import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
-import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
-import com.macuguita.lib.api.network.PacketDistributor;
-import com.macuguita.lib.api.network.PacketRegistry;
-import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
-import com.macuguita.lib.api.reg.GuitaRegistries;
-import com.macuguita.lib.api.reg.GuitaRegistry;
-import com.macuguita.lib.api.reg.GuitaRegistryEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -33,8 +28,15 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+
+import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
+import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
+import com.macuguita.lib.api.network.PacketDistributor;
+import com.macuguita.lib.api.network.PacketRegistry;
+import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
+import com.macuguita.lib.api.reg.GuitaRegistries;
+import com.macuguita.lib.api.reg.GuitaRegistry;
+import com.macuguita.lib.api.reg.GuitaRegistryEntry;
 
 public class MacuLibTest {
 
@@ -88,7 +90,7 @@ public class MacuLibTest {
 			PingServerboundPacket.TYPE,
 			PingServerboundPacket.CODEC,
 			(_, pkt) -> {
-				LOGGER.info("CLIENT SENT: " + pkt.value());
+				LOGGER.info("CLIENT SENT: {}", pkt.value());
 			});
 
 		PacketRegistry.registerClientboundPlayPacket(

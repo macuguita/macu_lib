@@ -20,8 +20,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import dev.yumi.commons.event.Event;
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.core.Registry;
@@ -45,10 +45,12 @@ import com.macuguita.lib.api.event.lifecyle.ServerStoppingEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerLeaveEvent;
 import com.macuguita.lib.api.reg.GuitaRegistry;
+import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
 import com.macuguita.lib.impl.platform.neoforge.creativetab.NeoForgeGuitaCreativeModeTabOutput;
 import com.macuguita.lib.impl.platform.neoforge.reg.NeoForgeGuitaRegistry;
 
+@ApiStatus.Internal
 public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
 	implements CommonAbstraction {
 	public static @Nullable IEventBus EVENT_BUS = null;

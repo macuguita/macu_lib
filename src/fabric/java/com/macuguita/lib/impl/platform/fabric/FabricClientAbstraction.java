@@ -17,6 +17,7 @@
 package com.macuguita.lib.impl.platform.fabric;
 
 import dev.yumi.commons.event.Event;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.Identifier;
@@ -28,6 +29,7 @@ import com.macuguita.lib.api.event.player.client.ClientPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.client.ClientPlayerLeaveEvent;
 import com.macuguita.lib.impl.platform.ClientAbstraction;
 
+@ApiStatus.Internal
 public record FabricClientAbstraction() implements ClientAbstraction {
 	public static final FabricClientAbstraction INSTANCE = new FabricClientAbstraction();
 

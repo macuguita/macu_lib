@@ -28,7 +28,7 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Util;
 
-import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
+import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;

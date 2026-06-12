@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
+import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import dev.yumi.commons.event.Event;
 import org.jspecify.annotations.Nullable;
 
@@ -36,7 +37,7 @@ import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
 
-import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
+import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -45,6 +46,7 @@ import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerLeaveEvent;
 import com.macuguita.lib.api.reg.GuitaRegistry;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
+import com.macuguita.lib.impl.platform.neoforge.creativetab.NeoForgeGuitaCreativeModeTabOutput;
 import com.macuguita.lib.impl.platform.neoforge.reg.NeoForgeGuitaRegistry;
 
 public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
@@ -98,7 +100,12 @@ public record NeoCommonAbstraction(List<Consumer<IEventBus>> lateActions)
 	public void registerModifyCreativeTabOutputEvent(Event<Identifier, ModifyCreativeTabOutputEvent> event) {
 		addLateAction(bus ->
 			bus.addListener(BuildCreativeModeTabContentsEvent.class, e -> {
-				event.invoker().modifyOutput(e.getTab(), e);
+				var wrapped = new NeoForgeGuitaCreativeModeTabOutput(e);
+				event.invoker().modifyOutput(e.getTab(), wrapped);
+
+				// also fire the per-tab event if registered
+				var perTab = ModifyCreativeTabOutputEvents.get(e.getTabKey());
+				if (perTab != null) perTab.invoker().modifyOutput(e.getTab(), wrapped);
 			}));
 	}
 

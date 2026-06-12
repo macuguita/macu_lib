@@ -14,13 +14,17 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package com.macuguita.lib.api.event.creative_tab;
+package com.macuguita.lib.api.event.creativetab;
 
+import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import dev.yumi.commons.event.Event;
 import dev.yumi.mc.core.api.YumiEvents;
 
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.world.item.CreativeModeTab;
+
+import com.macuguita.lib.api.creativetab.GuitaCreativeModeTabOutput;
 
 public interface ModifyCreativeTabOutputEvent {
 
@@ -37,5 +41,16 @@ public interface ModifyCreativeTabOutputEvent {
 		}
 	});
 
-	void modifyOutput(CreativeModeTab tab, CreativeModeTab.Output output);
+	/**
+	 * Returns the modify output event for a specific creative mode tab, identified by its
+	 * {@link ResourceKey}. Prefer this over {@link #EVENT} when targeting a single tab.
+	 *
+	 * @param tabKey the resource key of the creative mode tab to modify
+	 * @return the event for that specific tab
+	 */
+	static Event<Identifier, ModifyCreativeTabOutputEvent> forTab(ResourceKey<CreativeModeTab> tabKey) {
+		return ModifyCreativeTabOutputEvents.getOrCreate(tabKey);
+	}
+
+	void modifyOutput(CreativeModeTab tab, GuitaCreativeModeTabOutput output);
 }

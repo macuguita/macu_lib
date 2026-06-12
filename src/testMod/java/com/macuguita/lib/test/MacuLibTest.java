@@ -16,9 +16,14 @@
  */
 package com.macuguita.lib.test;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
+import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
+import com.macuguita.lib.api.network.PacketDistributor;
+import com.macuguita.lib.api.network.PacketRegistry;
+import com.macuguita.lib.api.reg.GuitaHolderRegistryEntry;
+import com.macuguita.lib.api.reg.GuitaRegistries;
+import com.macuguita.lib.api.reg.GuitaRegistry;
+import com.macuguita.lib.api.reg.GuitaRegistryEntry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
@@ -28,14 +33,8 @@ import net.minecraft.world.item.*;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
-
-import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
-import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
-import com.macuguita.lib.api.network.PacketDistributor;
-import com.macuguita.lib.api.network.PacketRegistry;
-import com.macuguita.lib.api.reg.GuitaRegistries;
-import com.macuguita.lib.api.reg.GuitaRegistry;
-import com.macuguita.lib.api.reg.GuitaRegistryEntry;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class MacuLibTest {
 
@@ -53,8 +52,8 @@ public class MacuLibTest {
 	public static final GuitaRegistry<CreativeModeTab> CREATIVE_TAB =
 		GuitaRegistries.create(BuiltInRegistries.CREATIVE_MODE_TAB, MOD_ID);
 
-	private static final GuitaRegistryEntry<CreativeModeTab> TAB =
-		CREATIVE_TAB.register(
+	private static final GuitaHolderRegistryEntry<CreativeModeTab> TAB =
+		CREATIVE_TAB.registerForHolder(
 			MOD_ID,
 			() ->
 				CreativeModeTab.builder(CreativeModeTab.Row.TOP, 0)
@@ -99,11 +98,15 @@ public class MacuLibTest {
 		ITEMS.init();
 		CREATIVE_TAB.init();
 
-		ModifyCreativeTabOutputEvent.EVENT.register((tab, output) -> {
-			if (tab.equals(TAB.get())) {
-				BLOCKS.stream().forEach((regEntry) ->
-					output.accept(regEntry.get().asItem()));
-			}
+		ModifyCreativeTabOutputEvent.forTab(ResourceKey.create(Registries.CREATIVE_MODE_TAB, Identifier.withDefaultNamespace("combat")))
+			.register((_, output) -> {
+				output.insertAfter(Items.DIAMOND_SWORD, TEST_BLOCK.get());
+			});
+
+		//noinspection OptionalGetWithoutIsPresent
+		ModifyCreativeTabOutputEvent.forTab(TAB.holder().unwrapKey().get()).register((_, output) -> {
+			BLOCKS.stream().forEach((regEntry) ->
+				output.accept(regEntry.get().asItem()));
 		});
 
 		ServerPlayerJoinEvent.EVENT.register(

@@ -16,9 +16,11 @@
  */
 package com.macuguita.lib.impl.platform.fabric;
 
+import com.macuguita.lib.impl.creativetab.ModifyCreativeTabOutputEvents;
 import dev.yumi.commons.event.Event;
 
 import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,7 +32,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 
-import com.macuguita.lib.api.event.creative_tab.ModifyCreativeTabOutputEvent;
+import com.macuguita.lib.api.event.creativetab.ModifyCreativeTabOutputEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartedEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStartingEvent;
 import com.macuguita.lib.api.event.lifecyle.ServerStoppedEvent;
@@ -39,6 +41,7 @@ import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerLeaveEvent;
 import com.macuguita.lib.api.reg.GuitaRegistry;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
+import com.macuguita.lib.impl.platform.fabric.creativetab.FabricGuitaCreativeModeTabOutput;
 import com.macuguita.lib.impl.platform.fabric.reg.FabricGuitaRegistry;
 
 public record FabricCommonAbstraction() implements CommonAbstraction {
@@ -82,8 +85,17 @@ public record FabricCommonAbstraction() implements CommonAbstraction {
 
 	@Override
 	public void registerModifyCreativeTabOutputEvent(Event<Identifier, ModifyCreativeTabOutputEvent> event) {
-		CreativeModeTabEvents.MODIFY_OUTPUT_ALL.register(
-			(tab, output) -> event.invoker().modifyOutput(tab, output));
+		CreativeModeTabEvents.MODIFY_OUTPUT_ALL.register((tab, fabricOutput) -> {
+			var wrapped = new FabricGuitaCreativeModeTabOutput(fabricOutput);
+			event.invoker().modifyOutput(tab, wrapped);
+
+			// also fire the per-tab event if registered
+			// I LOVE ❤ jank!
+			BuiltInRegistries.CREATIVE_MODE_TAB.getResourceKey(tab).ifPresent(key -> {
+				var perTab = ModifyCreativeTabOutputEvents.get(key);
+				if (perTab != null) perTab.invoker().modifyOutput(tab, wrapped);
+			});
+		});
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public final class CapeManager {
 	}
 
 	public static @Nullable Identifier getCapeForRole(String role) {
-		String capeUrl = CAPE_BASE_URL + role + ".png";
+		var capeUrl = CAPE_BASE_URL + role + ".png";
 		return getCape(capeUrl);
 	}
 
@@ -81,12 +81,11 @@ public final class CapeManager {
 		// Create identifier that matches what ResourceTexture expects
 		// ResourceTexture will look for: namespace:textures/<path>.png
 		// So we register as: namespace:textures/capes/<hash>.png
-		String hash = Integer.toHexString(urlString.hashCode());
-		String filename = "capes/" + hash;
-		Identifier id = Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, filename);
+		var hash = Integer.toHexString(urlString.hashCode());
+		var filename = "capes/" + hash;
+		var id = MacuLib.id(filename);
 
-		Identifier textureLocation =
-			Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, "textures/" + filename + ".png");
+		var textureLocation = MacuLib.id("textures/" + filename + ".png");
 
 		LOADING_CAPES.add(urlString);
 
@@ -101,7 +100,7 @@ public final class CapeManager {
 					}
 
 					URL url = uri.toURL();
-					HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+					var connection = (HttpURLConnection) url.openConnection();
 					connection.setRequestMethod("GET");
 					connection.setConnectTimeout(TIMEOUT_MS);
 					connection.setReadTimeout(TIMEOUT_MS);
@@ -116,8 +115,8 @@ public final class CapeManager {
 						return;
 					}
 
-					try (InputStream inputStream = connection.getInputStream()) {
-						NativeImage image = NativeImage.read(inputStream);
+					try (var inputStream = connection.getInputStream()) {
+						var image = NativeImage.read(inputStream);
 
 						if (image.getWidth() != 64 || image.getHeight() != 32) {
 							MacuLib.LOGGER.warn(
@@ -129,7 +128,7 @@ public final class CapeManager {
 						Minecraft.getInstance()
 							.execute(
 								() -> {
-									DynamicTexture texture =
+									var texture =
 										new DynamicTexture(() -> "DynamicCape" + id, image);
 									Minecraft.getInstance()
 										.getTextureManager()

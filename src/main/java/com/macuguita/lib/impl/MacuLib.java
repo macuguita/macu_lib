@@ -20,6 +20,7 @@ import dev.yumi.mc.core.api.ModContainer;
 import dev.yumi.mc.core.api.YumiMods;
 import dev.yumi.mc.core.api.entrypoint.ModInitializer;
 import folk.sisby.kaleido.api.WrappedConfig;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,6 +41,10 @@ public class MacuLib implements ModInitializer {
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
 	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(YumiMods.get().getConfigDirectory(), "", MOD_ID, MacuLibConfig.class);
+
+	public static Identifier id(String name) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, name);
+	}
 
 	@Override
 	public void onInitialize(ModContainer mod) {

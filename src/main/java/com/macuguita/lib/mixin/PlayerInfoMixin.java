@@ -40,7 +40,7 @@ public abstract class PlayerInfoMixin {
 
 	@ModifyReturnValue(method = "getSkin", at = @At("RETURN"))
 	private PlayerSkin macu_lib$onGetSkin(PlayerSkin original) {
-		UUID playerUUID = this.getProfile().id();
+		var playerUUID = this.getProfile().id();
 
 		if (!CapeManager.hasCape(playerUUID)) return original;
 
@@ -48,7 +48,7 @@ public abstract class PlayerInfoMixin {
 
 		if (capeTexture == null) return original;
 
-		ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
+		var capeAsset = new ClientAsset.ResourceTexture(capeTexture);
 
 		return new PlayerSkin(original.body(), capeAsset, original.elytra(), original.model(), original.secure());
 	}

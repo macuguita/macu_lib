@@ -38,11 +38,9 @@ public interface GuitaRegistry<T> {
 	 *
 	 * <p>This is typically used to identify the mod or library that owns the registry.
 	 *
-	 * @return The registry namespace, or {@code null} if not set.
+	 * @return The registry namespace.
 	 */
-	default @Nullable String namespace() {
-		return null;
-	}
+	String namespace();
 
 	/**
 	 * Registers a new entry in this registry.

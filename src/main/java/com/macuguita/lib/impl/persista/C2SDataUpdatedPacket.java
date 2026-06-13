@@ -18,6 +18,8 @@ package com.macuguita.lib.impl.persista;
 
 import java.util.UUID;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -27,6 +29,7 @@ import net.minecraft.server.level.ServerPlayer;
 import com.macuguita.lib.api.network.PacketDistributor;
 import com.macuguita.lib.impl.MacuLib;
 
+@ApiStatus.Internal
 public record C2SDataUpdatedPacket(Identifier dataId) implements CustomPacketPayload {
 
 	public static final Identifier SERVERBOUND_DATA_UPDATED =

@@ -24,6 +24,7 @@ import java.time.Instant;
 import java.util.UUID;
 
 import com.google.gson.JsonParser;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
@@ -34,6 +35,7 @@ import com.mojang.authlib.exceptions.AuthenticationException;
 import com.macuguita.lib.api.persista.PersistaAPI;
 
 // Manages the mojang auth and stores JWT session
+@ApiStatus.Internal
 final class AuthSession {
 
 	private static final HttpClient HTTP = HttpClient.newHttpClient();

@@ -24,9 +24,12 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.resources.Identifier;
 
 // In-memory cache of player data, keyed by player UUID and data identifier
+@ApiStatus.Internal
 final class DataCache {
 
 	private static final Map<UUID, Map<Identifier, CachedValue<?>>> STORE = new HashMap<>();

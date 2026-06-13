@@ -18,11 +18,13 @@ package com.macuguita.lib.impl.supporters;
 
 import java.util.Optional;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 
+@ApiStatus.Internal
 public record SupporterData(@Nullable String selectedCape) {
 	public static final SupporterData EMPTY = new SupporterData(null);
 

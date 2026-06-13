@@ -19,12 +19,15 @@ package com.macuguita.lib.impl.persista;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.resources.Identifier;
 
 import com.mojang.serialization.Codec;
 
 import com.macuguita.lib.api.persista.DataToken;
 
+@ApiStatus.Internal
 public final class PersistaAPIImpl {
 
 	private PersistaAPIImpl() {}

@@ -18,6 +18,8 @@ package com.macuguita.lib.impl.persista;
 
 import java.util.UUID;
 
+import org.jetbrains.annotations.ApiStatus;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.core.UUIDUtil;
@@ -30,6 +32,7 @@ import net.minecraft.server.level.ServerPlayer;
 import com.macuguita.lib.api.network.PacketDistributor;
 import com.macuguita.lib.impl.MacuLib;
 
+@ApiStatus.Internal
 public record S2CDataUpdatedPacket(UUID playerId, Identifier dataId) implements CustomPacketPayload {
 
 	public static final Identifier CLIENTBOUND_DATA_UPDATE =

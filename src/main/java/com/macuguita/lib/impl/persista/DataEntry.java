@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
@@ -39,6 +40,7 @@ import com.macuguita.lib.api.persista.PersistaAPI;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
 
 // Internal impl of DataToken handles fetching and stuff
+@ApiStatus.Internal
 record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
 	private static final HttpClient HTTP = HttpClient.newHttpClient();

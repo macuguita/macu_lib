@@ -21,11 +21,13 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
 import com.macuguita.lib.api.persista.PersistaAPI;
 
 // Holds cached value for specific player and entry
+@ApiStatus.Internal
 final class CachedValue<T> {
 
 	private final DataEntry<T> entry;

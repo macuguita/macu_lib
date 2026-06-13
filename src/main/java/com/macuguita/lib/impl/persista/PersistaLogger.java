@@ -16,9 +16,11 @@
  */
 package com.macuguita.lib.impl.persista;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+@ApiStatus.Internal
 final class PersistaLogger {
 	private static final Logger LOGGER = LoggerFactory.getLogger("persista-client");
 

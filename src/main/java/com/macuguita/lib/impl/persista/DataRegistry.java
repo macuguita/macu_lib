@@ -21,6 +21,7 @@ import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
@@ -30,6 +31,7 @@ import com.mojang.serialization.Codec;
 import com.macuguita.lib.api.persista.DataToken;
 
 // Internal registry of all registered DataEntries
+@ApiStatus.Internal
 final class DataRegistry {
 
 	private static final Map<Identifier, DataEntry<?>> REGISTRY = new LinkedHashMap<>();

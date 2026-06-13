@@ -40,6 +40,7 @@ import com.google.gson.JsonParser;
 import com.macuguita.lib.MacuLib;
 import org.jspecify.annotations.Nullable;
 
+@Deprecated(forRemoval = true)
 public class RoleChecker {
 
 	private static final String ROLES_URL = "https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/supporters.json";

@@ -66,6 +66,11 @@ public class FabricPlatformImpl implements Platform {
 	}
 
 	@Override
+	public boolean isClient() {
+		return FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT;
+	}
+
+	@Override
 	public <T> GuitaRegistry<T> createGuitaRegistry(Registry<T> registry, String id) {
 		return new FabricGuitaRegistry<>(registry, id);
 	}

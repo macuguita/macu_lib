@@ -1,3 +1,6 @@
+2.0.3
+- Add Persista API
+---
 2.0.2
 - Clean up loggers
 - Fixed: [#1](https://github.com/macuguita/macu_lib/issues/1)

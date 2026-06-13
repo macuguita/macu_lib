@@ -20,9 +20,15 @@
 
 package com.macuguita.lib;
 
+import com.macuguita.lib.impl.persista.C2SDataUpdatedPacket;
+import com.macuguita.lib.impl.persista.S2CDataUpdatedPacket;
+import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.supporters.RoleChecker;
 import folk.sisby.kaleido.api.WrappedConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
+
+import net.minecraft.resources.Identifier;
+
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,8 +41,15 @@ public class MacuLib {
 
 	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(Platform.INSTANCE.getConfigDir(), "", MOD_ID, MacuLibConfig.class);
 
+	public static Identifier id(String path) {
+		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+	}
+
 	public static void init() {
 		RoleChecker.init();
+
+		NetworkManager.registerC2S(C2SDataUpdatedPacket.TYPE, C2SDataUpdatedPacket.CODEC, (pkt, player) -> C2SDataUpdatedPacket.handle(player, pkt));
+		NetworkManager.registerS2C(S2CDataUpdatedPacket.TYPE, S2CDataUpdatedPacket.CODEC);
 	}
 
 	public static class MacuLibConfig extends WrappedConfig {

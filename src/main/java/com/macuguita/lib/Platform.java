@@ -58,6 +58,8 @@ public interface Platform {
 
 	boolean isDevelopment();
 
+	boolean isClient();
+
 	<T> GuitaRegistry<T> createGuitaRegistry(Registry<T> registry, String id);
 
 	void sendToServer(CustomPacketPayload payload);

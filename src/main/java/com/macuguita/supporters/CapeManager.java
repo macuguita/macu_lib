@@ -1,69 +1,93 @@
-/*
- * macu_lib
- * Copyright (C) 2026 macuguita
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Lesser General Public
- * License as published by the Free Software Foundation; either
- * version 3 of the License, or (at your option) any later version.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
- * GNU Lesser General Public License for more details.
- *
- * You should have received a copy of the GNU Lesser General Public
- * License along with this program; if not, see
- * <https://www.gnu.org/licenses/>.
- *
- */
-
 package com.macuguita.supporters;
 
+import java.net.HttpURLConnection;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.CompletableFuture;
 
+import com.macuguita.lib.MacuLib;
+import com.macuguita.lib.api.persista.DataToken;
+import com.macuguita.lib.api.persista.PersistaAPI;
+import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
 
 public class CapeManager {
 
-	private static final String CAPE_BASE_URL = "https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/capes/";
+	private static final String CAPE_BASE_URL =
+			"https://raw.githubusercontent.com/macuguita/macuguita-website/refs/heads/main/capes/";
+	private static final String CAPE_LIST_URL =
+			"https://api.github.com/repos/macuguita/macuguita-website/contents/capes";
+	private static final int TIMEOUT_MS = 5000;
 
-	/**
-	 * Gets the cape identifier for a player based on their role.
-	 *
-	 * @param playerUUID The UUID of the player.
-	 * @return The cape Identifier, or null if the player has no role/cape.
-	 */
-	public static @Nullable Identifier getPlayerCape(UUID playerUUID) {
-		String role = RoleChecker.getPlayerRole(playerUUID);
+	public static final DataToken<List<String>> ENTITLEMENTS = PersistaAPI.register(
+			Identifier.fromNamespaceAndPath("persista", "entitlements"),
+			Codec.STRING.listOf().fieldOf("values").codec()
+	);
 
-		if (role == null) {
-			return null;
-		}
+	public static final DataToken<SupporterData> SUPPORTER_DATA = PersistaAPI.register(
+			Identifier.fromNamespaceAndPath("macu_lib", "supporter"),
+			SupporterData.CODEC
+	);
 
-		return getCapeForRole(role);
+	private static volatile List<String> availableCapes = List.of();
+
+	private CapeManager() {}
+
+	public static boolean isSupporter(UUID playerId) {
+		return ENTITLEMENTS.getOrDefault(playerId, List.of()).contains("macu_lib:supporter");
 	}
 
-	/**
-	 * Gets the cape identifier for a specific role.
-	 *
-	 * @param role The role name (e.g., "developer", "supporter").
-	 * @return The cape Identifier for that role.
-	 */
-	public static @Nullable Identifier getCapeForRole(String role) {
-		String capeUrl = CAPE_BASE_URL + role + ".png";
-		return CapeUtil.getCape(capeUrl);
+	public static @Nullable Identifier getPlayerCape(UUID playerId) {
+		if (!isSupporter(playerId)) return null;
+
+		SupporterData data = SUPPORTER_DATA.getOrDefault(playerId, SupporterData.EMPTY);
+		if (data.selectedCape() == null) return null;
+
+		return CapeUtil.getCape(CAPE_BASE_URL + data.selectedCape() + ".png");
 	}
 
-	/**
-	 * Checks if a player has a cape (i.e., has any role).
-	 *
-	 * @param playerUUID The UUID of the player.
-	 * @return True if the player has a cape, false otherwise.
-	 */
-	public static boolean hasCape(UUID playerUUID) {
-		return RoleChecker.getPlayerRole(playerUUID) != null;
+	public static boolean hasCape(UUID playerId) {
+		return getPlayerCape(playerId) != null;
+	}
+
+	public static void setSelectedCape(@Nullable String capeName) {
+		SUPPORTER_DATA.setData(new SupporterData(capeName));
+	}
+
+	public static List<String> getAvailableCapes() {
+		return availableCapes;
+	}
+
+	public static void fetchAvailableCapes() {
+		CompletableFuture.runAsync(() -> {
+			try {
+				HttpURLConnection connection = (HttpURLConnection) new URI(CAPE_LIST_URL).toURL().openConnection();
+				connection.setRequestMethod("GET");
+				connection.setRequestProperty("Accept", "application/vnd.github+json");
+				connection.setConnectTimeout(TIMEOUT_MS);
+				connection.setReadTimeout(TIMEOUT_MS);
+				connection.connect();
+
+				if (connection.getResponseCode() != HttpURLConnection.HTTP_OK) {
+					MacuLib.LOGGER.error("Failed to fetch cape list: HTTP {}", connection.getResponseCode());
+					return;
+				}
+
+				String json = new String(connection.getInputStream().readAllBytes());
+				List<String> names = new ArrayList<>();
+				com.google.gson.JsonParser.parseString(json).getAsJsonArray().forEach(el -> {
+					String name = el.getAsJsonObject().get("name").getAsString();
+					if (name.endsWith(".png")) names.add(name.replace(".png", ""));
+				});
+				availableCapes = List.copyOf(names);
+				MacuLib.LOGGER.info("Loaded {} capes: {}", availableCapes.size(), availableCapes);
+			} catch (Exception e) {
+				MacuLib.LOGGER.error("Failed to fetch available capes", e);
+			}
+		});
 	}
 }

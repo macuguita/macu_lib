@@ -31,6 +31,8 @@ import com.macuguita.lib.neoforge.reg.NeoForgeGuitaRegistry;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.lib.reg.GuitaRegistry;
 
+import net.neoforged.api.distmarker.Dist;
+
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Registry;
@@ -141,6 +143,15 @@ public class NeoForgePlatformImpl implements Platform {
 					() -> (Consumer<CustomPacketPayload>) handler
 			));
 		}
+		^///?}
+	}
+
+	@Override
+	public boolean isClient() {
+		//? >= 1.21.11 {
+		return FMLEnvironment.getDist() == Dist.CLIENT;
+		//?} else {
+		/^return FMLEnvironment.dist == Dist.CLIENT;
 		^///?}
 	}
 }

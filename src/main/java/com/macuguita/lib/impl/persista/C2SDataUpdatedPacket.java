@@ -1,0 +1,70 @@
+/*
+ * Copyright 2026 macuguita
+ *
+ * Licensed under the EUPL, Version 1.2 or – as soon they will be approved by
+ * the European Commission - subsequent versions of the EUPL (the "Licence");
+ * You may not use this work except in compliance with the Licence.
+ * You may obtain a copy of the Licence at:
+ *
+ * https://joinup.ec.europa.eu/software/page/eupl
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the Licence is distributed on an "AS IS" basis,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the Licence for the specific language governing permissions and
+ * limitations under the Licence.
+ */
+package com.macuguita.lib.impl.persista;
+
+import java.util.UUID;
+
+import com.macuguita.lib.MacuLib;
+
+import com.macuguita.lib.network.NetworkManager;
+
+import net.minecraft.network.RegistryFriendlyByteBuf;
+import net.minecraft.network.codec.StreamCodec;
+import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.level.ServerPlayer;
+
+public record C2SDataUpdatedPacket(Identifier dataId) implements CustomPacketPayload {
+
+	public static final Identifier SERVERBOUND_DATA_UPDATED =
+			MacuLib.id("c2s_data_updated");
+	public static final CustomPacketPayload.Type<C2SDataUpdatedPacket> TYPE =
+			new CustomPacketPayload.Type<>(SERVERBOUND_DATA_UPDATED);
+
+	public static final StreamCodec<RegistryFriendlyByteBuf, C2SDataUpdatedPacket> CODEC = StreamCodec.composite(
+			Identifier.STREAM_CODEC,
+			C2SDataUpdatedPacket::dataId,
+			C2SDataUpdatedPacket::new
+	);
+
+	public static void trySend(Identifier dataId) {
+		try {
+			NetworkManager.sendC2S(new C2SDataUpdatedPacket(dataId));
+		} catch (IllegalStateException ignored) {
+			// not connected to a server, singleplayer then skip
+		}
+	}
+
+	public static void handle(ServerPlayer sender, C2SDataUpdatedPacket pkt) {
+		UUID playerId = sender.getGameProfile()./*? if >= 1.21.11 {*/id/*?} else {*//*getId*//*?}*/();
+
+		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
+		if (entry != null) {
+			DataCache.lookup(playerId, entry, true);
+		}
+
+		//noinspection resource
+		sender.level().getServer().getPlayerList().getPlayers().stream()
+				.filter(p -> p != sender)
+				.forEach(p -> S2CDataUpdatedPacket.send(p, playerId, pkt.dataId));
+	}
+
+	@Override
+	public Type<? extends CustomPacketPayload> type() {
+		return TYPE;
+	}
+}

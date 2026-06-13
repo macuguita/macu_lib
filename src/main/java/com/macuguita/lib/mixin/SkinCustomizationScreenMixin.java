@@ -54,10 +54,10 @@ public class SkinCustomizationScreenMixin {
 			.selectedCape();
 
 		var button = Button.builder(
-			Component.literal("Cape: " + capeDisplayName(current)),
+			Component.literal("Cape: " + macu_lib$capeDisplayName(current)),
 			btn -> {
-				String next = cycleNext(localPlayer);
-				btn.setMessage(Component.literal("Cape: " + capeDisplayName(next)));
+				String next = macu_lib$cycleNext(localPlayer);
+				btn.setMessage(Component.literal("Cape: " + macu_lib$capeDisplayName(next)));
 			}
 		).build();
 
@@ -65,7 +65,7 @@ public class SkinCustomizationScreenMixin {
 	}
 
 	@Unique
-	private static List<@Nullable String> buildCapeList() {
+	private static List<@Nullable String> macu_lib$buildCapeList() {
 		var list = new ArrayList<@Nullable String>();
 		list.add(null);
 		list.addAll(CapeManager.getAvailableCapes());
@@ -73,11 +73,11 @@ public class SkinCustomizationScreenMixin {
 	}
 
 	@Unique
-	private static String cycleNext(UUID playerId) {
+	private static String macu_lib$cycleNext(UUID playerId) {
 		String current = CapeManager.SUPPORTER_DATA
 			.getOrDefault(playerId, SupporterData.EMPTY)
 			.selectedCape();
-		var capes = buildCapeList();
+		var capes = macu_lib$buildCapeList();
 		int index = capes.indexOf(current);
 		String next = capes.get((index + 1) % capes.size());
 		CapeManager.setSelectedCape(next);
@@ -85,7 +85,7 @@ public class SkinCustomizationScreenMixin {
 	}
 
 	@Unique
-	private static String capeDisplayName(@Nullable String cape) {
+	private static String macu_lib$capeDisplayName(@Nullable String cape) {
 		return cape == null ? "None" : cape.substring(0, 1).toUpperCase() + cape.substring(1);
 	}
 }

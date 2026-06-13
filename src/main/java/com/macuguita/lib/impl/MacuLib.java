@@ -17,9 +17,7 @@
 package com.macuguita.lib.impl;
 
 import dev.yumi.mc.core.api.ModContainer;
-import dev.yumi.mc.core.api.YumiMods;
 import dev.yumi.mc.core.api.entrypoint.ModInitializer;
-import folk.sisby.kaleido.api.WrappedConfig;
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,14 +35,11 @@ import com.macuguita.lib.api.network.PacketRegistry;
 import com.macuguita.lib.impl.persista.C2SDataUpdatedPacket;
 import com.macuguita.lib.impl.persista.S2CDataUpdatedPacket;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
-import com.macuguita.lib.impl.supporters.RoleChecker;
 
 @ApiStatus.Internal
 public class MacuLib implements ModInitializer {
 	public static final String MOD_ID = "macu_lib";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
-
-	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(YumiMods.get().getConfigDirectory(), "", MOD_ID, MacuLibConfig.class);
 
 	public static Identifier id(String name) {
 		return Identifier.fromNamespaceAndPath(MOD_ID, name);
@@ -52,8 +47,6 @@ public class MacuLib implements ModInitializer {
 
 	@Override
 	public void onInitialize(ModContainer mod) {
-		RoleChecker.init(mod);
-
 		registerEvents();
 
 		PacketRegistry.registerServerboundPlayPacket(C2SDataUpdatedPacket.TYPE, C2SDataUpdatedPacket.CODEC, C2SDataUpdatedPacket::handle);

@@ -1,14 +1,15 @@
 [versions]
-minecraft = "26.1.2"
+minecraft = "26.2-rc-2"
 
 fabric-loader = "0.19.3"
-fabric-api = "0.151.0+26.1.2"
+fabric-api = "0.152.1+26.2"
 
 neoforge = "26.1.2.75"
 neoforge-loader = "11.0.13"
 
-yumi = "1.1.0+26.1"
+yumi = "1.1.1+26.2"
 kaleido = "0.3.3+1.3.2"
+modmenu = "20.0.0-beta.2"
 
 mod = "3.0.0"
 
@@ -27,7 +28,7 @@ yumi-foundation = { module = "dev.yumi.mc.core:yumi-mc-foundation", version.ref 
 
 kaleido-config = { module = "folk.sisby:kaleido-config", version.ref = "kaleido" }
 
-modmenu = { module = "com.terraformersmc:modmenu", version = "18.0.0-beta.1" }
+modmenu = { module = "com.terraformersmc:modmenu", version.ref = "modmenu" }
 
 gradle-loom = { module = "fabric-loom:fabric-loom.gradle.plugin", version = "1.16-SNAPSHOT" }
 gradle-spotless = { module = "com.diffplug.spotless:spotless-plugin-gradle", version.ref = "spotless" }

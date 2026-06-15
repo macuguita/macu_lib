@@ -144,7 +144,7 @@ publishMods {
 	additionalFiles.from(tasks.sourcesJar.map { it.archiveFile.get() })
 
 	// one of BETA, ALPHA, STABLE
-	type = STABLE
+	type = BETA
 	displayName = "macu Lib ${libs.versions.mod.get()} for ${libs.versions.minecraft.get()}"
 	version = "${libs.versions.mod.get()}+${libs.versions.minecraft.get()}"
 	changelog = provider { rootProject.file("CHANGELOG-LATEST.md").readText() }

@@ -92,7 +92,7 @@ dependencies {
 
 tasks.processResources {
     inputs.properties(
-        "version" to version,
+        "version" to libs.versions.mod.get(),
         "yumi_version" to libs.versions.yumi.get(),
         "kaleido_version" to libs.versions.kaleido.get(),
         "minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
@@ -101,7 +101,7 @@ tasks.processResources {
 
     filesMatching(listOf("fabric.mod.json", "META-INF/neoforge.mods.toml", "META-INF/jarjar/metadata.json")) {
         expand(
-            "version" to version,
+            "version" to libs.versions.mod.get(),
             "yumi_version" to libs.versions.yumi.get(),
             "kaleido_version" to libs.versions.kaleido.get(),
             "minecraft_fabric_version_range" to prop("deps.minecraft_fabric_version_range"),
@@ -131,4 +131,38 @@ publishing {
             }
         }
     }
+}
+
+val additionalVersions: List<String> = (findProperty("publish.additionalVersions") as String?)
+	?.split(",")
+	?.map { it.trim() }
+	?.filter { it.isNotEmpty() }
+	?: emptyList()
+
+publishMods {
+	file.set(tasks.jar.map { it.archiveFile.get() })
+	additionalFiles.from(tasks.sourcesJar.map { it.archiveFile.get() })
+
+	// one of BETA, ALPHA, STABLE
+	type = STABLE
+	displayName = "macu Lib ${libs.versions.mod.get()} for ${libs.versions.minecraft.get()}"
+	version = "${libs.versions.mod.get()}+${libs.versions.minecraft.get()}"
+	changelog = provider { rootProject.file("CHANGELOG-LATEST.md").readText() }
+	modLoaders.add("fabric")
+	modLoaders.add("neoforge")
+	modLoaders.add("quilt")
+
+	modrinth {
+		projectId = "XnLNz8og"
+		accessToken = env.MODRINTH_API_KEY.orNull()
+		minecraftVersions.add(libs.versions.minecraft.get())
+		minecraftVersions.addAll(additionalVersions)
+	}
+
+	curseforge {
+		projectId = "1216837"
+		accessToken = env.CURSEFORGE_API_KEY.orNull()
+		minecraftVersions.add(libs.versions.minecraft.get())
+		minecraftVersions.addAll(additionalVersions)
+	}
 }

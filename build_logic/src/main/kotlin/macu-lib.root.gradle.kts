@@ -16,7 +16,7 @@ val libs = the<org.gradle.accessors.dm.LibrariesForLibs>()
 
 fun prop(name: String): String = rootProject.providers.gradleProperty(name).get()
 
-version = libs.versions.mod.get()
+version = "${libs.versions.mod.get()}+${libs.versions.minecraft.get()}"
 group = prop("props.maven_group")
 
 base {

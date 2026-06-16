@@ -21,27 +21,29 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.time.Instant;
 import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.macuguita.lib.Platform;
+import com.macuguita.lib.api.persista.DataToken;
+import com.macuguita.lib.api.persista.PersistaAPI;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
 import org.jetbrains.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
-
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-
-import com.macuguita.lib.api.persista.DataToken;
-import com.macuguita.lib.api.persista.PersistaAPI;
 
 // Internal impl of DataToken handles fetching and stuff
 record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
 	private static final HttpClient HTTP = HttpClient.newHttpClient();
+	private static final AtomicReference<Instant> GLOBAL_BACKOFF = new AtomicReference<>(Instant.MIN);
 
 	@Override
 	public CompletableFuture<Optional<T>> fetch(UUID playerId) {
@@ -105,10 +107,28 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
 	@Nullable
 	T fetchRemote(UUID playerId) {
+		if (isBackedOff()) {
+			return null;
+		}
 		var uri = dataUri(playerId);
 		try {
 			var request = HttpRequest.newBuilder(uri).GET().build();
 			var response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+			if (response.statusCode() == 429) {
+				long retryAfter = response.headers()
+						.firstValue("retry-after")
+						.map(Long::parseLong)
+						.orElse(10L);
+
+				PersistaLogger.get().warn(
+						"Rate limited {} for {}, backing off {}s",
+						id, playerId, retryAfter
+				);
+
+				applyBackoffSeconds(retryAfter);
+
+				return null;
+			}
 			if (response.statusCode() == 404) {
 				return null;
 			}
@@ -116,10 +136,11 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 				PersistaLogger.get().warn("Unexpected status {} fetching {} for {}", response.statusCode(), id, playerId);
 				return null;
 			}
+			GLOBAL_BACKOFF.set(Instant.MIN);
 			var json = JsonParser.parseString(response.body());
 			return codec.decode(JsonOps.INSTANCE, json)
 					.resultOrPartial(err -> PersistaLogger.get().error("Failed to decode {} for {}: {}", id, playerId, err))
-					.map(pair -> pair.getFirst())
+					.map(Pair::getFirst)
 					.orElse(null);
 		} catch (IOException | InterruptedException e) {
 			PersistaLogger.get().error("Network error fetching {} for {}", id, playerId, e);
@@ -153,5 +174,17 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
 	private static boolean isClient() {
 		return Platform.INSTANCE.isClient();
+	}
+
+	private static boolean isBackedOff() {
+		return Instant.now().isBefore(GLOBAL_BACKOFF.get());
+	}
+
+	private static void applyBackoffSeconds(long seconds) {
+		Instant newUntil = Instant.now().plusSeconds(seconds);
+
+		GLOBAL_BACKOFF.updateAndGet(prev ->
+				prev.isAfter(newUntil) ? prev : newUntil
+		);
 	}
 }

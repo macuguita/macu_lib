@@ -16,11 +16,12 @@
  */
 package com.macuguita.lib.impl.persista;
 
+import com.macuguita.lib.MacuLib;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 final class PersistaLogger {
-	private static final Logger LOGGER = LoggerFactory.getLogger("persista-client");
+	private static final Logger LOGGER = LoggerFactory.getLogger("(" + MacuLib.MOD_ID + ") persista-client");
 
 	private PersistaLogger() {}
 

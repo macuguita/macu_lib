@@ -19,21 +19,28 @@ package com.macuguita.lib.impl.persista;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.resources.Identifier;
+import com.macuguita.lib.MacuLib;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 
 import com.macuguita.lib.api.persista.DataToken;
 
+@ApiStatus.Internal
 public final class PersistaAPIImpl {
 
 	private PersistaAPIImpl() {}
 
-	public static <T> DataToken<T> register(Identifier id, Codec<T> codec) {
+	public static <T> DataToken<T> register(ResourceLocation id, Codec<T> codec) {
 		return DataRegistry.add(id, codec);
 	}
 
 	public static CompletableFuture<Void> refreshAll(UUID playerId) {
-		return DataCache.refresh(playerId, true);
+		if (!MacuLib.CONFIG.persista.loginAutofetch) {
+			return CompletableFuture.completedFuture(null);
+		}
+		return DataCache.refresh(playerId, MacuLib.CONFIG.persista.loginForceRefresh);
 	}
 }

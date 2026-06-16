@@ -20,14 +20,13 @@
 
 package com.macuguita.lib;
 
-import com.macuguita.lib.impl.persista.C2SDataUpdatedPacket;
-import com.macuguita.lib.impl.persista.S2CDataUpdatedPacket;
+import com.macuguita.lib.impl.persista.Persista;
 import com.macuguita.lib.network.NetworkManager;
 import com.macuguita.supporters.RoleChecker;
 import folk.sisby.kaleido.api.WrappedConfig;
 import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.slf4j.Logger;
@@ -41,18 +40,29 @@ public class MacuLib {
 
 	public static final MacuLibConfig CONFIG = WrappedConfig.createToml(Platform.INSTANCE.getConfigDir(), "", MOD_ID, MacuLibConfig.class);
 
-	public static Identifier id(String path) {
-		return Identifier.fromNamespaceAndPath(MOD_ID, path);
+	public static ResourceLocation id(String path) {
+		return ResourceLocation.fromNamespaceAndPath(MOD_ID, path);
 	}
 
 	public static void init() {
 		RoleChecker.init();
 
-		NetworkManager.registerC2S(C2SDataUpdatedPacket.TYPE, C2SDataUpdatedPacket.CODEC, (pkt, player) -> C2SDataUpdatedPacket.handle(player, pkt));
-		NetworkManager.registerS2C(S2CDataUpdatedPacket.TYPE, S2CDataUpdatedPacket.CODEC);
+		Persista.init();
 	}
 
 	public static class MacuLibConfig extends WrappedConfig {
+
+		public Persista persista = new Persista();
+		public static class Persista implements Section {
+			@Comment("The request timeout for persista http requests")
+			public long requestTimeout = 6000;
+
+			@Comment("Whether to automatically fetch player data on login")
+			public boolean loginAutofetch = true;
+
+			@Comment("Whether to force a refresh of player data on login instead of using cached values")
+			public boolean loginForceRefresh = false;
+		}
 
 		@Comment("Config for the supporter perks")
 		public Supporters supporters = new Supporters();

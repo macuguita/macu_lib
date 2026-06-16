@@ -23,7 +23,7 @@ import java.util.concurrent.CompletableFuture;
 import com.macuguita.lib.impl.persista.PersistaAPIImpl;
 import com.mojang.serialization.Codec;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Entry point for registering and interacting with Persista data tokens.
@@ -70,7 +70,7 @@ public final class PersistaAPI {
 	 * @param <T>   type of stored data
 	 * @return a DataToken representing the registered data
 	 */
-	public static <T> DataToken<T> register(Identifier id, Codec<T> codec) {
+	public static <T> DataToken<T> register(ResourceLocation id, Codec<T> codec) {
 		return PersistaAPIImpl.register(id, codec);
 	}
 

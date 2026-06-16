@@ -24,12 +24,12 @@ import java.util.function.Supplier;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 /**
  * Represents a single entry in a {@link GuitaRegistry}.
  * <p>
- * Each entry wraps an object of type {@code T} and provides a unique {@link Identifier}.
+ * Each entry wraps an object of type {@code T} and provides a unique {@link ResourceLocation}.
  * Registry entries are lazily initialized via {@link #get()} and can be used in streams
  * or added to other registries.
  *
@@ -54,7 +54,7 @@ public interface GuitaRegistryEntry<T> extends Supplier<T> {
 	 * The identifier is typically namespaced (e.g., {@code "modid:item_name"}) and
 	 * corresponds to the ID used when registering the entry.
 	 *
-	 * @return The {@link Identifier} for this entry.
+	 * @return The {@link ResourceLocation} for this entry.
 	 */
-	Identifier getId();
+	ResourceLocation getId();
 }

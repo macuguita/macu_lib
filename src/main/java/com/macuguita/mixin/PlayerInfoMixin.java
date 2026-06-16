@@ -32,12 +32,12 @@ import org.spongepowered.asm.mixin.injection.At;
 
 import net.minecraft.client.multiplayer.PlayerInfo;
 //? >= 1.21.11 {
-import net.minecraft.core.ClientAsset;
+/*import net.minecraft.core.ClientAsset;
 import net.minecraft.world.entity.player.PlayerSkin;
-//?} else {
-/*import net.minecraft.client.resources.PlayerSkin;
-*///?}
-import net.minecraft.resources.Identifier;
+*///?} else {
+import net.minecraft.client.resources.PlayerSkin;
+//?}
+import net.minecraft.resources.ResourceLocation;
 
 @Mixin(PlayerInfo.class)
 public abstract class PlayerInfoMixin {
@@ -50,16 +50,16 @@ public abstract class PlayerInfoMixin {
 			at = @At("RETURN")
 	)
 	private PlayerSkin macu_lib$onGetSkin(PlayerSkin original) {
-		UUID playerUUID = this.getProfile()./*? >= 1.21.11 {*/id()/*?} else {*//*getId()*//*?}*/;
+		UUID playerUUID = this.getProfile()./*? >= 1.21.11 {*//*id()*//*?} else {*/getId()/*?}*/;
 
 		if (!CapeManager.hasCape(playerUUID)) return original;
 
-		Identifier capeTexture = CapeManager.getPlayerCape(playerUUID);
+		ResourceLocation capeTexture = CapeManager.getPlayerCape(playerUUID);
 
 		if (capeTexture == null) return original;
 
 		//? >= 1.21.11 {
-		ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
+		/*ClientAsset.ResourceTexture capeAsset = new ClientAsset.ResourceTexture(capeTexture);
 
 		return new PlayerSkin(
 				original.body(),
@@ -68,8 +68,8 @@ public abstract class PlayerInfoMixin {
 				original.model(),
 				original.secure()
 		);
-		//?} else {
-		/*return new PlayerSkin(
+		*///?} else {
+		return new PlayerSkin(
 				original.texture(),
 				original.textureUrl(),
 				capeTexture,
@@ -77,6 +77,6 @@ public abstract class PlayerInfoMixin {
 				original.model(),
 				original.secure()
 		);
-		*///?}
+		//?}
 	}
 }

@@ -16,27 +16,26 @@
  */
 package com.macuguita.lib.impl.persista;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
+import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import com.mojang.serialization.Codec;
 
 import com.macuguita.lib.api.persista.DataToken;
 
 // Internal registry of all registered DataEntries
+@ApiStatus.Internal
 final class DataRegistry {
 
-	private static final Map<Identifier, DataEntry<?>> REGISTRY = new LinkedHashMap<>();
+	private static final Map<ResourceLocation, DataEntry<?>> REGISTRY = new LinkedHashMap<>();
 
 	private DataRegistry() {}
 
-	static <T> DataToken<T> add(Identifier id, Codec<T> codec) {
+	static <T> DataToken<T> add(ResourceLocation id, Codec<T> codec) {
 		if (REGISTRY.containsKey(id)) {
 			throw new IllegalStateException("DataToken already registered for: " + id);
 		}
@@ -53,7 +52,7 @@ final class DataRegistry {
 		return REGISTRY.size();
 	}
 
-	static @Nullable DataEntry<?> getById(Identifier id) {
-		return REGISTRY.get(id);
+	static Optional<DataEntry<?>> getById(ResourceLocation id) {
+		return Optional.ofNullable(REGISTRY.get(id));
 	}
 }

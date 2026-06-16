@@ -36,15 +36,15 @@ import org.jspecify.annotations.Nullable;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.DynamicTexture;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class CapeUtil {
 
-	private static final Map<String, Identifier> LOADED_CAPES = new Object2ObjectLinkedOpenHashMap<>();
+	private static final Map<String, ResourceLocation> LOADED_CAPES = new Object2ObjectLinkedOpenHashMap<>();
 	private static final Set<String> LOADING_CAPES = ConcurrentHashMap.newKeySet();
 	private static final int TIMEOUT_MS = 5000;
 
-	public static @Nullable Identifier getCape(String urlString) {
+	public static @Nullable ResourceLocation getCape(String urlString) {
 		if (LOADED_CAPES.containsKey(urlString)) {
 			return LOADED_CAPES.get(urlString);
 		}
@@ -58,12 +58,12 @@ public class CapeUtil {
 		// So we register as: namespace:textures/capes/<hash>.png
 		String hash = Integer.toHexString(urlString.hashCode());
 		String filename = "capes/" + hash;
-		Identifier id = Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, filename);
+		ResourceLocation id = ResourceLocation.fromNamespaceAndPath(MacuLib.MOD_ID, filename);
 
 		//? >= 1.21.11 {
-		// The actual texture location where it needs to be registered
-		Identifier textureLocation = Identifier.fromNamespaceAndPath(MacuLib.MOD_ID, "textures/" + filename + ".png");
-		//?}
+		/*// The actual texture location where it needs to be registered
+		ResourceLocation textureLocation = ResourceLocation.fromNamespaceAndPath(MacuLib.MOD_ID, "textures/" + filename + ".png");
+		*///?}
 
 		LOADING_CAPES.add(urlString);
 
@@ -101,18 +101,18 @@ public class CapeUtil {
 
 					Minecraft.getInstance().execute(() -> {
 						//? >= 1.21.11 {
-						DynamicTexture texture = new DynamicTexture(() -> "DynamicCape" + id, image);
+						/*DynamicTexture texture = new DynamicTexture(() -> "DynamicCape" + id, image);
 						Minecraft.getInstance().getTextureManager().register(textureLocation, texture);
 						LOADED_CAPES.put(urlString, id);
 						LOADING_CAPES.remove(urlString);
 						MacuLib.LOGGER.info("Successfully loaded cape: {} (registered at: {})", id, textureLocation);
-						//?} else {
-						/*DynamicTexture texture = new DynamicTexture(image);
+						*///?} else {
+						DynamicTexture texture = new DynamicTexture(image);
 						Minecraft.getInstance().getTextureManager().register(id, texture);
 						LOADED_CAPES.put(urlString, id);
 						LOADING_CAPES.remove(urlString);
 						MacuLib.LOGGER.info("Successfully loaded cape: {}", id);
-						*///?}
+						//?}
 					});
 				}
 			} catch (Exception e) {

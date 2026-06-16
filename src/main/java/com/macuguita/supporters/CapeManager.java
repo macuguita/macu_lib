@@ -13,7 +13,7 @@ import com.macuguita.lib.api.persista.PersistaAPI;
 import com.mojang.serialization.Codec;
 import org.jspecify.annotations.Nullable;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 public class CapeManager {
 
@@ -24,12 +24,12 @@ public class CapeManager {
 	private static final int TIMEOUT_MS = 5000;
 
 	public static final DataToken<List<String>> ENTITLEMENTS = PersistaAPI.register(
-			Identifier.fromNamespaceAndPath("persista", "entitlements"),
+			ResourceLocation.fromNamespaceAndPath("persista", "entitlements"),
 			Codec.STRING.listOf().fieldOf("values").codec()
 	);
 
 	public static final DataToken<SupporterData> SUPPORTER_DATA = PersistaAPI.register(
-			Identifier.fromNamespaceAndPath("macu_lib", "supporter"),
+			ResourceLocation.fromNamespaceAndPath("macu_lib", "supporter"),
 			SupporterData.CODEC
 	);
 
@@ -41,7 +41,7 @@ public class CapeManager {
 		return ENTITLEMENTS.getOrDefault(playerId, List.of()).contains("macu_lib:supporter");
 	}
 
-	public static @Nullable Identifier getPlayerCape(UUID playerId) {
+	public static @Nullable ResourceLocation getPlayerCape(UUID playerId) {
 		if (!isSupporter(playerId)) return null;
 
 		SupporterData data = SUPPORTER_DATA.getOrDefault(playerId, SupporterData.EMPTY);

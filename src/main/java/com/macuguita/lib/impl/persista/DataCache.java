@@ -24,12 +24,15 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
-import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.resources.ResourceLocation;
 
 // In-memory cache of player data, keyed by player UUID and data identifier
+@ApiStatus.Internal
 final class DataCache {
 
-	private static final Map<UUID, Map<Identifier, CachedValue<?>>> STORE = new HashMap<>();
+	private static final Map<UUID, Map<ResourceLocation, CachedValue<?>>> STORE = new HashMap<>();
 
 	private DataCache() {}
 
@@ -37,8 +40,8 @@ final class DataCache {
 	static <T> CachedValue<T> getOrCreate(UUID playerId, DataEntry<T> entry) {
 		synchronized (STORE) {
 			return (CachedValue<T>) STORE
-					.computeIfAbsent(playerId, k -> new HashMap<>())
-					.computeIfAbsent(entry.id(), id -> CachedValue.load(entry, playerId));
+				.computeIfAbsent(playerId, k -> new HashMap<>())
+				.computeIfAbsent(entry.id(), id -> CachedValue.load(entry, playerId));
 		}
 	}
 
@@ -46,8 +49,8 @@ final class DataCache {
 	static <T> CachedValue<T> getOrEmpty(UUID playerId, DataEntry<T> entry) {
 		synchronized (STORE) {
 			return (CachedValue<T>) STORE
-					.computeIfAbsent(playerId, k -> new HashMap<>())
-					.computeIfAbsent(entry.id(), id -> CachedValue.empty(entry, playerId));
+				.computeIfAbsent(playerId, k -> new HashMap<>())
+				.computeIfAbsent(entry.id(), id -> CachedValue.empty(entry, playerId));
 		}
 	}
 
@@ -60,19 +63,19 @@ final class DataCache {
 	}
 
 	static <T> Optional<T> getCached(UUID playerId, DataEntry<T> entry) {
-		return Optional.ofNullable(getOrEmpty(playerId, entry).value());
+		return getOrEmpty(playerId, entry).value();
 	}
 
 	static CompletableFuture<Void> refresh(UUID playerId, boolean force) {
 		var startTime = Instant.now();
 		return CompletableFuture.allOf(
-				DataRegistry.values().parallelStream()
-						.map(entry -> lookup(playerId, entry, force).asFuture())
-						.toArray(CompletableFuture[]::new)
+			DataRegistry.values().parallelStream()
+				.map(entry -> lookup(playerId, entry, force).asFuture())
+				.toArray(CompletableFuture[]::new)
 		).thenRun(() -> {
 			var duration = Duration.between(startTime, Instant.now());
-			PersistaLogger.get().info("Loaded {} data entries for player {} (took {}s {}ms)",
-					DataRegistry.size(), playerId, duration.toSeconds(), duration.toMillisPart());
+			Persista.LOGGER.info("Loaded {} data entries for player {} (took {}s {}ms)",
+				DataRegistry.size(), playerId, duration.toSeconds(), duration.toMillisPart());
 		});
 	}
 

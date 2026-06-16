@@ -89,7 +89,7 @@ public class FabricPlatformImpl implements Platform {
 	public <T extends CustomPacketPayload> void registerC2S(
 			NetworkManager.C2SRegistration<T> reg
 	) {
-		PayloadTypeRegistry./*? >= 26.1 {*/serverboundPlay/*?} else {*//*playC2S*//*?}*/().register(reg.type(), reg.codec());
+		PayloadTypeRegistry./*? >= 26.1 {*//*serverboundPlay*//*?} else {*/playC2S/*?}*/().register(reg.type(), reg.codec());
 		ServerPlayNetworking.registerGlobalReceiver(
 				reg.type(),
 				(payload, context) -> {
@@ -103,7 +103,7 @@ public class FabricPlatformImpl implements Platform {
 	public <T extends CustomPacketPayload> void registerS2C(
 			NetworkManager.S2CRegistration<T> reg
 	) {
-		PayloadTypeRegistry./*? >= 26.1 {*/clientboundPlay/*?} else {*//*playS2C*//*?}*/().register(reg.type(), reg.codec());
+		PayloadTypeRegistry./*? >= 26.1 {*//*clientboundPlay*//*?} else {*/playS2C/*?}*/().register(reg.type(), reg.codec());
 		if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT // This should be safe because it only returns true when it is on the client jar
 				&& reg.handlerSupplier() != null) {
 			FabricClientNetworkBootstrap.registerS2CHandler(

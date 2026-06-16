@@ -28,20 +28,20 @@ import com.macuguita.lib.reg.GuitaRegistryEntry;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.core.Registry;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 @ApiStatus.Internal
 public class FabricGuitaRegistryEntry<T> implements GuitaRegistryEntry<T> {
 
-	private final Identifier id;
+	private final ResourceLocation id;
 	private final T value;
 
-	private FabricGuitaRegistryEntry(Identifier id, T value) {
+	private FabricGuitaRegistryEntry(ResourceLocation id, T value) {
 		this.id = id;
 		this.value = value;
 	}
 
-	public static <T, I extends T> FabricGuitaRegistryEntry<I> of(Registry<T> registry, Identifier id, Supplier<I> supplier) {
+	public static <T, I extends T> FabricGuitaRegistryEntry<I> of(Registry<T> registry, ResourceLocation id, Supplier<I> supplier) {
 		return new FabricGuitaRegistryEntry<>(id, Registry.register(registry, id, supplier.get()));
 	}
 
@@ -51,7 +51,7 @@ public class FabricGuitaRegistryEntry<T> implements GuitaRegistryEntry<T> {
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return this.id;
 	}
 }

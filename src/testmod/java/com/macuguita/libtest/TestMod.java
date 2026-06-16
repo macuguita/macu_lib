@@ -30,7 +30,7 @@ import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.BlockItem;
@@ -53,8 +53,8 @@ public class TestMod {
     public static final String MOD_ID = "macu_lib_tests";
     public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
-    public static Identifier id(String name) {
-        return Identifier.fromNamespaceAndPath(MOD_ID, name);
+    public static ResourceLocation id(String name) {
+        return ResourceLocation.fromNamespaceAndPath(MOD_ID, name);
     }
 
     public static final GuitaRegistry<Block> BLOCKS = GuitaRegistries.create(BuiltInRegistries.BLOCK, MOD_ID);
@@ -70,14 +70,14 @@ public class TestMod {
     private static final GuitaRegistryEntry<Block> TEST_BLOCK =
             BLOCKS.register("test_block", () ->
                     new Block(BlockBehaviour.Properties.ofFullCopy(Blocks.ACACIA_PLANKS)
-                            /*? >= 1.21.11 {*/.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))/*?}*/));
+                            /*? >= 1.21.11 {*//*.setId(ResourceKey.create(Registries.BLOCK, id("test_block")))*//*?}*/));
 
     public static void init() {
         ITEMS.register("test_block", () -> new BlockItem(TEST_BLOCK.get(), new Item.Properties()
 				//? >= 1.21.11 {
-                .useBlockDescriptionPrefix()
+                /*.useBlockDescriptionPrefix()
                 .setId(ResourceKey.create(Registries.ITEM, id("test_block")))
-				//?}
+				*///?}
 		));
 
         NetworkManager.registerC2S(

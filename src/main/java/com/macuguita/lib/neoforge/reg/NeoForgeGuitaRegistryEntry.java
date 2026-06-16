@@ -25,7 +25,7 @@ package com.macuguita.lib.neoforge.reg;
 /*import com.macuguita.lib.reg.GuitaRegistryEntry;
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -44,7 +44,7 @@ public class NeoForgeGuitaRegistryEntry<R, T extends R> implements GuitaRegistry
 	}
 
 	@Override
-	public Identifier getId() {
+	public ResourceLocation getId() {
 		return object.getId();
 	}
 }

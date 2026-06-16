@@ -19,48 +19,47 @@ package com.macuguita.lib.impl.persista;
 import java.util.UUID;
 
 import com.macuguita.lib.MacuLib;
-
 import com.macuguita.lib.network.NetworkManager;
+import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
 
-public record C2SDataUpdatedPacket(Identifier dataId) implements CustomPacketPayload {
+@ApiStatus.Internal
+public record C2SDataUpdatedPacket(ResourceLocation dataId) implements CustomPacketPayload {
 
-	public static final Identifier SERVERBOUND_DATA_UPDATED =
+	public static final ResourceLocation SERVERBOUND_DATA_UPDATED =
 			MacuLib.id("c2s_data_updated");
 	public static final CustomPacketPayload.Type<C2SDataUpdatedPacket> TYPE =
-			new CustomPacketPayload.Type<>(SERVERBOUND_DATA_UPDATED);
+		new CustomPacketPayload.Type<>(SERVERBOUND_DATA_UPDATED);
 
 	public static final StreamCodec<RegistryFriendlyByteBuf, C2SDataUpdatedPacket> CODEC = StreamCodec.composite(
-			Identifier.STREAM_CODEC,
-			C2SDataUpdatedPacket::dataId,
-			C2SDataUpdatedPacket::new
+		ResourceLocation.STREAM_CODEC,
+		C2SDataUpdatedPacket::dataId,
+		C2SDataUpdatedPacket::new
 	);
 
-	public static void trySend(Identifier dataId) {
+	public static void trySend(ResourceLocation dataId) {
 		try {
 			NetworkManager.sendC2S(new C2SDataUpdatedPacket(dataId));
 		} catch (IllegalStateException ignored) {
-			// not connected to a server, singleplayer then skip
+			// singleplayer / no server
 		}
 	}
 
 	public static void handle(ServerPlayer sender, C2SDataUpdatedPacket pkt) {
-		UUID playerId = sender.getGameProfile()./*? if >= 1.21.11 {*/id/*?} else {*//*getId*//*?}*/();
+		UUID playerId = sender.getGameProfile()./*? if >= 1.21.11 {*//*id*//*?} else {*/getId/*?}*/();
 
-		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
-		if (entry != null) {
-			DataCache.lookup(playerId, entry, true);
-		}
+		var dataEntry = DataRegistry.getById(pkt.dataId);
+		dataEntry.ifPresent(entry -> DataCache.lookup(playerId, entry, true));
 
 		//noinspection resource
 		sender.level().getServer().getPlayerList().getPlayers().stream()
-				.filter(p -> p != sender)
-				.forEach(p -> S2CDataUpdatedPacket.send(p, playerId, pkt.dataId));
+			.filter(p -> p != sender)
+			.forEach(p -> S2CDataUpdatedPacket.send(p, playerId, pkt.dataId));
 	}
 
 	@Override

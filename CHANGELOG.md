@@ -1,3 +1,6 @@
+2.0.4
+- Fix [#2](https://github.com/macuguita/macu_lib/issues/2)
+---
 2.0.3
 - Add Persista API
 ---

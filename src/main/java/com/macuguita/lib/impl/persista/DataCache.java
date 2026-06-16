@@ -63,7 +63,7 @@ final class DataCache {
 	}
 
 	static <T> Optional<T> getCached(UUID playerId, DataEntry<T> entry) {
-		return Optional.ofNullable(getOrEmpty(playerId, entry).value());
+		return getOrEmpty(playerId, entry).value();
 	}
 
 	static CompletableFuture<Void> refresh(UUID playerId, boolean force) {
@@ -74,7 +74,7 @@ final class DataCache {
 				.toArray(CompletableFuture[]::new)
 		).thenRun(() -> {
 			var duration = Duration.between(startTime, Instant.now());
-			PersistaLogger.get().info("Loaded {} data entries for player {} (took {}s {}ms)",
+			Persista.LOGGER.info("Loaded {} data entries for player {} (took {}s {}ms)",
 				DataRegistry.size(), playerId, duration.toSeconds(), duration.toMillisPart());
 		});
 	}

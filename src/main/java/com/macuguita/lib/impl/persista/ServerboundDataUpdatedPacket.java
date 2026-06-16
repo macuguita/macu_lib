@@ -54,10 +54,8 @@ public record ServerboundDataUpdatedPacket(Identifier dataId) implements CustomP
 	public static void handle(ServerPlayer sender, ServerboundDataUpdatedPacket pkt) {
 		UUID playerId = sender.getGameProfile().id();
 
-		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
-		if (entry != null) {
-			DataCache.lookup(playerId, entry, true);
-		}
+		var dataEntry = DataRegistry.getById(pkt.dataId);
+		dataEntry.ifPresent(entry -> DataCache.lookup(playerId, entry, true));
 
 		//noinspection resource
 		sender.level().getServer().getPlayerList().getPlayers().stream()

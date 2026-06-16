@@ -16,10 +16,7 @@
  */
 package com.macuguita.lib.impl.persista;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 import org.jetbrains.annotations.ApiStatus;
 import org.jspecify.annotations.Nullable;
@@ -55,7 +52,7 @@ final class DataRegistry {
 		return REGISTRY.size();
 	}
 
-	static @Nullable DataEntry<?> getById(Identifier id) {
-		return REGISTRY.get(id);
+	static Optional<DataEntry<?>> getById(Identifier id) {
+		return Optional.ofNullable(REGISTRY.get(id));
 	}
 }

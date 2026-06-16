@@ -16,10 +16,21 @@
  */
 package com.macuguita.lib.impl.persista;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import com.macuguita.lib.api.persista.DataToken;
+import com.macuguita.lib.api.persista.PersistaAPI;
+import com.macuguita.lib.impl.platform.CommonAbstraction;
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import org.jetbrains.annotations.ApiStatus;
+
 import java.io.IOException;
+import java.net.ConnectException;
 import java.net.URI;
-import java.net.http.HttpClient;
-import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Instant;
 import java.util.Optional;
@@ -27,26 +38,10 @@ import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import org.jetbrains.annotations.ApiStatus;
-import org.jetbrains.annotations.Nullable;
-
-import net.minecraft.resources.Identifier;
-
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-
-import com.macuguita.lib.api.persista.DataToken;
-import com.macuguita.lib.api.persista.PersistaAPI;
-import com.macuguita.lib.impl.platform.CommonAbstraction;
-
 // Internal impl of DataToken handles fetching and stuff
 @ApiStatus.Internal
 record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
-	private static final HttpClient HTTP = HttpClient.newHttpClient();
 	private static final AtomicReference<Instant> GLOBAL_BACKOFF = new AtomicReference<>(Instant.MIN);
 
 	@Override
@@ -56,7 +51,7 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 
 	@Override
 	public Optional<T> get(UUID playerId) {
-		return Optional.ofNullable(DataCache.lookup(playerId, this, false).value());
+		return DataCache.lookup(playerId, this, false).value();
 	}
 
 	@Override
@@ -76,98 +71,99 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 		}
 
 		var playerId = AuthSession.getClientPlayerId();
-		if (playerId == null) {
+		if (playerId.isEmpty()) {
 			return CompletableFuture.failedFuture(new IllegalStateException("No local player found"));
 		}
 
 		// update cache immediately so the client sees the change right away
-		var cached = DataCache.getOrEmpty(playerId, this);
+		var cached = DataCache.getOrEmpty(playerId.get(), this);
 		var previous = cached.value();
 		cached.setValue(data);
 
 		if (AuthSession.isOffline()) {
-			PersistaLogger.get().debug("Client is in offline mode, cannot persist data for {}", id);
+			Persista.LOGGER.debug("Client is in offline mode, cannot persist data for {}", id);
 			return CompletableFuture.completedFuture(null);
 		}
 
 		// encode early on the calling thread so data doesn't need to be thread-safe
 		var json = codec.encodeStart(JsonOps.INSTANCE, data)
-			.resultOrPartial(err -> PersistaLogger.get().error("Failed to encode {} : {}", id, err))
+			.resultOrPartial(err -> Persista.LOGGER.error("Failed to encode {} : {}", id, err))
 			.orElseThrow();
 
 		return CompletableFuture.runAsync(() -> {
 			var session = AuthSession.getOrLogin();
-			if (session == null) {
-				throw new RuntimeException("Failed to authenticate with Persista");
-			}
-			postRemote(playerId, json, session.accessToken());
-			ServerboundDataUpdatedPacket.trySend(id());
-		}).exceptionally(t -> {
-			PersistaLogger.get().error("Failed to write {} for player {}, reverting", id, playerId, t);
-			cached.setValue(previous);
+			session.ifPresentOrElse(
+				sessionx -> postRemote(playerId.get(), json, sessionx.accessToken()),
+				() -> {
+					throw new RuntimeException("Failed to authenticate with Persista");
+				});
+		}).thenRunAsync(
+			() -> ServerboundDataUpdatedPacket.trySend(id()),
+			Minecraft.getInstance()
+		).exceptionally(t -> {
+			Persista.LOGGER.error("Failed to write {} for player {}, reverting", id, playerId, t);
+			cached.setValue(previous.orElse(null));
 			return null;
 		});
 	}
 
-	@Nullable
-	T fetchRemote(UUID playerId) {
+	@SuppressWarnings("resource")
+	Optional<T> fetchRemote(UUID playerId) {
+		if (!Persista.HAS_INTERNET) return Optional.empty();
 		if (isBackedOff()) {
-			return null;
+			return Optional.empty();
 		}
-
 		var uri = dataUri(playerId);
 		try {
-			var request = HttpRequest.newBuilder(uri).GET().build();
-			var response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+			var request = HttpHelper.get(uri).build();
+			var response = HttpHelper.client().send(request, HttpResponse.BodyHandlers.ofString());
 			if (response.statusCode() == 429) {
 				long retryAfter = response.headers()
 					.firstValue("retry-after")
 					.map(Long::parseLong)
 					.orElse(10L);
 
-				PersistaLogger.get().warn(
+				Persista.LOGGER.warn(
 					"Rate limited {} for {}, backing off {}s",
 					id, playerId, retryAfter
 				);
 
 				applyBackoffSeconds(retryAfter);
 
-				return null;
+				return Optional.empty();
 			}
 			if (response.statusCode() == 404) {
-				return null;
+				return Optional.empty();
 			}
 			if (response.statusCode() != 200) {
-				PersistaLogger.get().warn("Unexpected status {} fetching {} for {}", response.statusCode(), id, playerId);
-				return null;
+				Persista.LOGGER.warn("Unexpected status {} fetching {} for {}", response.statusCode(), id, playerId);
+				return Optional.empty();
 			}
 			GLOBAL_BACKOFF.set(Instant.MIN);
 			var json = JsonParser.parseString(response.body());
 			return codec.decode(JsonOps.INSTANCE, json)
-				.resultOrPartial(err -> PersistaLogger.get().error("Failed to decode {} for {}: {}", id, playerId, err))
-				.map(Pair::getFirst)
-				.orElse(null);
+				.resultOrPartial(err -> Persista.LOGGER.error("Failed to decode {} for {}: {}", id, playerId, err))
+				.map(Pair::getFirst);
+		} catch (ConnectException e) {
+			Persista.LOGGER.error("No connection fetching {} for {}: {}", id, playerId, e.getMessage());
 		} catch (IOException | InterruptedException e) {
-			PersistaLogger.get().error("Network error fetching {} for {}", id, playerId, e);
-			return null;
+			Persista.LOGGER.error("Network error fetching {} for {}", id, playerId, e);
 		}
+		return Optional.empty();
 	}
 
+	@SuppressWarnings("resource")
 	private void postRemote(UUID playerId, JsonElement json, String accessToken) {
 		var uri = dataUri(playerId);
 		try {
 			var body = json.toString();
-			var request = HttpRequest.newBuilder(uri)
-				.POST(HttpRequest.BodyPublishers.ofString(body))
-				.header("Content-Type", "application/json")
-				.header("Authorization", "Bearer " + accessToken)
-				.build();
-			var response = HTTP.send(request, HttpResponse.BodyHandlers.discarding());
+			var request = HttpHelper.post(uri, body).header("Authorization", "Bearer " + accessToken).build();
+			var response = HttpHelper.client().send(request, HttpResponse.BodyHandlers.discarding());
 			if (response.statusCode() != 204) {
-				PersistaLogger.get().warn("Unexpected status {} writing {} for {}", response.statusCode(), id, playerId);
+				Persista.LOGGER.warn("Unexpected status {} writing {} for {}", response.statusCode(), id, playerId);
 			}
 		} catch (IOException | InterruptedException e) {
-			PersistaLogger.get().error("Network error writing {} for {}", id, playerId, e);
+			Persista.LOGGER.error("Network error writing {} for {}", id, playerId, e);
 			throw new RuntimeException(e);
 		}
 	}

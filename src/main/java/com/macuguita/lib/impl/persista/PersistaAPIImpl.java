@@ -19,6 +19,10 @@ package com.macuguita.lib.impl.persista;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import com.macuguita.lib.api.network.PacketRegistry;
+import com.macuguita.lib.impl.MacuLib;
+import dev.yumi.mc.core.api.ModContainer;
+import dev.yumi.mc.core.api.entrypoint.ModInitializer;
 import org.jetbrains.annotations.ApiStatus;
 
 import net.minecraft.resources.Identifier;
@@ -28,15 +32,16 @@ import com.mojang.serialization.Codec;
 import com.macuguita.lib.api.persista.DataToken;
 
 @ApiStatus.Internal
-public final class PersistaAPIImpl {
-
-	private PersistaAPIImpl() {}
+public class PersistaAPIImpl {
 
 	public static <T> DataToken<T> register(Identifier id, Codec<T> codec) {
 		return DataRegistry.add(id, codec);
 	}
 
 	public static CompletableFuture<Void> refreshAll(UUID playerId) {
-		return DataCache.refresh(playerId, true);
+		if (!MacuLib.CONFIG.persista.loginAutofetch) {
+			return CompletableFuture.completedFuture(null);
+		}
+		return DataCache.refresh(playerId, MacuLib.CONFIG.persista.loginForceRefresh);
 	}
 }

@@ -53,12 +53,11 @@ public record ClientboundDataUpdatedPacket(UUID playerId, Identifier dataId) imp
 	}
 
 	public static void handle(Minecraft mc, LocalPlayer player, ClientboundDataUpdatedPacket pkt) {
-		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
-		if (entry == null) {
-			PersistaLogger.get().debug("Ignoring sync for unknown data type: {}", pkt.dataId);
-			return;
-		}
-		DataCache.lookup(pkt.playerId, entry, true);
+		var entry = DataRegistry.getById(pkt.dataId);
+		entry.ifPresentOrElse(
+			entryx -> DataCache.lookup(pkt.playerId, entryx, true),
+			() -> Persista.LOGGER.debug("Ignoring sync for unknown data type: {}", pkt.dataId)
+		);
 	}
 
 	@Override

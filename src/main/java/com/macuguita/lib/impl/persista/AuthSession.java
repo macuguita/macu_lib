@@ -21,6 +21,7 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.time.Instant;
+import java.util.Optional;
 import java.util.UUID;
 
 import com.google.gson.JsonParser;
@@ -38,10 +39,9 @@ import com.macuguita.lib.api.persista.PersistaAPI;
 @ApiStatus.Internal
 final class AuthSession {
 
-	private static final HttpClient HTTP = HttpClient.newHttpClient();
+	private static Instant loginCooldownUntil = Instant.MIN;
 
-	@Nullable
-	private static Session current;
+	private static @Nullable Session current;
 
 	private AuthSession() {}
 
@@ -51,18 +51,20 @@ final class AuthSession {
 		}
 	}
 
-	@Nullable
-	static Session getOrLogin() {
+	static Optional<Session> getOrLogin() {
 		if (current != null && current.isValid()) {
-			return current;
+			return Optional.of(current);
+		}
+		if (Instant.now().isBefore(loginCooldownUntil)) {
+			Persista.LOGGER.debug("Auth on cooldown, skipping login attempt");
+			return Optional.empty();
 		}
 		return login();
 	}
 
-	@Nullable
-	static UUID getClientPlayerId() {
+	static Optional<UUID> getClientPlayerId() {
 		var profile = Minecraft.getInstance().getGameProfile();
-		return profile.id();
+		return Optional.of(profile.id());
 	}
 
 	static boolean isOffline() {
@@ -70,41 +72,38 @@ final class AuthSession {
 		return UUIDUtil.createOfflinePlayerUUID(profile.name()).equals(profile.id());
 	}
 
-	@Nullable
-	private static Session login() {
+	private static Optional<Session> login() {
 		try {
 			var playerId = getClientPlayerId();
-			if (playerId == null) return null;
+			if (playerId.isEmpty()) return Optional.empty();
 
-			var challenge = fetchChallenge(playerId);
-			if (challenge == null) return null;
+			var challenge = fetchChallenge(playerId.get());
+			if (challenge.isEmpty()) return Optional.empty();
 
 			var username = Minecraft.getInstance().getGameProfile().name();
-			joinServer(challenge);
+			joinServer(challenge.get());
 
-			current = verify(playerId, username, challenge);
-			return current;
+			current = verify(playerId.get(), username, challenge.get()).orElse(null);
+			return Optional.ofNullable(current);
 		} catch (Exception e) {
-			PersistaLogger.get().error("Persista login failed", e);
-			return null;
+			Persista.LOGGER.error("Persista login failed", e);
+			loginCooldownUntil = Instant.now().plusSeconds(60);
+			return Optional.empty();
 		}
 	}
 
-	@Nullable
-	private static String fetchChallenge(UUID playerId) throws Exception {
+	@SuppressWarnings("resource")
+	private static Optional<String> fetchChallenge(UUID playerId) throws Exception {
 		var uri = URI.create(PersistaAPI.API_URL + "/auth/mojang/challenge");
 		var body = "{\"id\":\"" + playerId + "\"}";
-		var request = HttpRequest.newBuilder(uri)
-			.POST(HttpRequest.BodyPublishers.ofString(body))
-			.header("Content-Type", "application/json")
-			.build();
-		var response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+		var request = HttpHelper.post(uri, body).build();
+		var response = HttpHelper.client().send(request, HttpResponse.BodyHandlers.ofString());
 		if (response.statusCode() != 200) {
-			PersistaLogger.get().error("Challenge request failed with status {}", response.statusCode());
-			return null;
+			Persista.LOGGER.error("Challenge request failed with status {}", response.statusCode());
+			return Optional.empty();
 		}
 		var json = JsonParser.parseString(response.body()).getAsJsonObject();
-		return json.get("token").getAsString();
+		return Optional.ofNullable(json.get("token").getAsString());
 	}
 
 	private static void joinServer(String challenge) {
@@ -117,23 +116,20 @@ final class AuthSession {
 		}
 	}
 
-	@Nullable
-	private static Session verify(UUID playerId, String username, String challenge) throws Exception {
+	@SuppressWarnings("resource")
+	private static Optional<Session> verify(UUID playerId, String username, String challenge) throws Exception {
 		var uri = URI.create(PersistaAPI.API_URL + "/auth/mojang");
 		var body = String.format("{\"id\":\"%s\",\"username\":\"%s\",\"token\":\"%s\"}",
 			playerId, username, challenge);
-		var request = HttpRequest.newBuilder(uri)
-			.POST(HttpRequest.BodyPublishers.ofString(body))
-			.header("Content-Type", "application/json")
-			.build();
-		var response = HTTP.send(request, HttpResponse.BodyHandlers.ofString());
+		var request = HttpHelper.post(uri, body).build();
+		var response = HttpHelper.client().send(request, HttpResponse.BodyHandlers.ofString());
 		if (response.statusCode() != 200) {
-			PersistaLogger.get().error("Persista verify failed with status {}", response.statusCode());
-			return null;
+			Persista.LOGGER.error("Persista verify failed with status {}", response.statusCode());
+			return Optional.empty();
 		}
 		var json = JsonParser.parseString(response.body()).getAsJsonObject();
 		var token = json.get("session_token").getAsString();
 		var expiresAt = Instant.parse(json.get("expires_at").getAsString());
-		return new Session(token, expiresAt);
+		return Optional.of(new Session(token, expiresAt));
 	}
 }

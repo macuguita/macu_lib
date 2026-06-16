@@ -21,6 +21,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
+import org.apache.commons.lang3.mutable.MutableObject;
 import org.jetbrains.annotations.ApiStatus;
 import org.jetbrains.annotations.Nullable;
 
@@ -54,12 +55,11 @@ final class CachedValue<T> {
 		return new CachedValue<>(entry, playerId, null);
 	}
 
-	@Nullable
-	T value() {
+	Optional<T> value() {
 		if (isExpired() && pendingFetch == null) {
 			reload(); // only trigger once
 		}
-		return value;
+		return Optional.ofNullable(value);
 	}
 
 	void setValue(@Nullable T value) {
@@ -69,7 +69,7 @@ final class CachedValue<T> {
 
 	T or(T defaultValue) {
 		var v = value();
-		return v != null ? v : defaultValue;
+		return v.orElse(defaultValue);
 	}
 
 	boolean isExpired() {
@@ -78,21 +78,28 @@ final class CachedValue<T> {
 
 	synchronized void reload() {
 		if (pendingFetch != null && !pendingFetch.isDone()) {
-			return;
+			pendingFetch.cancel(true);
 		}
 
-		pendingFetch = CompletableFuture.supplyAsync(() ->
+		var selfRef = new MutableObject<CompletableFuture<Void>>();
+		var future = CompletableFuture.supplyAsync(() ->
 			entry.fetchRemote(playerId)
-		).thenAccept(fetched -> {
-			if (fetched != null) {
-				setValue(fetched);
-			} else {
-				expiresAt = Instant.now().plusSeconds(30);
+		).thenAccept(oFetched -> {
+			synchronized (this) {
+				if (pendingFetch != selfRef.get()) return;
+				oFetched.ifPresentOrElse(
+					this::setValue,
+					() -> expiresAt = Instant.now().plusSeconds(30)
+				);
+				pendingFetch = null;
 			}
 		}).exceptionally(t -> {
-			PersistaLogger.get().error("Failed to fetch {} for player {}", entry.id(), playerId, t);
+			Persista.LOGGER.error("Failed to fetch {} for player {}", entry.id(), playerId, t);
 			return null;
 		});
+
+		selfRef.setValue(future);
+		pendingFetch = future;
 	}
 
 	CompletableFuture<Optional<T>> asFuture() {

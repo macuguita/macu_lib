@@ -78,7 +78,7 @@ val testModJar = tasks.register<Jar>("testModJar") {
 }
 
 dependencies {
-    implementation(libs.kaleido.config)
+    api(libs.kaleido.config)
     include(libs.kaleido.config)
 
     fabricRuntimeOnly(libs.modmenu)
@@ -144,7 +144,7 @@ publishMods {
 	additionalFiles.from(tasks.sourcesJar.map { it.archiveFile.get() })
 
 	// one of BETA, ALPHA, STABLE
-	type = BETA
+	type = STABLE
 	displayName = "macu Lib ${libs.versions.mod.get()} for ${libs.versions.minecraft.get()}"
 	version = "${libs.versions.mod.get()}+${libs.versions.minecraft.get()}"
 	changelog = provider { rootProject.file("CHANGELOG-LATEST.md").readText() }

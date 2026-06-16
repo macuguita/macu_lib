@@ -20,6 +20,9 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.ApiStatus;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -30,39 +33,32 @@ import com.macuguita.lib.api.network.PacketDistributor;
 import com.macuguita.lib.impl.MacuLib;
 
 @ApiStatus.Internal
-public record C2SDataUpdatedPacket(Identifier dataId) implements CustomPacketPayload {
+public record ClientboundDataUpdatedPacket(UUID playerId, Identifier dataId) implements CustomPacketPayload {
 
-	public static final Identifier SERVERBOUND_DATA_UPDATED =
-		MacuLib.id("c2s_data_updated");
-	public static final CustomPacketPayload.Type<C2SDataUpdatedPacket> TYPE =
-		new CustomPacketPayload.Type<>(SERVERBOUND_DATA_UPDATED);
+	public static final Identifier CLIENTBOUND_DATA_UPDATE =
+		MacuLib.id("clientbound_data_updated");
+	public static final CustomPacketPayload.Type<ClientboundDataUpdatedPacket> TYPE =
+		new CustomPacketPayload.Type<>(CLIENTBOUND_DATA_UPDATE);
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, C2SDataUpdatedPacket> CODEC = StreamCodec.composite(
+	public static final StreamCodec<RegistryFriendlyByteBuf, ClientboundDataUpdatedPacket> CODEC = StreamCodec.composite(
+		UUIDUtil.STREAM_CODEC,
+		ClientboundDataUpdatedPacket::playerId,
 		Identifier.STREAM_CODEC,
-		C2SDataUpdatedPacket::dataId,
-		C2SDataUpdatedPacket::new
+		ClientboundDataUpdatedPacket::dataId,
+		ClientboundDataUpdatedPacket::new
 	);
 
-	public static void trySend(Identifier dataId) {
-		try {
-			PacketDistributor.sendServerboundPacket(new C2SDataUpdatedPacket(dataId));
-		} catch (IllegalStateException ignored) {
-			// not connected to a server, singleplayer then skip
-		}
+	public static void send(ServerPlayer player, UUID targetId, Identifier dataId) {
+		PacketDistributor.sendClientboundPacket(player, new ClientboundDataUpdatedPacket(targetId, dataId));
 	}
 
-	public static void handle(ServerPlayer sender, C2SDataUpdatedPacket pkt) {
-		UUID playerId = sender.getGameProfile().id();
-
+	public static void handle(Minecraft mc, LocalPlayer player, ClientboundDataUpdatedPacket pkt) {
 		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
-		if (entry != null) {
-			DataCache.lookup(playerId, entry, true);
+		if (entry == null) {
+			PersistaLogger.get().debug("Ignoring sync for unknown data type: {}", pkt.dataId);
+			return;
 		}
-
-		//noinspection resource
-		sender.level().getServer().getPlayerList().getPlayers().stream()
-			.filter(p -> p != sender)
-			.forEach(p -> S2CDataUpdatedPacket.send(p, playerId, pkt.dataId));
+		DataCache.lookup(pkt.playerId, entry, true);
 	}
 
 	@Override

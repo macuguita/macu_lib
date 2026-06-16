@@ -32,8 +32,8 @@ import com.macuguita.lib.api.event.lifecyle.ServerStoppingEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.server.ServerPlayerLeaveEvent;
 import com.macuguita.lib.api.network.PacketRegistry;
-import com.macuguita.lib.impl.persista.C2SDataUpdatedPacket;
-import com.macuguita.lib.impl.persista.S2CDataUpdatedPacket;
+import com.macuguita.lib.impl.persista.ClientboundDataUpdatedPacket;
+import com.macuguita.lib.impl.persista.ServerboundDataUpdatedPacket;
 import com.macuguita.lib.impl.platform.CommonAbstraction;
 
 @ApiStatus.Internal
@@ -49,8 +49,8 @@ public class MacuLib implements ModInitializer {
 	public void onInitialize(ModContainer mod) {
 		registerEvents();
 
-		PacketRegistry.registerServerboundPlayPacket(C2SDataUpdatedPacket.TYPE, C2SDataUpdatedPacket.CODEC, C2SDataUpdatedPacket::handle);
-		PacketRegistry.registerClientboundPlayPacket(S2CDataUpdatedPacket.TYPE, S2CDataUpdatedPacket.CODEC);
+		PacketRegistry.registerServerboundPlayPacket(ServerboundDataUpdatedPacket.TYPE, ServerboundDataUpdatedPacket.CODEC, ServerboundDataUpdatedPacket::handle);
+		PacketRegistry.registerClientboundPlayPacket(ClientboundDataUpdatedPacket.TYPE, ClientboundDataUpdatedPacket.CODEC);
 	}
 
 	private void registerEvents() {

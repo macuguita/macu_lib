@@ -1,17 +1,17 @@
 [versions]
-minecraft = "26.2-rc-2"
+minecraft = "26.2"
 
 fabric-loader = "0.19.3"
 fabric-api = "0.152.1+26.2"
 
-neoforge = "26.1.2.75"
+neoforge = "26.2.0.0-beta"
 neoforge-loader = "11.0.13"
 
 yumi = "1.1.1+26.2"
 kaleido = "0.3.3+1.3.2"
 modmenu = "20.0.0-beta.2"
 
-mod = "3.0.0"
+mod = "3.0.1"
 
 spotless = "8.5.1"
 

@@ -33,10 +33,9 @@ final class CachedValue<T> {
 	private final DataEntry<T> entry;
 	private final UUID playerId;
 
-	@Nullable
-	private T value;
+	private @Nullable T value;
 	private Instant expiresAt;
-	private CompletableFuture<Void> pendingFetch;
+	private @Nullable CompletableFuture<Void> pendingFetch;
 
 	private CachedValue(DataEntry<T> entry, UUID playerId, @Nullable T value) {
 		this.entry = entry;
@@ -57,8 +56,8 @@ final class CachedValue<T> {
 
 	@Nullable
 	T value() {
-		if (isExpired()) {
-			reload();
+		if (isExpired() && pendingFetch == null) {
+			reload(); // only trigger once
 		}
 		return value;
 	}
@@ -78,14 +77,17 @@ final class CachedValue<T> {
 	}
 
 	synchronized void reload() {
-		// avoid multiple concurrent fetches for the same value
 		if (pendingFetch != null && !pendingFetch.isDone()) {
 			return;
 		}
-		pendingFetch = CompletableFuture.runAsync(() -> {
-			T fetched = entry.fetchRemote(playerId);
+
+		pendingFetch = CompletableFuture.supplyAsync(() ->
+			entry.fetchRemote(playerId)
+		).thenAccept(fetched -> {
 			if (fetched != null) {
 				setValue(fetched);
+			} else {
+				expiresAt = Instant.now().plusSeconds(30);
 			}
 		}).exceptionally(t -> {
 			PersistaLogger.get().error("Failed to fetch {} for player {}", entry.id(), playerId, t);

@@ -20,9 +20,6 @@ import java.util.UUID;
 
 import org.jetbrains.annotations.ApiStatus;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.core.UUIDUtil;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -33,32 +30,39 @@ import com.macuguita.lib.api.network.PacketDistributor;
 import com.macuguita.lib.impl.MacuLib;
 
 @ApiStatus.Internal
-public record S2CDataUpdatedPacket(UUID playerId, Identifier dataId) implements CustomPacketPayload {
+public record ServerboundDataUpdatedPacket(Identifier dataId) implements CustomPacketPayload {
 
-	public static final Identifier CLIENTBOUND_DATA_UPDATE =
-		MacuLib.id("s2c_data_updated");
-	public static final CustomPacketPayload.Type<S2CDataUpdatedPacket> TYPE =
-		new CustomPacketPayload.Type<>(CLIENTBOUND_DATA_UPDATE);
+	public static final Identifier SERVERBOUND_DATA_UPDATED =
+		MacuLib.id("serverbound_data_updated");
+	public static final CustomPacketPayload.Type<ServerboundDataUpdatedPacket> TYPE =
+		new CustomPacketPayload.Type<>(SERVERBOUND_DATA_UPDATED);
 
-	public static final StreamCodec<RegistryFriendlyByteBuf, S2CDataUpdatedPacket> CODEC = StreamCodec.composite(
-		UUIDUtil.STREAM_CODEC,
-		S2CDataUpdatedPacket::playerId,
+	public static final StreamCodec<RegistryFriendlyByteBuf, ServerboundDataUpdatedPacket> CODEC = StreamCodec.composite(
 		Identifier.STREAM_CODEC,
-		S2CDataUpdatedPacket::dataId,
-		S2CDataUpdatedPacket::new
+		ServerboundDataUpdatedPacket::dataId,
+		ServerboundDataUpdatedPacket::new
 	);
 
-	public static void send(ServerPlayer player, UUID targetId, Identifier dataId) {
-		PacketDistributor.sendClientboundPacket(player, new S2CDataUpdatedPacket(targetId, dataId));
+	public static void trySend(Identifier dataId) {
+		try {
+			PacketDistributor.sendServerboundPacket(new ServerboundDataUpdatedPacket(dataId));
+		} catch (IllegalStateException ignored) {
+			// singleplayer / no server
+		}
 	}
 
-	public static void handle(Minecraft mc, LocalPlayer player, S2CDataUpdatedPacket pkt) {
+	public static void handle(ServerPlayer sender, ServerboundDataUpdatedPacket pkt) {
+		UUID playerId = sender.getGameProfile().id();
+
 		DataEntry<?> entry = DataRegistry.getById(pkt.dataId);
-		if (entry == null) {
-			PersistaLogger.get().debug("Ignoring sync for unknown data type: {}", pkt.dataId);
-			return;
+		if (entry != null) {
+			DataCache.lookup(playerId, entry, true);
 		}
-		DataCache.lookup(pkt.playerId, entry, true);
+
+		//noinspection resource
+		sender.level().getServer().getPlayerList().getPlayers().stream()
+			.filter(p -> p != sender)
+			.forEach(p -> ClientboundDataUpdatedPacket.send(p, playerId, pkt.dataId));
 	}
 
 	@Override

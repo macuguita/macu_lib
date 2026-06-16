@@ -22,8 +22,6 @@ import org.jetbrains.annotations.ApiStatus;
 
 import com.macuguita.lib.api.event.player.client.ClientPlayerJoinEvent;
 import com.macuguita.lib.api.event.player.client.ClientPlayerLeaveEvent;
-import com.macuguita.lib.api.network.PacketRegistry;
-import com.macuguita.lib.impl.persista.ClientboundDataUpdatedPacket;
 import com.macuguita.lib.impl.platform.ClientAbstraction;
 import com.macuguita.lib.impl.supporters.CapeManager;
 
@@ -35,8 +33,6 @@ public class MacuLibClient implements ClientModInitializer {
 		registerEvents();
 
 		CapeManager.fetchAvailableCapes();
-
-		PacketRegistry.registerClientboundPacketHandler(ClientboundDataUpdatedPacket.TYPE, ClientboundDataUpdatedPacket::handle);
 	}
 
 	private void registerEvents() {

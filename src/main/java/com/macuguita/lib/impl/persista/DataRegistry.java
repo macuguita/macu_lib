@@ -19,7 +19,6 @@ package com.macuguita.lib.impl.persista;
 import java.util.*;
 
 import org.jetbrains.annotations.ApiStatus;
-import org.jspecify.annotations.Nullable;
 
 import net.minecraft.resources.Identifier;
 

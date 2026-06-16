@@ -38,8 +38,7 @@ side = "CLIENT"
 [modproperties.macu_lib]
 catalogueImageIcon = "assets/icon.png"
 
-[[modproperties.macu_lib."yumi:entrypoints"."yumi:init"]]
-value = "com.macuguita.lib.impl.MacuLib"
 
-[[modproperties.macu_lib."yumi:entrypoints"."yumi:client_init"]]
-value = "com.macuguita.lib.impl.client.MacuLibClient"
+[modproperties.yumi_mc_core_testmod."yumi:entrypoints"]
+"yumi:init" = ["com.macuguita.lib.impl.MacuLib", "com.macuguita.lib.impl.persista.Persista"]
+"yumi:client_init" = ["com.macuguita.lib.impl.client.MacuLibClient", "com.macuguita.lib.impl.persista.PersistaClient"]

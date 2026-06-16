@@ -14,17 +14,22 @@
  * See the Licence for the specific language governing permissions and
  * limitations under the Licence.
  */
-package com.macuguita.lib.impl.persista;
+package com.macuguita.lib.impl;
 
-import dev.yumi.mc.core.api.ModContainer;
-import dev.yumi.mc.core.api.entrypoint.client.ClientModInitializer;
+import folk.sisby.kaleido.api.WrappedConfig;
+import folk.sisby.kaleido.lib.quiltconfig.api.annotations.Comment;
 
-import com.macuguita.lib.api.network.PacketRegistry;
+public class MacuLibConfig extends WrappedConfig {
 
-public class PersistaClient implements ClientModInitializer {
+	public Persista persista = new Persista();
+	public static class Persista implements Section {
+		@Comment("The request timeout for persista http requests")
+		public long requestTimeout = 6000;
 
-	@Override
-	public void onInitializeClient(ModContainer mod) {
-		PacketRegistry.registerClientboundPacketHandler(ClientboundDataUpdatedPacket.TYPE, ClientboundDataUpdatedPacket::handle);
+		@Comment("Whether to automatically fetch player data on login")
+		public boolean loginAutofetch = true;
+
+		@Comment("Whether to force a refresh of player data on login instead of using cached values")
+		public boolean loginForceRefresh = false;
 	}
 }

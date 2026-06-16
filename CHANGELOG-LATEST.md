@@ -1,1 +1,1 @@
-- Fix persista stuff
+- Add more safeguards in the persista impl

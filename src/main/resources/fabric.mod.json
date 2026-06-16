@@ -22,10 +22,12 @@
   "environment": "*",
   "entrypoints": {
     "yumi:init": [
-      "com.macuguita.lib.impl.MacuLib"
+      "com.macuguita.lib.impl.MacuLib",
+      "com.macuguita.lib.impl.persista.Persista"
     ],
     "yumi:client_init": [
-      "com.macuguita.lib.impl.client.MacuLibClient"
+      "com.macuguita.lib.impl.client.MacuLibClient",
+      "com.macuguita.lib.impl.persista.PersistaClient"
     ]
   },
   "mixins": [

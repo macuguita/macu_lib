@@ -16,18 +16,6 @@
  */
 package com.macuguita.lib.impl.persista;
 
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import com.macuguita.lib.api.persista.DataToken;
-import com.macuguita.lib.api.persista.PersistaAPI;
-import com.macuguita.lib.impl.platform.CommonAbstraction;
-import com.mojang.datafixers.util.Pair;
-import com.mojang.serialization.Codec;
-import com.mojang.serialization.JsonOps;
-import net.minecraft.client.Minecraft;
-import net.minecraft.resources.Identifier;
-import org.jetbrains.annotations.ApiStatus;
-
 import java.io.IOException;
 import java.net.ConnectException;
 import java.net.URI;
@@ -37,6 +25,21 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.atomic.AtomicReference;
+
+import com.google.gson.JsonElement;
+import com.google.gson.JsonParser;
+import org.jetbrains.annotations.ApiStatus;
+
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+
+import com.mojang.datafixers.util.Pair;
+import com.mojang.serialization.Codec;
+import com.mojang.serialization.JsonOps;
+
+import com.macuguita.lib.api.persista.DataToken;
+import com.macuguita.lib.api.persista.PersistaAPI;
+import com.macuguita.lib.impl.platform.CommonAbstraction;
 
 // Internal impl of DataToken handles fetching and stuff
 @ApiStatus.Internal

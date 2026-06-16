@@ -1,1 +1,1 @@
-- Fix [#2](https://github.com/macuguita/macu_lib/issues/2)
+- Add more safeguards in the persista impl

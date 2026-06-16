@@ -1,4 +1,7 @@
 2.0.4
+- Add more safeguards in the persista impl
+---
+2.0.4
 - Fix [#2](https://github.com/macuguita/macu_lib/issues/2)
 ---
 2.0.3

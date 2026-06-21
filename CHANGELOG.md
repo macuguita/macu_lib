@@ -1,4 +1,7 @@
-3.0.1
+3.0.3
+- Fix neoforge entrypoints
+---
+3.0.2
 - Add more safeguards in the persista impl
 ---
 3.0.1

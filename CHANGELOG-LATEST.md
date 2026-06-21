@@ -1,1 +1,1 @@
-- Add more safeguards in the persista impl
+- Fix neoforge entrypoints

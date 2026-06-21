@@ -20,6 +20,8 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 
+import com.macuguita.lib.impl.MacuLib;
+
 final class HttpHelper {
 
 	private static final HttpClient CLIENT = HttpClient.newHttpClient();
@@ -33,7 +35,7 @@ final class HttpHelper {
 	static HttpRequest.Builder get(URI uri) {
 		return HttpRequest.newBuilder(uri)
 			.GET()
-			.header("User-Agent", Persista.USER_AGENT)
+			.header("User-Agent", Persista.USER_AGENT == null ? MacuLib.MOD_ID + "/unknown" : Persista.USER_AGENT)
 			.timeout(Persista.REQUEST_TIMEOUT);
 	}
 

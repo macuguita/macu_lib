@@ -104,7 +104,7 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 			() -> ServerboundDataUpdatedPacket.trySend(id()),
 			Minecraft.getInstance()
 		).exceptionally(t -> {
-			Persista.LOGGER.error("Failed to write {} for player {}, reverting", id, playerId, t);
+			Persista.LOGGER.error("Failed to write {} for player {}, reverting", id, playerId.map(UUID::toString).orElse("unknown"), t);
 			cached.setValue(previous.orElse(null));
 			return null;
 		});

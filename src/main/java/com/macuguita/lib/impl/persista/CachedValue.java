@@ -84,13 +84,14 @@ final class CachedValue<T> {
 		var selfRef = new MutableObject<CompletableFuture<Void>>();
 		var future = CompletableFuture.supplyAsync(() ->
 			entry.fetchRemote(playerId)
-		).thenAccept(oFetched -> {
+		).thenAccept(fetched -> {
 			synchronized (this) {
 				if (pendingFetch != selfRef.get()) return;
-				oFetched.ifPresentOrElse(
-					this::setValue,
-					() -> expiresAt = Instant.now().plusSeconds(30)
-				);
+				switch (fetched) {
+					case FetchResult.Found<T> f -> setValue(f.value());
+					case FetchResult.NotFound<T> ignore -> expiresAt = Instant.now().plus(PersistaAPI.CACHE_DURATION);
+					case FetchResult.Unavailable<T> ignore -> expiresAt = Instant.now().plusSeconds(30);
+				}
 				pendingFetch = null;
 			}
 		}).exceptionally(t -> {

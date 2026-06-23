@@ -111,10 +111,10 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 	}
 
 	@SuppressWarnings("resource")
-	Optional<T> fetchRemote(UUID playerId) {
-		if (!Persista.HAS_INTERNET) return Optional.empty();
+	FetchResult<T> fetchRemote(UUID playerId) {
+		if (!Persista.HAS_INTERNET) return new FetchResult.Unavailable<>();
 		if (isBackedOff()) {
-			return Optional.empty();
+			return new FetchResult.Unavailable<>();
 		}
 		var uri = dataUri(playerId);
 		try {
@@ -132,27 +132,28 @@ record DataEntry<T>(Identifier id, Codec<T> codec) implements DataToken<T> {
 				);
 
 				applyBackoffSeconds(retryAfter);
-
-				return Optional.empty();
+				return new FetchResult.Unavailable<>();
 			}
 			if (response.statusCode() == 404) {
-				return Optional.empty();
+				return new FetchResult.NotFound<>();
 			}
 			if (response.statusCode() != 200) {
 				Persista.LOGGER.warn("Unexpected status {} fetching {} for {}", response.statusCode(), id, playerId);
-				return Optional.empty();
+				return new FetchResult.Unavailable<>();
 			}
 			GLOBAL_BACKOFF.set(Instant.MIN);
 			var json = JsonParser.parseString(response.body());
 			return codec.decode(JsonOps.INSTANCE, json)
 				.resultOrPartial(err -> Persista.LOGGER.error("Failed to decode {} for {}: {}", id, playerId, err))
-				.map(Pair::getFirst);
+				.map(Pair::getFirst)
+				.<FetchResult<T>>map(FetchResult.Found::new)
+				.orElse(new FetchResult.Unavailable<>());
 		} catch (ConnectException e) {
 			Persista.LOGGER.error("No connection fetching {} for {}: {}", id, playerId, e.getMessage());
 		} catch (IOException | InterruptedException e) {
 			Persista.LOGGER.error("Network error fetching {} for {}", id, playerId, e);
 		}
-		return Optional.empty();
+		return new FetchResult.Unavailable<>();
 	}
 
 	@SuppressWarnings("resource")

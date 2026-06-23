@@ -1,1 +1,1 @@
-- Fix neoforge entrypoints
+- Some error handling with 404's returned by the server

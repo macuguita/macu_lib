@@ -1,3 +1,6 @@
+3.0.4
+- Some error handling with 404's returned by the server
+---
 3.0.3
 - Fix neoforge entrypoints
 ---

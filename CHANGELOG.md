@@ -1,4 +1,7 @@
-2.0.4
+2.0.6
+- Some error handling with 404's returned by the server
+---
+2.0.5
 - Add more safeguards in the persista impl
 ---
 2.0.4

@@ -1,1 +1,1 @@
-- Add more safeguards in the persista impl
+- Some error handling with 404's returned by the server
